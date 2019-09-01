@@ -3,16 +3,25 @@
 # Backup files
 # Require "echoerr" function
 function back_up_files
-    set --local NOT_A_DIRECTORY_ERROR_CODE "$back_up_files_NOT_A_DIRECTORY_ERROR_CODE"
-    set --local DEFAULT_DESTINATION "$back_up_files_DEFAULT_DESTINATIONE"
-    set --local DEFAULT_COMPRESSOR "$back_up_files_DEFAULT_COMPRESSOR"
-    set --local DEFAULT_SUFFIX "$back_up_files_DEFAULT_SUFFIX"
+    set --local NOT_A_DIRECTORY_ERROR_CODE 101
+    set --local DEFAULT_DESTINATION "$HOME"'/.my_backups'
+    set --local DEFAULT_COMPRESSOR 'xz'
+    set --local DEFAULT_SUFFIX '.tar.xz'
+
+    test -n "$back_up_files_NOT_A_DIRECTORY_ERROR_CODE"
+    and set NOT_A_DIRECTORY_ERROR_CODE "$back_up_files_NOT_A_DIRECTORY_ERROR_CODE"
+    test -n "$back_up_files_DEFAULT_DESTINATION"
+    and set DEFAULT_DESTINATION "$back_up_files_DEFAULT_DESTINATION"
+    test -n "$back_up_files_DEFAULT_COMPRESSOR"
+    and set DEFAULT_COMPRESSOR "$back_up_files_DEFAULT_COMPRESSOR"
+    test -n "$back_up_files_DEFAULT_SUFFIX"
+    and set DEFAULT_SUFFIX "$back_up_files_DEFAULT_SUFFIX"
 
     # TODO
     argparse --name='back_up_files' --min-args=1 --exclusive='b,r' \
         'd/destination=?' 'c/compressor=?' 's/suffix=?' \
         'b/back-up' 'r/restore' 'n/remove-source' 't/timestamp' \
-        'h/help' 'v/verbose' \
+        'p/parents' 'h/help' 'v/verbose' \
         -- $argv
     or return $status
 
@@ -22,11 +31,11 @@ function back_up_files
     end
     if set --query _flag_c
     and test -z "$_flag_c"
-        set _flag_d "$DEFAULT_COMPRESSOR"
+        set _flag_c "$DEFAULT_COMPRESSOR"
     end
     if set --query _flag_s
     and test -z "$_flag_s"
-        set _flag_d "$DEFAULT_SUFFIX"
+        set _flag_s "$DEFAULT_SUFFIX"
     end
 
     set --local verbose
@@ -59,20 +68,37 @@ function back_up_files
         end
 
         if test ! -e "$backup_directory"
-            if test ! -d "$backup_directory"
-                echoerr -s -- '"' "$backup_directory" '"' ' is not a directory!'
-                return $NOT_A_DIRECTORY_ERROR_CODE
+            if test -z "$_flag_p"
+                echoerr -w -s -- 'The destination directory "' "$backup_directory" '" doesn\'t exist'
+
+                echo -- 'Create the directory?'
+
+                read --prompt-str='YES/no: ' --local yes_or_no
+                set yes_or_no (string lower "$yes_or_no")
+                while not contains "$yes_or_no" 'yes' 'no'
+                and test -n "$yes_or_no"
+                    read --prompt-str='Please enter yes/NO: ' yes_or_no
+                    set yes_or_no (string lower "$yes_or_no")
+                end
+
+                if test "$yes_or_no" = no
+                    return
+                end
+            else
+                echoerr -w -s -- 'The destination directory "' "$backup_directory" '" doesn\'t exist. It will be created'
             end
 
-            echoerr -w -s -- 'The destination directory "' "$backup_directory" '" doesn\'t exist. It will be created'
             mkdir $verbose -p "$backup_directory"
             or return $status
             chmod $verbose 700 "$backup_directory"
             or return $status
+        else if test ! -d "$backup_directory"
+            echoerr -s -- '"' "$backup_directory" '"' ' is not a directory!'
+            return $NOT_A_DIRECTORY_ERROR_CODE
         end
     else
         if test -n "$verbose"
-            echoerr -i 'Default destination directories'
+            echoerr -i 'Using source directories as destination directories'
         end
     end
 
@@ -176,7 +202,7 @@ function back_up_files
             if test -z "$_flag_c"
             and test -z "$_flag_n"
                 # Write a prompt to the standard error output before copying a file that would overwrite an existing file
-                cp $verbose -i "$file" "$target"
+                cp $verbose -R -i "$file" "$target"
             else if test -n "$_flag_c"
             and test -z "$_flag_n"
                 $decompressor "$file" $directory_option "$backup_directory"
@@ -189,6 +215,7 @@ function back_up_files
                 rm $verbose "$file"
             end
         end
+        echo 'Restoring finished'
     else
         set --local compressor
         if test -n "$_flag_c"
@@ -250,7 +277,7 @@ function back_up_files
             if test -z "$_flag_c"
             and test -z "$_flag_n"
                 # Write a prompt to the standard error output before copying a file that would overwrite an existing file
-                cp $verbose -i "$file" "$target"
+                cp $verbose -R -i "$file" "$target"
             else if test -n "$_flag_c"
             and test -z "$_flag_n"
                 if test -e "$target"
@@ -299,5 +326,6 @@ function back_up_files
                 rm $verbose "$file"
             end
         end
+        echo 'Backing up finished'
     end
 end

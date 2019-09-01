@@ -1,5 +1,7 @@
 #!/usr/bin/env fish
 
+# See "Abbreviations for long hostnames"
+
 function fish_prompt --description 'Write out the prompt'
 	set -l last_status $status
     set -l normal (set_color normal)
@@ -65,11 +67,12 @@ function fish_prompt --description 'Write out the prompt'
         set prompt_status ' ' (set_color $fish_color_status) "[$last_status]" "$normal"
     end
 
-    if test (prompt_hostname) = "Mingcen-Weis-MacBook"
-        set THE_HOSTNAME ~MacBook
-    else
-        set THE_HOSTNAME (prompt_hostname)
+    ### Abbreviations for long hostnames
+    set THE_HOSTNAME (prompt_hostname)
+    if test "$THE_HOSTNAME" = 'Mingcen-Weis-MacBook'
+        set THE_HOSTNAME '~MacBook'
     end
+    ###
 
     echo -n -s (set_color $fish_color_user) "$USER" $normal @ (set_color $fish_color_host) "$THE_HOSTNAME" $normal ' ' (set_color $color_cwd) (prompt_pwd) $normal (__fish_vcs_prompt) $normal $prompt_status $suffix " "
 end

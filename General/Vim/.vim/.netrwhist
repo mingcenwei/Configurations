@@ -1,0 +1,6 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =4
+let g:netrw_dirhist_1='/Users/say/.config/fish/conf.d'
+let g:netrw_dirhist_2='/usr/local/share/fish/vendor_completions.d'
+let g:netrw_dirhist_3='/usr/local/Cellar/fish/3.0.2/share/fish/completions'
+let g:netrw_dirhist_4='/Users/say/.local/share/fish/generated_completions'
