@@ -3,7 +3,7 @@
 # Set error codes
 set --local BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE 1
 
-set --local DIR (dirname (status --current-filename))
+set --local DIR (dirname (realpath (status --current-filename)))
 
 # Make sure that "back_up_files" is loaded
 functions back_up_files > /dev/null 2>&1

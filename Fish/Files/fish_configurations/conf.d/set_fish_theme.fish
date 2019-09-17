@@ -47,7 +47,7 @@ end
 
 # # Uninstall
 # # "$event_name" = 'set_fish_theme_uninstall'
-# set --local event_name (basename (status filename) '.fish')'_uninstall'
+# set --local event_name (basename (realpath (status filename)) '.fish')'_uninstall'
 # function 'set_fish_theme_uninstall' --on-event "$event_name"
 #     set --erase --universal fish_color_autosuggestion
 #     set --erase --universal fish_color_cancel

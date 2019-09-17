@@ -35,7 +35,7 @@ end
 
 # # Uninstall
 # # "$event_name" = 'set_environment_variables_uninstall'
-# set --local event_name (basename (status filename) '.fish')'_uninstall'
+# set --local event_name (basename (realpath (status filename)) '.fish')'_uninstall'
 # function 'set_environment_variables_uninstall' --on-event "$event_name"
 #     set --erase --universal VISUAL
 #     set --erase --universal EDITOR

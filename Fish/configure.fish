@@ -8,7 +8,7 @@ set --local CURL_IS_NOT_INSTALLED_ERROR_CODE 2
 set --local ENCOUNTERING_ERRORS_WHEN_INSTALLING_FISHER_ERROR_CODE 3
 
 # Load required functions
-set --local package_directory (dirname (status filename))'/Files/fish_configurations/'
+set --local package_directory (dirname (realpath (status filename)))'/Files/fish_configurations/'
 source "$package_directory"'/functions/echoerr.fish'
 source "$package_directory"'/functions/back_up_files.fish'
 
