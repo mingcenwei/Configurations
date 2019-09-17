@@ -35,3 +35,8 @@ back_up_files --back-up --timestamp --destination --compressor --suffix --parent
 
 # Use "fisher" to add configurations and functions
 fisher add "$package_directory"
+
+# Create a symlink for this file specifically.
+# If using "fisher" to add it, we'll go to the default working directory
+# every time we enter "fisher" command
+ln -si (dirname "$package_directory")'/set_default_working_directory.fish' ~/.config/fish/conf.d/set_default_working_directory.fish
