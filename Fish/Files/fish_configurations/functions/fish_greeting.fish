@@ -25,8 +25,9 @@ function fish_greeting
     if test (uname -s) = 'Darwin'
         set package_update_commands 'brew -v update; brew upgrade'
     else if test (uname -s) = 'Linux'
-    and test (uname -o) = 'Android'
-        set package_update_commands 'pkg upgrade'
+        if test (uname -o) = 'Android'
+            set package_update_commands 'pkg upgrade'
+        end
     end
 
     # Package updating commands
