@@ -11,7 +11,7 @@ set --local ENCOUNTERING_ERRORS_WHEN_INSTALLING_FISHER_ERROR_CODE 3
 set --local package_directory (dirname (realpath (status filename)))'/Files/fish_configurations/'
 source "$package_directory"'/functions/echoerr.fish'
 source "$package_directory"'/functions/back_up_files.fish'
-
+source "$package_directory"'/functions/track_my_file.fish'
 
 # Make sure that "curl" is installed
 command -v curl > /dev/null 2>&1
@@ -36,7 +36,11 @@ back_up_files --back-up --timestamp --destination --compressor --suffix --parent
 # Use "fisher" to add configurations and functions
 fisher add "$package_directory"
 
+### Configurations that are installed without "fisher"
+set --local non_fisher_directory (dirname "$package_directory")'/non_fisher_fish_configurations'
+
 # Create a symlink for this file specifically.
 # If using "fisher" to add it, we'll go to the default working directory
 # every time we enter "fisher" command
-ln -si (dirname "$package_directory")'/set_default_working_directory.fish' ~/.config/fish/conf.d/set_default_working_directory.fish
+ln -si "$non_fisher_directory"'/set_default_working_directory.fish' ~/.config/fish/conf.d/set_default_working_directory.fish
+###
