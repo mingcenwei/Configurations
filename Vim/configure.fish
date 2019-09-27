@@ -4,7 +4,7 @@
 set --local BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE 1
 
 set --local source_dir (dirname (realpath (status --current-filename)))'/Files'
-set --local vim_dir "$HOME"'./vim'
+set --local vim_dir "$HOME"'/.vim'
 
 # Make sure that "back_up_files" is loaded
 functions back_up_files > /dev/null 2>&1
