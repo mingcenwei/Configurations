@@ -22,7 +22,7 @@ else if cat "$etc_shells" 2> '/dev/null' | grep '/fish$' > '/dev/null'
             set yes_or_no (string lower "$yes_or_no")
             while not contains "$yes_or_no" 'yes' 'no'
             and test -n "$yes_or_no"
-                read --prompt-str='Please enter yes/NO: ' yes_or_no
+                read --prompt-str='Please enter YES/no: ' yes_or_no
                 set yes_or_no (string lower "$yes_or_no")
             end
 
