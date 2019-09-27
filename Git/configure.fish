@@ -50,10 +50,11 @@ end
 # Track these files with "track_file" function
 set --local track_file_dir_path "$track_file_DIR_PATH"
 test -z "$track_file_dir_path"
-and set track_file_dir_path "$HOME"'/.my_untracked_files'
+and set track_file_dir_path "$HOME"'/.my_private_configurations'
 for file in 'config'
-    cp -i "$source_dir"'/'"$file" "$track_file_dir_path"'/GIT_'"$file"
-    cp "$source_dir"'/'"$file" "$git_home"'/'"$file"
+    set --local template_file "$track_file_dir_path"'/GIT_'"$file"
+    cp -i "$source_dir"'/'"$file" "$template_file"
+    ln -si "$template_file" "$git_home"'/'"$file"
     track_file --template='GIT_'"$file" --actual="$git_home"'/'"$file" --check
 end
 

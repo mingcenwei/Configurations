@@ -6,7 +6,7 @@
 # thus it cannot be tracked with Git.
 # Nevertheless, we have a template file for such a configuration file.
 # The link between these two files is recorded
-# in "~/.my_untracked_files/records"
+# in "~/.my_private_configurations/RECORDS"
 
 # Track/untrack files
 # Require "echoerr" and "back_up_files" function, and "sed" utility
@@ -46,9 +46,9 @@ function track_file
 
     set --local dir_path "$track_file_DIR_PATH"
     test -z "$dir_path"
-    and set dir_path "$HOME"'/.my_untracked_files'
+    and set dir_path "$HOME"'/.my_private_configurations'
 
-    set --local record_file_path "$dir_path"'/records'
+    set --local record_file_path "$dir_path"'/RECORDS'
 
     set --local delimiter "$track_file_RECORDS_DELIMITER"
     test -z "$delimiter"
@@ -115,7 +115,7 @@ function track_file
             back_up_files $verbose --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$dir_path"
         end
 
-        mkdir $verbose "$dir_path"
+        mkdir -p $verbose "$dir_path"
         chmod $verbose 700 "$dir_path"
     end
 
