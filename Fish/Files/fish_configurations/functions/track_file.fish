@@ -40,6 +40,10 @@ function track_file
     test -z "$NO_SUCH_TEMPLATE_ERROR_CODE"
     and set NO_SUCH_TEMPLATE_ERROR_CODE 107
 
+    set --local SORTING_ERROR_CODE "$track_file_SORTING_ERROR_CODE"
+    test -z "$SORTING_ERROR_CODE"
+    and set SORTING_ERROR_CODE 108
+
     set --local dir_path "$track_file_DIR_PATH"
     test -z "$dir_path"
     and set dir_path "$HOME"'/.my_untracked_files'
@@ -181,7 +185,11 @@ function track_file
 
     # Sort the record file and remove duplicate lines
     sort -u "$record_file_path" > "$record_file_path"'~'
-    mv "$record_file_path"'~' "$record_file_path"
+    and mv "$record_file_path"'~' "$record_file_path"
+    or begin
+        echoerr 'Encountering an error when modifying the record file'
+        exit "$SORTING_ERROR_CODE"
+    end
 
     # List the records
     if test -n "$_flag_l"
