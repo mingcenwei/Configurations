@@ -13,6 +13,7 @@ set --local source_dir (dirname (realpath (status --current-filename)))'/Files'
 set --local utility_dir (dirname (realpath (status --current-filename)))'/Utilities'
 set --local workflow_dir "$HOME"'/Library/Services/'
 set --local launchd_dir "$HOME"'/Library/LaunchAgents/'
+set --local karabiner_dir "$HOME"'/.config/karabiner'
 
 # Make sure that "back_up_files" is loaded
 functions back_up_files > /dev/null 2>&1
@@ -57,4 +58,14 @@ for file in "$source_dir"'/Launchd/'*
         launchctl load "$launchd_dir"'/'(basename "$file")
     end
 end
+###
+
+### Karabiner-Elements
+if test -e "$karabiner_dir"
+or test -L "$karabiner_dir"
+    # Back up former Karabiner-Elements configurations if existing
+    back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$karabiner_dir"
+end
+
+ln -si "$source_dir"'/Karabiner-Elements' "$karabiner_dir"
 ###
