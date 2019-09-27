@@ -3,7 +3,8 @@
 # Set error codes
 set --local BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE 1
 
-set --local DIR (dirname (realpath (status --current-filename)))
+set --local source_dir (dirname (realpath (status --current-filename)))'/Files'
+set --local vim_dir "$HOME"'./vim'
 
 # Make sure that "back_up_files" is loaded
 functions back_up_files > /dev/null 2>&1
@@ -14,11 +15,11 @@ end
 
 # Back up former vim configurations
 for file in '.vim' '.vimrc' '.viminfo'
-    if test -e {$HOME}'/'{$file}
-    or test -L {$HOME}'/'{$file}
-        back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source {$HOME}'/'{$file}
+    if test -e "$HOME"'/'"$file"
+    or test -L "$HOME"'/'"$file"
+        back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$HOME"'/'"$file"
     end
 end
 
-mkdir -p {$HOME}'/.vim'
-ln -si {$DIR}'/Files/vimrc' {$HOME}'/.vim/vimrc'
+mkdir -p "$vim_dir"
+ln -si "$source_dir"'/vimrc' "$vim_dir"'/vimrc'
