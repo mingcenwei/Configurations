@@ -56,5 +56,12 @@ function fish_greeting
     set_color normal
     echo ' to update fisher packages'
 
+    # "umask" command
+    echo -n 'Use '
+    set_color --bold "$fish_color_command"
+    echo -n 'umask -S'
+    set_color normal
+    echo ' to display the symbolic file creation mode mask'
+
     echo
 end
