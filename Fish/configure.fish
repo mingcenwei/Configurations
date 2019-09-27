@@ -3,6 +3,48 @@
 # Make sure that the "fish" shell is used
 test -z "$fish_pid" && echo 'Error: The shell is not "fish"!' >&2 && exit 1
 
+### Change the default login shell to "fish" if possible
+set --local chsh_status 1
+# For Android Termux
+if test (uname -s) = 'Linux'
+and test (uname -o) = 'Android'
+    chsh -s 'fish'
+    set chsh_status "$status"
+else if cat "$etc_shells" 2> '/dev/null' | grep '/fish$' > '/dev/null'
+    if test (cat "$etc_shells" | grep '/fish$' | wc -l) -eq 1
+        chsh -s (cat "$etc_shells" | grep '/fish$')
+        set chsh_status "$status"
+    else
+        # Ask the user which one is the "fish" shell they want
+        for line in (cat "$etc_shells" | grep '/fish$')
+            echo $line
+
+            read --prompt-str='Is this shell the "fish" shell that you want to use? (YES/no): ' --local yes_or_no
+            set yes_or_no (string lower "$yes_or_no")
+            while not contains "$yes_or_no" 'yes' 'no'
+            and test -n "$yes_or_no"
+                read --prompt-str='Please enter yes/NO: ' yes_or_no
+                set yes_or_no (string lower "$yes_or_no")
+            end
+
+            if test -z "$yes_or_no"
+            or test "$yes_or_no" = 'yes'
+                chsh -s "$line"
+                set chsh_status "$status"
+                break
+            else
+                continue
+            end
+        end
+    end
+end
+
+# If the default login shell isn't changed to "fish" successfully
+if test "$chsh_status" -ne 0
+    echoerr 'The default login shell isn\'t changed. Please change it to "fish" mannualy. For example, append the line "exec <path-to-fish>" to ".bash_profile"'
+end
+###
+
 # Set error codes
 set --local CURL_IS_NOT_INSTALLED_ERROR_CODE 2
 set --local ENCOUNTERING_ERRORS_WHEN_INSTALLING_FISHER_ERROR_CODE 3
