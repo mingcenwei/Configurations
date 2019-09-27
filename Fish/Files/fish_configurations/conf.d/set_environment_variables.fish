@@ -18,7 +18,7 @@ if status is-login
     ###
 
     ### Set macOS path variables
-    if test (uname -s) = 'Darwin'
+    if is_platform 'macos'
         set --universal --path JAVA_HOME ('/usr/libexec/java_home')
 
         # For Tomecat installed in "~/Archived/Binary Apps/"

@@ -7,8 +7,7 @@ function fish_greeting
         echoerr -w '"fortune" is not installed!'
     else
         set_color --dim
-        if test (uname -s) = 'Linux'
-        and test (uname -o) = 'Android'
+        if is_platform 'android-termux'
             fortune
         else
             fortune -a
@@ -22,12 +21,10 @@ function fish_greeting
 
     # Commands for respective package managers
     set --local package_update_commands
-    if test (uname -s) = 'Darwin'
+    if is_platform 'macos'
         set package_update_commands 'brew -v update; brew upgrade'
-    else if test (uname -s) = 'Linux'
-        if test (uname -o) = 'Android'
-            set package_update_commands 'pkg upgrade'
-        end
+    else if is_platform 'android-termux'
+        set package_update_commands 'pkg upgrade'
     end
 
     # Package updating commands

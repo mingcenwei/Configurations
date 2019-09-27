@@ -4,8 +4,7 @@
 if status is-login
 and status is-interactive
     ### Set default working directory
-    if test (uname -s) = 'Linux'
-    and test (uname -o) = 'Android'
+    if is_platform 'android-termux'
     and test ! -d "$HOME"'/Downloads'
 
         test -e "$HOME"'/Downloads'

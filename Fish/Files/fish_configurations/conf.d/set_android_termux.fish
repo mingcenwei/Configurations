@@ -1,8 +1,7 @@
 #!/usr/bin/env fish
 
 ### Set "~/sdcard" directory
-if test (uname -s) = 'Linux'
-and test (uname -o) = 'Android'
+if is_platform 'android-termux'
 and test ! -d "$HOME"'/sdcard'
 
     test -e "$HOME"'/sdcard'

@@ -6,8 +6,7 @@ test -z "$fish_pid" && echo 'Error: The shell is not "fish"!' >&2 && exit 1
 ### Change the default login shell to "fish" if possible
 set --local chsh_status 1
 # For Android Termux
-if test (uname -s) = 'Linux'
-and test (uname -o) = 'Android'
+if is_platform 'android-termux'
     chsh -s 'fish'
     set chsh_status "$status"
 else if cat "$etc_shells" 2> '/dev/null' | grep '/fish$' > '/dev/null'

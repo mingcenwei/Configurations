@@ -6,7 +6,7 @@ set --local GPP_IS_NOT_INSTALLED_ERROR_CODE 2
 
 #### Set compiler flags for C++
 # Prerequisites: clang++/g++ is installed
-if test (uname -s) = 'Darwin'
+if is_platform 'macos'
     ### Make sure that "clang++" is installed
     command -v clang++ > /dev/null 2>&1
     or begin
