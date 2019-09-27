@@ -38,9 +38,10 @@ else if cat "$etc_shells" 2> '/dev/null' | grep '/fish$' > '/dev/null'
     end
 end
 
-# If the default login shell isn't changed to "fish" successfully
+# If the default login shell isn't changed to "fish" successfully,
+# e.g. when "fish" was installed by "Homebrew" to the user's local directory
 if test "$chsh_status" -ne 0
-    echoerr 'The default login shell isn\'t changed. Please change it to "fish" mannualy. For example, append the line "exec <path-to-fish>" to ".bash_profile"'
+    echoerr 'The default login shell isn\'t changed. Maybe you installed the fish shell with Homebrew to your local directory. Please change the default login shell to "fish" mannualy. For example, append the line "exec <path-to-fish>" to ".bash_profile"'
 end
 ###
 
