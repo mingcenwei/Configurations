@@ -55,10 +55,11 @@ function track_file
     # a/actual: Path of the actual file
     # u/untrack: Untracking instead of the default tracking behavior
     # c/check: Check the integrity of the record file
+    # l/list: List the records
     argparse --name='track_file' --max-args=0 \
         --exclusive 'h,t' --exclusive 'h,a,u' -exclusive 'h,c' \
         't/template=' 'a/actual=' \
-        'u/untrack' 'c/check' \
+        'u/untrack' 'c/check' 'l/list' \
         'h/help' 'v/verbose' \
         -- $argv
     or begin
@@ -178,6 +179,11 @@ function track_file
         end
     end
 
+    # List the records
+    if test -n "$_flag_l"
+        cat "$record_file_path"
+    end
+
     # Check the integrity of the record file
     if test -n "$_flag_c"
         set --local line_number 0
@@ -209,11 +215,12 @@ function track_file
 end
 
 function _track_file_help
-    echo 'Usage:  track_file [-c] [-t {-a | -u}] [-v]'
+    echo 'Usage:  track_file [-cl] [-t {-a | -u}] [-v]'
     echo 'Track/untrack files'
     echo
     echo 'Options:'
     echo '        -c, --check                     Check the integrity of the record file'
+    echo '        -l, --list                      List the records'
     echo '        -t, --template=<template-name>  Basename of the template file'
     echo '        -a, --actual=<actual-file>      Path of the actual file'
     echo '        -u, --untrack                   Untracking instead of the default tracking behavior'
