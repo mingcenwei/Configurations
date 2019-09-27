@@ -69,10 +69,15 @@ or test -L "$karabiner_dir"
     back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$karabiner_dir"
 end
 
+# Do not make a symlink to karabiner.json.
+# Karabiner-Elements does not reload the configuration file properly if you make a symlink to json file directly.
 ln -si "$source_dir"'/Karabiner-Elements' "$karabiner_dir"
 
 # Tell the user to install Karabiner-Elements if it's not installed
 if not ls '/Applications' | grep 'Karabiner-Elements.app' > '/dev/null'
     echo 'Warning: Karabiner-Elements isn\'t installed. Please install the program' >&2
 end
+
+# You have to restart karabiner_console_user_server process by the following command after you made a symlink in ordre to tell Karabiner-Elements that the parent directory is changed.
+launchctl kickstart -k 'gui/'(id -u)'/org.pqrs.karabiner.karabiner_console_user_server'
 ###
