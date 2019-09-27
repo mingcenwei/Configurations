@@ -28,7 +28,13 @@ ln -si "$source_dir"'/vimrc' "$vim_dir"'/vimrc'
 set vim_bin_dir (dirname (command -v vim))
 for file in 'ex' 'rview' 'rvim' 'vi' 'view' 'vimdiff'
     if test -e "$vim_bin_dir"'/'"$file"
+    and test -L "$vim_bin_dir"'/'"$file"
+    and test (readlink "$vim_bin_dir"'/'"$file") = 'vim'
+        # Skip if it's already a symlink to vim
+        continue
+    else if test -e "$vim_bin_dir"'/'"$file"
     or test -L "$vim_bin_dir"'/'"$file"
+        # Back up former symlinks
         back_up_files --back-up --timestamp --destination --compressor --suffix --parents "$vim_bin_dir"'/'"$file"
 
         rm "$vim_bin_dir"'/'"$file"
@@ -47,20 +53,20 @@ for file in 'ex' 'rview' 'rvim' 'vi' 'view' 'vimdiff'
                 continue
             end
         end
-    end
 
-    ln -si 'vim' "$vim_bin_dir"'/'"$file"
-    or begin
-        read --prompt-str='Sudo? (yes/NO): ' --local yes_or_no
-        set yes_or_no (string lower "$yes_or_no")
-        while not contains "$yes_or_no" 'yes' 'no'
-        and test -n "$yes_or_no"
-            read --prompt-str='Please enter yes/NO: ' yes_or_no
+        ln -si 'vim' "$vim_bin_dir"'/'"$file"
+        or begin
+            read --prompt-str='Sudo? (yes/NO): ' --local yes_or_no
             set yes_or_no (string lower "$yes_or_no")
-        end
+            while not contains "$yes_or_no" 'yes' 'no'
+            and test -n "$yes_or_no"
+                read --prompt-str='Please enter yes/NO: ' yes_or_no
+                set yes_or_no (string lower "$yes_or_no")
+            end
 
-        if test "$yes_or_no" = "yes"
-            sudo ln -si 'vim' "$vim_bin_dir"'/'"$file"
+            if test "$yes_or_no" = "yes"
+                sudo ln -si 'vim' "$vim_bin_dir"'/'"$file"
+            end
         end
     end
 end
