@@ -150,7 +150,7 @@ function track_file
     # Track
     if test -n "$_flag_a"
         set --local line "$_flag_t""$delimiter""$_flag_a"
-        if echo line >> "$record_file_path"
+        if echo $line >> "$record_file_path"
             # Verbosity
             test -n "$verbose"
             and echoerr -i -- 'Line "'"$line"'" added'
@@ -179,6 +179,10 @@ function track_file
         end
     end
 
+    # Sort the record file and remove duplicate lines
+    sort -u "$record_file_path" > "$record_file_path"'~'
+    mv "$record_file_path"'~' "$record_file_path"
+
     # List the records
     if test -n "$_flag_l"
         cat "$record_file_path"
@@ -192,22 +196,17 @@ function track_file
             set line_number (math "$line_number + 1")
             set --local paths (string split "$delimiter" "$line")
             if test (count $paths) -ne 2
-                echoerr '"'"$record_file_path"'" line '"$line_number"': syntax error'
-                echoerr "    $line"
-            else if  "$paths[1]" != (basename "$paths[1]")
-                echoerr '"'"$record_file_path"'" line '"$line_number"': template file\'s basename should be used'
-                echoerr "    $line"
+                echoerr -e '"'"$record_file_path"'" line '"$line_number"': syntax error\n    '"$line"
+            else if test "$paths[1]" != (basename "$paths[1]")
+                echoerr -e '"'"$record_file_path"'" line '"$line_number"': template file\'s basename should be used\n    '"$line"
             else if contains "$paths[1]" $template_names
-                echoerr '"'"$record_file_path"'" line '"$line_number"': duplicate template filename'
-                echoerr "    $line"
+                echoerr -e '"'"$record_file_path"'" line '"$line_number"': duplicate template filename\n    '"$line"
             else
                 set template_names $template_names "$paths[1]"
-                if not test -e "$record_file_path""/$paths[1]"
-                    echoerr '"'"$record_file_path"'" line '"$line_number"': template file doesn\'t exist'
-                    echoerr "    $line"
+                if not test -e "$dir_path""/$paths[1]"
+                    echoerr -e '"'"$record_file_path"'" line '"$line_number"': template file doesn\'t exist\n    '"$line"
                 else if not test -e "$paths[2]"
-                    echoerr '"'"$record_file_path"'" line '"$line_number"': actual file does\'t exist'
-                    echoerr "    $line"
+                    echoerr -e '"'"$record_file_path"'" line '"$line_number"': actual file does\'t exist\n    '"$line"
                 end
             end
         end < "$record_file_path"
