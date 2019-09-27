@@ -1,7 +1,7 @@
 # Vim
 
-- Unix: `./.vim` <-> `~/.vim`
-- Windows: `./vimfiles` <-> `$HOME/vimfiles`
+- Unix: `~/.vim/vimrc`
+- Windows: `$HOME/vimfiles/vimrc`
 
 ## Description
 
