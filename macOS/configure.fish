@@ -70,4 +70,9 @@ or test -L "$karabiner_dir"
 end
 
 ln -si "$source_dir"'/Karabiner-Elements' "$karabiner_dir"
+
+# Tell the user to install Karabiner-Elements if it's not installed
+if not ls '/Applications' | grep 'Karabiner-Elements.app' > '/dev/null'
+    echo 'Warning: Karabiner-Elements isn\'t installed. Please install the program' >&2
+end
 ###
