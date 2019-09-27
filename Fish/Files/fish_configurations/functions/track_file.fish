@@ -14,41 +14,41 @@ function track_file
     ### Default settings
     set --local ECHOERR_NOT_FOUND_ERROR_CODE "$track_file_ECHOERR_NOT_FOUND_ERROR_CODE"
     test -z "$ECHOERR_NOT_FOUND_ERROR_CODE"
-    or set ECHOERR_NOT_FOUND_ERROR_CODE 101
+    and set ECHOERR_NOT_FOUND_ERROR_CODE 101
 
     set --local BACK_UP_FILES_NOT_FOUND_ERROR_CODE "$track_file_BACK_UP_FILES_NOT_FOUND_ERROR_CODE"
     test -z "$BACK_UP_FILES_NOT_FOUND_ERROR_CODE"
-    or set BACK_UP_FILES_NOT_FOUND_ERROR_CODE 102
+    and set BACK_UP_FILES_NOT_FOUND_ERROR_CODE 102
 
     set --local SED_NOT_FOUND_ERROR_CODE "$track_file_SED_NOT_FOUND_ERROR_CODE"
     test -z "$SED_NOT_FOUND_ERROR_CODE"
-    or set SED_NOT_FOUND_ERROR_CODE 103
+    and set SED_NOT_FOUND_ERROR_CODE 103
 
     set --local WRONG_ARGUMENTS_ERROR_CODE "$track_file_WRONG_ARGUMENTS_ERROR_CODE"
     test -z "$WRONG_ARGUMENTS_ERROR_CODE"
-    or set WRONG_ARGUMENTS_ERROR_CODE 104
+    and set WRONG_ARGUMENTS_ERROR_CODE 104
 
     set --local TRACKING_FAILED_ERROR_CODE "$track_file_TRACKING_FAILED_ERROR_CODE"
     test -z "$TRACKING_FAILED_ERROR_CODE"
-    or set TRACKING_FAILED_ERROR_CODE 105
+    and set TRACKING_FAILED_ERROR_CODE 105
 
     set --local UNTRACKING_FAILED_ERROR_CODE "$track_file_UNTRACKING_FAILED_ERROR_CODE"
     test -z "$UNTRACKING_FAILED_ERROR_CODE"
-    or set UNTRACKING_FAILED_ERROR_CODE 106
+    and set UNTRACKING_FAILED_ERROR_CODE 106
 
     set --local NO_SUCH_TEMPLATE_ERROR_CODE "$track_file_NO_SUCH_TEMPLATE_ERROR_CODE"
     test -z "$NO_SUCH_TEMPLATE_ERROR_CODE"
-    or set NO_SUCH_TEMPLATE_ERROR_CODE 107
+    and set NO_SUCH_TEMPLATE_ERROR_CODE 107
 
     set --local dir_path "$track_file_DIR_PATH"
     test -z "$dir_path"
-    or set dir_path "$HOME"'/.my_untracked_files'
+    and set dir_path "$HOME"'/.my_untracked_files'
 
     set --local record_file_path "$dir_path"'/records'
 
     set --local delimiter "$track_file_RECORDS_DELIMITER"
     test -z "$delimiter"
-    or set delimiter ' => '
+    and set delimiter ' => '
     ###
 
     # t/template: Basename of the template file
@@ -57,7 +57,7 @@ function track_file
     # c/check: Check the integrity of the record file
     # l/list: List the records
     argparse --name='track_file' --max-args=0 \
-        --exclusive 'h,t' --exclusive 'h,a,u' -exclusive 'h,c' \
+        --exclusive 'h,t' --exclusive 'h,a,u' --exclusive 'h,c' \
         't/template=' 'a/actual=' \
         'u/untrack' 'c/check' 'l/list' \
         'h/help' 'v/verbose' \
@@ -71,10 +71,10 @@ function track_file
         _track_file_help
         return
     end
-    if not set --query "$_flag_t"
-    and not set --query "$_flag_a"
-    and not set --query "$_flag_u"
-    and not set --query "$_flag_c"
+    if not set --query _flag_t
+    and not set --query _flag_a
+    and not set --query _flag_u
+    and not set --query _flag_c
         _track_file_help
         return
     end
