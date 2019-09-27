@@ -22,9 +22,9 @@ function fish_greeting
     # Commands for respective package managers
     set --local package_update_commands
     if is_platform 'macos'
-        set package_update_commands 'brew -v update; brew upgrade'
+        set package_update_commands 'brew -v update; brew upgrade; brew cleanup'
     else if is_platform 'android-termux'
-        set package_update_commands 'pkg upgrade'
+        set package_update_commands 'pkg upgrade; apt autoremove; apt autoclean'
     end
 
     # Package updating commands
