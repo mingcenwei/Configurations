@@ -40,24 +40,26 @@ end
 for file in "$source_dir"'/Launchd/'*
     if test -e "$launchd_dir"'/'(basename "$file")
     or test -L "$launchd_dir"'/'(basename "$file")
-        # Back up former launchd agents with the same name if existing
+        # Unload and back up former launchd agents with the same name if existing
+        launchctl bootout 'gui/'(id -u) "$launchd_dir"'/'(basename "$file")
         back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$launchd_dir"'/'(basename "$file")
     end
 
     ln -si "$file" "$launchd_dir"'/'(basename "$file")
 
-    # Load an agent if its "ProgramArguments" have all been installed
+    # Load an agent if its "ProgramArguments" have all been installed;
+    # otherwise give an warning
     set --local parse_launchd_plists "$utility_dir"'/parse_launchd_plists.py'
     chmod u+x "$parse_launchd_plists"
     set --local plist_will_be_loaded "true"
     "$parse_launchd_plists" "$file" | while read --local program_path
         if not test -e "$program_path"
+            echo 'Warning: "'"$program_path"'" isn\'t installed. Please install the program' >&2
             set plist_will_be_loaded "false"
-            break
         end
     end
     if test "$plist_will_be_loaded" = "true"
-        launchctl load "$launchd_dir"'/'(basename "$file")
+        launchctl bootstrap 'gui/'(id -u) "$launchd_dir"'/'(basename "$file")
     end
 end
 ###
