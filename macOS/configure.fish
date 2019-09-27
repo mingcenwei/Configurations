@@ -6,8 +6,10 @@ set --local BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE 2
 
 # Exit if the operating system is not macOS
 is_platform 'macos'
-or echo 'Error: The operating system is not macOS' >&2
-and exit "$NOT_MAS_OS_ERROR_CODE"
+or begin
+    echo 'Error: The operating system is not macOS' >&2
+    and exit "$NOT_MAS_OS_ERROR_CODE"
+end
 
 set --local source_dir (dirname (realpath (status --current-filename)))'/Files'
 set --local utility_dir (dirname (realpath (status --current-filename)))'/Utilities'
