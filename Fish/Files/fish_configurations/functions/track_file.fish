@@ -96,13 +96,13 @@ function track_file
     end
     # Make sure "back_up_files" function is loaded
     if not functions 'back_up_files' > '/dev/null' 2>&1
-        echo 'Error: "back_up_files" function wasn\'t found' >&2
+        echoerr '"back_up_files" function wasn\'t found'
         return "$BACK_UP_FILES_NOT_FOUND_ERROR_CODE"
     end
     # Make sure that "sed" is installed
     command -v sed > '/dev/null' 2>&1
     or begin
-        echo 'Error: "curl" is not installed! Please install the program' >&2
+        echoerr '"curl" is not installed! Please install the program'
         return "$SED_NOT_FOUND_ERROR_CODE"
     end
 

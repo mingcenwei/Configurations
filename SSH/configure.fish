@@ -13,14 +13,14 @@ set --local global_sshd_dir '/etc/ssh'
 # Make sure that "back_up_files" is loaded
 functions back_up_files > '/dev/null' 2>&1
 or begin
-    echo 'Error: "back_up_files" function is not loaded!' >&2
+    echoerr '"back_up_files" function is not loaded!'
     exit "$BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE"
 end
 
 # Make sure that "ssh" is installed
 command -v ssh > '/dev/null' 2>&1
 or begin
-    echo 'Error: "ssh" is not installed! Please install the program' >&2
+    echoerr '"ssh" is not installed! Please install the program'
     exit "$SSH_IS_NOT_INSTALLED_ERROR_CODE"
 end
 
@@ -47,14 +47,14 @@ function _configure_firewall
     # Make sure that "ufw" is installed
     command -v ufw > '/dev/null' 2>&1
     or begin
-        echo 'Error: "ufw" is not installed! Please install the program' >&2
+        echoerr '"ufw" is not installed! Please install the program'
         exit "$UFW_IS_NOT_INSTALLED_ERROR_CODE"
     end
 
     # Make sure that we're the root user
     test (whoami) = 'root'
     or begin
-        echo 'Error: You are not the root user! Please run "su"' >&2
+        echoerr 'You are not the root user! Please run "su"'
         exit "$NOT_ROOT_ERROR_CODE"
     end
 

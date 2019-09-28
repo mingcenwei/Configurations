@@ -4,7 +4,7 @@
 set --local SSH_AGENT_IS_NOT_INSTALLED_ERROR_CODE 1
 
 # Make sure that "ssh-agent" is installed
-command -v ssh-agent > /dev/null 2>&1
+command -v ssh-agent > '/dev/null' 2>&1
 or begin
     echoerr '"ssh-agent" is not installed! Please install the "ssh" program'
     exit "$SSH_AGENT_IS_NOT_INSTALLED_ERROR_CODE"

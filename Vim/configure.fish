@@ -10,14 +10,14 @@ set --local vim_dir "$HOME"'/.vim'
 # Make sure that "back_up_files" is loaded
 functions back_up_files > '/dev/null' 2>&1
 or begin
-    echo 'Error: "back_up_files" function is not loaded!' >&2
+    echoerr '"back_up_files" function is not loaded!'
     exit "$BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE"
 end
 
 # Make sure that "vim" is installed
 command -v vim > '/dev/null' 2>&1
 or begin
-    echo 'Error: "vim" is not installed! Please install the program' >&2
+    echoerr '"vim" is not installed! Please install the program'
     exit "$VIM_IS_NOT_INSTALLED_ERROR_CODE"
 end
 

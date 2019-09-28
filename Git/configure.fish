@@ -9,14 +9,14 @@ set --local source_dir (dirname (realpath (status --current-filename)))'/Files'
 # Make sure that "back_up_files" is loaded
 functions back_up_files > '/dev/null' 2>&1
 or begin
-    echo 'Error: "back_up_files" function is not loaded!' >&2
+    echoerr '"back_up_files" function is not loaded!'
     exit "$BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE"
 end
 
 # Make sure that "git" is installed
 command -v git > '/dev/null' 2>&1
 or begin
-    echo 'Error: "git" is not installed! Please install the program' >&2
+    echoerr '"git" is not installed! Please install the program'
     exit "$GIT_IS_NOT_INSTALLED_ERROR_CODE"
 end
 

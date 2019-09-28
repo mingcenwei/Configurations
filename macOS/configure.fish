@@ -7,7 +7,7 @@ set --local BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE 2
 # Exit if the operating system is not macOS
 is_platform 'macos'
 or begin
-    echo 'Error: The operating system is not macOS' >&2
+    echoerr 'The operating system is not macOS'
     and exit "$NOT_MAS_OS_ERROR_CODE"
 end
 
@@ -20,7 +20,7 @@ set --local karabiner_dir "$HOME"'/.config/karabiner'
 # Make sure that "back_up_files" is loaded
 functions back_up_files > '/dev/null' 2>&1
 or begin
-    echo 'Error: "back_up_files" function is not loaded!' >&2
+    echoerr '"back_up_files" function is not loaded!'
     exit "$BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE"
 end
 
@@ -54,7 +54,7 @@ for file in "$source_dir"'/Launchd/'*
     set --local plist_will_be_loaded "true"
     "$parse_launchd_plists" "$file" | while read --local program_path
         if not test -e "$program_path"
-            echo 'Warning: "'"$program_path"'" isn\'t installed. Please install the program' >&2
+            echoerr -w '"'"$program_path"'" isn\'t installed. Please install the program'
             set plist_will_be_loaded "false"
         end
     end
@@ -77,7 +77,7 @@ ln -si "$source_dir"'/Karabiner-Elements' "$karabiner_dir"
 
 # Tell the user to install Karabiner-Elements if it's not installed
 if not ls '/Applications' | grep 'Karabiner-Elements.app' > '/dev/null'
-    echo 'Warning: Karabiner-Elements isn\'t installed. Please install the program' >&2
+    echoerr -w 'Karabiner-Elements isn\'t installed. Please install the program'
 end
 
 # You have to restart karabiner_console_user_server process by the following command after you made a symlink in ordre to tell Karabiner-Elements that the parent directory is changed.

@@ -58,7 +58,7 @@ source "$package_directory"'/functions/track_my_file.fish'
 # Make sure that "curl" is installed
 command -v curl > '/dev/null' 2>&1
 or begin
-    echo 'Error: "curl" is not installed! Please install the program' >&2
+    echoerr '"curl" is not installed! Please install the program'
     exit "$CURL_IS_NOT_INSTALLED_ERROR_CODE"
 end
 
@@ -67,7 +67,7 @@ if not functions fisher > '/dev/null' 2>&1
     curl https://git.io/fisher --create-dirs --location --output ~/.config/fish/functions/fisher.fish
     and source ~/.config/fish/functions/fisher.fish
     or begin
-        echo 'Error: Encountered errors when installing "fisher"' >&2
+        echoerr 'Encountered errors when installing "fisher"'
         exit "$ENCOUNTERING_ERRORS_WHEN_INSTALLING_FISHER_ERROR_CODE"
     end
 end
