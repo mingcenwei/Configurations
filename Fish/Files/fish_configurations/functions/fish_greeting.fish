@@ -63,5 +63,20 @@ function fish_greeting
     set_color normal
     echo ' to display the symbolic file creation mode mask'
 
+    # Server log files
+    set --local log_files \
+        '/var/log/auth.log' \
+        '/var/log/ufw.log' \
+        '/var/log/shadowsocks.log'
+    if test "$AM_I_CLIENT_OR_SERVER" = 'server'
+    or test "$AM_I_CLIENT_OR_SERVER" = 'both'
+        echo 'Log files: '
+        set_color --bold "$fish_color_command"
+        for file in log_files
+            echo "    $file"
+        end
+        set_color normal
+    end
+
     echo
 end
