@@ -1,5 +1,8 @@
 #!/usr/bin/env fish
 
+# For security
+umask 077
+
 # Set error codes
 set --local BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE 1
 set --local SSH_IS_NOT_INSTALLED_ERROR_CODE 2
@@ -24,17 +27,18 @@ or begin
     exit "$SSH_IS_NOT_INSTALLED_ERROR_CODE"
 end
 
-### For clients
+### For clients, add ~/.ssh/config
 function _configure_ssh_client
 
 end
 ###
 
-### For servers
+### For servers, add /etc/ssh/sshd_config
 function _configure_ssh_server
-    if test -e '/etc/ssh/sshd_config'
-    or test -L '/etc/ssh/sshd_config'
-        back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source '/etc/ssh/sshd_config'
+    # Back up former server sshd configurations
+    if test -e "$global_sshd_dir"'/sshd_config'
+    or test -L "$global_sshd_dir"'/sshd_config'
+        back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$global_sshd_dir"'/sshd_config'
     end
 
     mkdir -p /etc/ssh >/dev/null 2>&1

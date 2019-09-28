@@ -11,6 +11,9 @@
 # Track/untrack files
 # Require "echoerr" and "back_up_files" function, and "sed" utility
 function track_file
+    # For security
+    umask 077
+
     ### Default settings
     set --local ECHOERR_NOT_FOUND_ERROR_CODE "$track_file_ECHOERR_NOT_FOUND_ERROR_CODE"
     test -z "$ECHOERR_NOT_FOUND_ERROR_CODE"

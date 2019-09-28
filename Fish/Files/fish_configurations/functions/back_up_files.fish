@@ -3,6 +3,9 @@
 # Backup files
 # Require "echoerr" function
 function back_up_files
+    # For security
+    umask 077
+
     ### Default settings
     set --local ECHOERR_NOT_FOUND_ERROR_CODE 101
     set --local NOT_A_DIRECTORY_ERROR_CODE 102

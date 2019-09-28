@@ -1,5 +1,8 @@
 #!/usr/bin/env fish
 
+# For security
+umask 077
+
 # Set error codes
 set --local NOT_MAS_OS_ERROR_CODE 1
 set --local BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE 2

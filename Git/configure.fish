@@ -1,5 +1,8 @@
 #!/usr/bin/env fish
 
+# For security
+umask 077
+
 # Set error codes
 set --local BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE 1
 set --local GIT_IS_NOT_INSTALLED_ERROR_CODE 2
@@ -62,6 +65,8 @@ and set track_file_dir_path "$HOME"'/.my_private_configurations'
 for file in 'config'
     set --local template_file "$track_file_dir_path"'/GIT_'"$file"
     cp -i "$source_dir"'/'"$file" "$template_file"
+    # For security
+    chmod 600 "$template_file"
     ln -si "$template_file" "$git_home"'/'"$file"
     track_file --template='GIT_'"$file" --actual="$git_home"'/'"$file" --check
 end
