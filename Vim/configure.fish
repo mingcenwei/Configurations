@@ -2,6 +2,7 @@
 
 # Set error codes
 set --local BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE 1
+set --local VIM_IS_NOT_INSTALLED_ERROR_CODE 2
 
 set --local source_dir (dirname (realpath (status --current-filename)))'/Files'
 set --local vim_dir "$HOME"'/.vim'
@@ -11,6 +12,13 @@ functions back_up_files > '/dev/null' 2>&1
 or begin
     echo 'Error: "back_up_files" function is not loaded!' >&2
     exit "$BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE"
+end
+
+# Make sure that "vim" is installed
+command -v vim > '/dev/null' 2>&1
+or begin
+    echo 'Error: "vim" is not installed! Please install the program' >&2
+    exit "$VIM_IS_NOT_INSTALLED_ERROR_CODE"
 end
 
 # Back up former vim configurations

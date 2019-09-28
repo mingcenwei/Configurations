@@ -2,8 +2,9 @@
 
 # Set error codes
 set --local BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE 1
-set --local UFW_IS_NOT_INSTALLED_ERROR_CODE 2
-set --local NOT_ROOT_ERROR_CODE 3
+set --local SSH_IS_NOT_INSTALLED_ERROR_CODE 2
+set --local UFW_IS_NOT_INSTALLED_ERROR_CODE 3
+set --local NOT_ROOT_ERROR_CODE 4
 
 set --local source_dir (dirname (realpath (status --current-filename)))'/Files'
 set --local local_ssh_dir "$HOME"'/.ssh'
@@ -14,6 +15,13 @@ functions back_up_files > '/dev/null' 2>&1
 or begin
     echo 'Error: "back_up_files" function is not loaded!' >&2
     exit "$BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE"
+end
+
+# Make sure that "ssh" is installed
+command -v ssh > '/dev/null' 2>&1
+or begin
+    echo 'Error: "ssh" is not installed! Please install the program' >&2
+    exit "$SSH_IS_NOT_INSTALLED_ERROR_CODE"
 end
 
 ### For clients
