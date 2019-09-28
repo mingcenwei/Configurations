@@ -18,7 +18,7 @@ set --local launchd_dir "$HOME"'/Library/LaunchAgents/'
 set --local karabiner_dir "$HOME"'/.config/karabiner'
 
 # Make sure that "back_up_files" is loaded
-functions back_up_files > /dev/null 2>&1
+functions back_up_files > '/dev/null' 2>&1
 or begin
     echo 'Error: "back_up_files" function is not loaded!' >&2
     exit "$BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE"

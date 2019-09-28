@@ -100,7 +100,7 @@ function track_file
         return "$BACK_UP_FILES_NOT_FOUND_ERROR_CODE"
     end
     # Make sure that "sed" is installed
-    command -v sed > /dev/null 2>&1
+    command -v sed > '/dev/null' 2>&1
     or begin
         echo 'Error: "curl" is not installed! Please install the program' >&2
         return "$SED_NOT_FOUND_ERROR_CODE"

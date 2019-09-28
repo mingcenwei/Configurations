@@ -6,7 +6,7 @@ set --local BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE 1
 set --local source_dir (dirname (realpath (status --current-filename)))'/Files'
 
 # Make sure that "back_up_files" is loaded
-functions back_up_files > /dev/null 2>&1
+functions back_up_files > '/dev/null' 2>&1
 or begin
     echo 'Error: "back_up_files" function is not loaded!' >&2
     exit "$BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE"
