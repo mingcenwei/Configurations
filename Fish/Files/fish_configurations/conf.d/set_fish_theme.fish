@@ -7,8 +7,8 @@ and status is-interactive
     set --universal fish_color_cancel 'normal'
     set --universal fish_color_command 'c397d8'
     set --universal fish_color_comment 'e7c547'
-    set --universal fish_color_cwd '-o blue'
-    set --universal fish_color_cwd_root '-o blue'
+    set --universal fish_color_cwd '--bold' 'blue'
+    set --universal fish_color_cwd_root '--bold' 'blue'
     set --universal fish_color_end 'd7875f'
     set --universal fish_color_error 'red'
     set --universal fish_color_escape 'ffff00'
@@ -26,9 +26,9 @@ and status is-interactive
     set --universal fish_color_user 'yellow'
     set --universal fish_color_valid_path 'normal'
     set --universal fish_pager_color_completion 'normal'
-    set --universal fish_pager_color_description 'B3A06D yellow'
-    set --universal fish_pager_color_prefix 'white --bold --underline'
-    set --universal fish_pager_color_progress 'brwhite --background=cyan'
+    set --universal fish_pager_color_description 'b3a06d'
+    set --universal fish_pager_color_prefix '--bold' '--underline' 'white'
+    set --universal fish_pager_color_progress '--background=cyan' 'brwhite'
 
     # Set the greeting
     # Overridden by "~/.config/fish/functions/fish_greeting.fish"
