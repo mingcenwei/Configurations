@@ -68,7 +68,7 @@ for file in 'config'
     # For security
     chmod 600 "$template_file"
     ln -si "$template_file" "$git_home"'/'"$file"
-    track_file --template='GIT_'"$file" --actual="$git_home"'/'"$file" --check
+    and track_file --template='GIT_'"$file" --actual="$git_home"'/'"$file" --check
 end
 
 ### Private configurations
