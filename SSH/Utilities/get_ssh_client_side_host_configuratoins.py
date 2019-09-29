@@ -10,8 +10,8 @@ DELIMITER = argv[1]
 with open(Path.home() / ".ssh/config") as config_file:
     in_wildcard_block: bool = False
     for line in config_file:
-        if line[0: 4] == "Host":
-            host = line[5: ].strip()
+        if (line.lstrip())[0: 4].lower() == "Host".lower():
+            host = (line.lstrip())[5: ].strip()
             if host == "*":
                 in_wildcard_block = True
                 continue
