@@ -16,9 +16,9 @@ Host *
 #   ConnectTimeout 0
     StrictHostKeyChecking yes
     IdentityFile ~/.ssh/id_rsa
-#   IdentityFile ~/.ssh/id_dsa
-#   IdentityFile ~/.ssh/id_ecdsa
 #   IdentityFile ~/.ssh/id_ed25519
+# #   IdentityFile ~/.ssh/id_dsa
+# #   IdentityFile ~/.ssh/id_ecdsa
     Port 22
     Protocol 2
 #   Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-cbc,3des-cbc
@@ -29,6 +29,6 @@ Host *
     PermitLocalCommand no
     VisualHostKey yes
 #   ProxyCommand ssh -q -W %h:%p gateway.example.com
-#   RekeyLimit 1G 1h
+    RekeyLimit default 1h
     SendEnv LANG LC_*
 #   HashKnownHosts yes
