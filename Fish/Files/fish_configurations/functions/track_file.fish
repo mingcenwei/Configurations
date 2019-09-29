@@ -4,9 +4,9 @@
 # For example, "/etc/ssh/sshd_config" has a setting "Port",
 # which may have different values on different servers;
 # thus it cannot be tracked with Git.
-# Nevertheless, we have a template file for such a configuration file.
-# The link between these two files is recorded
-# in "~/.my_private_configurations/RECORDS"
+# Nevertheless, we can put this configuration file into a special directory,
+# which is used specifically to track such files, and create a symlink.
+# These symlinks are recorded in "~/.my_private_configurations/RECORDS"
 
 # Track/untrack files
 # Require "echoerr" and "back_up_files" function, and "sed" utility
@@ -39,9 +39,9 @@ function track_file
     test -z "$UNTRACKING_FAILED_ERROR_CODE"
     and set UNTRACKING_FAILED_ERROR_CODE 106
 
-    set --local NO_SUCH_TEMPLATE_ERROR_CODE "$track_file_NO_SUCH_TEMPLATE_ERROR_CODE"
-    test -z "$NO_SUCH_TEMPLATE_ERROR_CODE"
-    and set NO_SUCH_TEMPLATE_ERROR_CODE 107
+    set --local NO_SUCH_CONFIG_ERROR_CODE "$track_file_NO_SUCH_CONFIG_ERROR_CODE"
+    test -z "$NO_SUCH_CONFIG_ERROR_CODE"
+    and set NO_SUCH_CONFIGf_ERROR_CODE 107
 
     set --local SORTING_ERROR_CODE "$track_file_SORTING_ERROR_CODE"
     test -z "$SORTING_ERROR_CODE"
@@ -58,14 +58,14 @@ function track_file
     and set delimiter ' => '
     ###
 
-    # t/template: Basename of the template file
-    # a/actual: Path of the actual file
+    # f/filename: Basename of the configuration file
+    # s/symlink: Path to the symlink
     # u/untrack: Untracking instead of the default tracking behavior
     # c/check: Check the integrity of the record file
     # l/list: List the records
     argparse --name='track_file' --max-args=0 \
-        --exclusive 'h,t' --exclusive 'h,a,u' --exclusive 'h,c' \
-        't/template=' 'a/actual=' \
+        --exclusive 'h,f' --exclusive 'h,s,u' --exclusive 'h,c' \
+        'f/filename=' 's/symlink=' \
         'u/untrack' 'c/check' 'l/list' \
         'h/help' 'v/verbose' \
         -- $argv
@@ -78,8 +78,8 @@ function track_file
         _track_file_help
         return
     end
-    if not set --query _flag_t
-    and not set --query _flag_a
+    if not set --query _flag_f
+    and not set --query _flag_s
     and not set --query _flag_u
     and not set --query _flag_c
         _track_file_help
@@ -139,24 +139,24 @@ function track_file
     ###
 
     # Check the arguments
-    if test -n "$_flag_t"
-    and test -z "$_flag_a"
+    if test -n "$_flag_f"
+    and test -z "$_flag_s"
     and test -z "$_flag_u"
         echoerr 'Wrong arguments!'
         return "$WRONG_ARGUMENTS_ERROR_CODE"
-    else if test -z "$_flag_t"
-    and test -n "$_flag_a"
+    else if test -z "$_flag_f"
+    and test -n "$_flag_s"
         echoerr 'Wrong arguments!'
         return "$WRONG_ARGUMENTS_ERROR_CODE"
-    else if test -z "$_flag_t"
+    else if test -z "$_flag_f"
     and test -n "$_flag_u"
         echoerr 'Wrong arguments!'
         return "$WRONG_ARGUMENTS_ERROR_CODE"
     end
 
     # Track
-    if test -n "$_flag_a"
-        set --local line "$_flag_t""$delimiter""$_flag_a"
+    if test -n "$_flag_s"
+        set --local line "$_flag_f""$delimiter""$_flag_s"
         if echo $line >> "$record_file_path"
             # Verbosity
             test -n "$verbose"
@@ -167,10 +167,10 @@ function track_file
         end
     # Untrack
     else if test -n "$_flag_u"
-        set --local pattern "$_flag_t""$delimiter"
+        set --local pattern "$_flag_f""$delimiter"
         if not grep -E '^\\Q'"$pattern"'\\E' "$record_file_path"
-            echoerr 'No such template'
-            return "$NO_SUCH_TEMPLATE_ERROR_CODE"
+            echoerr 'No such configuration file'
+            return "$NO_SUCH_CONFIG_ERROR_CODE"
         end
 
         set pattern (echo $pattern | sed -e 's/[]\\/$*.^[]/\\\\&/g')
@@ -202,22 +202,22 @@ function track_file
     # Check the integrity of the record file
     if test -n "$_flag_c"
         set --local line_number 0
-        set --local template_names
+        set --local config_names
         while read --local line
             set line_number (math "$line_number + 1")
             set --local paths (string split "$delimiter" "$line")
             if test (count $paths) -ne 2
                 echoerr -e '"'"$record_file_path"'" line '"$line_number"': syntax error\n    '"$line"
             else if test "$paths[1]" != (basename "$paths[1]")
-                echoerr -e '"'"$record_file_path"'" line '"$line_number"': template file\'s basename should be used\n    '"$line"
-            else if contains "$paths[1]" $template_names
-                echoerr -e '"'"$record_file_path"'" line '"$line_number"': duplicate template filename\n    '"$line"
+                echoerr -e '"'"$record_file_path"'" line '"$line_number"': configuration file\'s basename should be used\n    '"$line"
+            else if contains "$paths[1]" $config_names
+                echoerr -e '"'"$record_file_path"'" line '"$line_number"': duplicate configuration filenames\n    '"$line"
             else
-                set template_names $template_names "$paths[1]"
+                set config_names $config_names "$paths[1]"
                 if not test -e "$dir_path""/$paths[1]"
-                    echoerr -e '"'"$record_file_path"'" line '"$line_number"': template file doesn\'t exist\n    '"$line"
+                    echoerr -e '"'"$record_file_path"'" line '"$line_number"': configuration file doesn\'t exist\n    '"$line"
                 else if not test -e "$paths[2]"
-                    echoerr -e '"'"$record_file_path"'" line '"$line_number"': actual file does\'t exist\n    '"$line"
+                    echoerr -e '"'"$record_file_path"'" line '"$line_number"': symlink does\'t exist\n    '"$line"
                 end
             end
         end < "$record_file_path"
@@ -225,15 +225,15 @@ function track_file
 end
 
 function _track_file_help
-    echo 'Usage:  track_file [-cl] [-t {-a | -u}] [-v]'
+    echo 'Usage:  track_file [-cl] [-f {-s | -u}] [-v]'
     echo 'Track/untrack files'
     echo
     echo 'Options:'
-    echo '        -c, --check                     Check the integrity of the record file'
-    echo '        -l, --list                      List the records'
-    echo '        -t, --template=<template-name>  Basename of the template file'
-    echo '        -a, --actual=<actual-file>      Path of the actual file'
-    echo '        -u, --untrack                   Untracking instead of the default tracking behavior'
-    echo '        -v, --verbose                   Print verbose messages'
-    echo '        -h, --help                      Display this help message'
+    echo '        -c, --check                   Check the integrity of the record file'
+    echo '        -l, --list                    List the records'
+    echo '        -f, --filename=<config-name>  Basename of the configuration file'
+    echo '        -s, --symlink=<symlink>       Path to the symlink'
+    echo '        -u, --untrack                 Untracking instead of the default tracking behavior'
+    echo '        -v, --verbose                 Print verbose messages'
+    echo '        -h, --help                    Display this help message'
 end

@@ -45,27 +45,27 @@ function _configure_ssh_client
     set --local track_file_dir_path "$track_file_DIR_PATH"
     test -z "$track_file_dir_path"
     and set track_file_dir_path "$HOME"'/.my_private_configurations'
-    set --local template_file "$track_file_dir_path"'/SSH_config'
+    set --local config_file "$track_file_dir_path"'/SSH_config'
 
-    # Back up former template file
-    if test -e "$template_file"
-    or test -L "$template_file"
-        back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$template_file"
+    # Back up former configuration file
+    if test -e "$config_file"
+    or test -L "$config_file"
+        back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$config_file"
     end
 
-    touch "$template_file"
+    touch "$config_file"
     # For security
-    chmod 600 "$template_file"
+    chmod 600 "$config_file"
 
     # Use previous ssh client user private configurations if available
     for line in $lines[2..-1]
         if test "$line" = "$delimiter"
-            echo >> "$template_file"
+            echo >> "$config_file"
         else
-            echo "$line" >> "$template_file"
+            echo "$line" >> "$config_file"
         end
     end
-    echo >> "$template_file"
+    echo >> "$config_file"
 
     # Ask the user to add new client-side host configurations
     echo 'Adding new hosts'
@@ -86,13 +86,13 @@ function _configure_ssh_client
         else if test -z "$user"
             echoerr '"User" cannot be empty'
         else
-            echo 'Host '"$host" >> "$template_file"
-            echo '    Hostname '"$hostname" >> "$template_file"
-            echo '    User '"$user" >> "$template_file"
+            echo 'Host '"$host" >> "$config_file"
+            echo '    Hostname '"$hostname" >> "$config_file"
+            echo '    User '"$user" >> "$config_file"
             test -n "$port"
-            and echo '    Port '"$port" >> "$template_file"
+            and echo '    Port '"$port" >> "$config_file"
             test -n "$identity_file"
-            and echo '    IdentityFile '"$identity_file" >> "$template_file"
+            and echo '    IdentityFile '"$identity_file" >> "$config_file"
             echo
         end
 
@@ -101,15 +101,15 @@ function _configure_ssh_client
     end
 
     # Back up former ssh client configurations
-    set --local config_file "$local_ssh_dir"'/config'
-    if test -e "$config_file"
-    or test -L "$config_file"
-        back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$config_file"
+    set --local ssh_config_file_path "$local_ssh_dir"'/config'
+    if test -e "$ssh_config_file_path"
+    or test -L "$ssh_config_file_path"
+        back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$ssh_config_file_path"
     end
 
-    cat "$source_dir"'/config' >> "$template_file"
-    and ln -si "$template_file" "$local_ssh_dir"'/config'
-    and track_file --template=(basename "$template_file") --actual="$local_ssh_dir"'/config' --check
+    cat "$source_dir"'/config' >> "$config_file"
+    and ln -si "$config_file" "$ssh_config_file_path"
+    and track_file --filename=(basename "$config_file") --symlink="$ssh_config_file_path" --check
     ###
 end
 ###

@@ -63,12 +63,12 @@ set --local track_file_dir_path "$track_file_DIR_PATH"
 test -z "$track_file_dir_path"
 and set track_file_dir_path "$HOME"'/.my_private_configurations'
 for file in 'config'
-    set --local template_file "$track_file_dir_path"'/GIT_'"$file"
-    cp -i "$source_dir"'/'"$file" "$template_file"
+    set --local config_file "$track_file_dir_path"'/GIT_'"$file"
+    cp -i "$source_dir"'/'"$file" "$config_file"
     # For security
-    chmod 600 "$template_file"
-    ln -si "$template_file" "$git_home"'/'"$file"
-    and track_file --template='GIT_'"$file" --actual="$git_home"'/'"$file" --check
+    chmod 600 "$config_file"
+    ln -si "$config_file" "$git_home"'/'"$file"
+    and track_file --filename='GIT_'"$file" --symlink="$git_home"'/'"$file" --check
 end
 
 ### Private configurations
