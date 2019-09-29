@@ -6,13 +6,14 @@ umask 077
 # Set error codes
 set BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE 1
 set SSH_IS_NOT_INSTALLED_ERROR_CODE 2
-set UFW_IS_NOT_INSTALLED_ERROR_CODE 3
-set NOT_ROOT_ERROR_CODE 4
+set SSHD_IS_NOT_INSTALLED_ERROR_CODE 3
+set UFW_IS_NOT_INSTALLED_ERROR_CODE 4
+set NOT_ROOT_ERROR_CODE 5
 
 set source_dir (dirname (realpath (status --current-filename)))'/Files'
 set utility_dir (dirname (realpath (status --current-filename)))'/Utilities'
-set local_ssh_dir "$HOME"'/.ssh'
-set global_sshd_dir '/etc/ssh'
+set local_ssh_config "$HOME"'/.ssh/config'
+set global_sshd_config '/etc/ssh/sshd_config'
 
 # Make sure that "back_up_files" is loaded
 functions back_up_files > '/dev/null' 2>&1
@@ -28,14 +29,21 @@ or begin
     exit "$SSH_IS_NOT_INSTALLED_ERROR_CODE"
 end
 
-### For clients, add ~/.ssh/config
+# Make sure that "sshd" is installed
+command -v sshd > '/dev/null' 2>&1
+or begin
+    echoerr '"sshd" is not installed! Please install the program'
+    exit "$SSHD_IS_NOT_INSTALLED_ERROR_CODE"
+end
+
+#### For clients, add ~/.ssh/config
 function _configure_ssh_client
     # Back up former ssh client user private configurations if available
     set --local get_ssh_client_side_host_configuratoins "$utility_dir"'/get_ssh_client_side_host_configuratoins.py'
     chmod u+x "$get_ssh_client_side_host_configuratoins"
     set --local delimiter '---'
     set --local lines
-    if test -e "$HOME"'/.ssh/config'
+    if test -e "$local_ssh_config"
         "$get_ssh_client_side_host_configuratoins" "$delimiter" | while read --local line
             set lines $lines "$line"
         end
@@ -101,33 +109,115 @@ function _configure_ssh_client
     end
 
     # Back up former ssh client configurations
-    set --local ssh_config_file_path "$local_ssh_dir"'/config'
-    if test -e "$ssh_config_file_path"
-    or test -L "$ssh_config_file_path"
-        back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$ssh_config_file_path"
+    if test -e "$local_ssh_config"
+    or test -L "$local_ssh_config"
+        back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$local_ssh_config"
     end
 
     cat "$source_dir"'/config' >> "$config_file"
-    and ln -si "$config_file" "$ssh_config_file_path"
-    and track_file --filename=(basename "$config_file") --symlink="$ssh_config_file_path" --check
+    and ln -si "$config_file" "$local_ssh_config"
+    and track_file --filename=(basename "$config_file") --symlink="$local_ssh_config" --check
     ###
 end
-###
+####
 
-### For servers, add /etc/ssh/sshd_config
+#### For servers, add /etc/ssh/sshd_config
 function _configure_ssh_server
-    # # Back up former server sshd configurations
-    # if test -e "$global_sshd_dir"'/sshd_config'
-    # or test -L "$global_sshd_dir"'/sshd_config'
-    #     back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$global_sshd_dir"'/sshd_config'
-    # end
+    # Make sure that we're the root user
+    test (whoami) = 'root'
+    or begin
+        echoerr 'You are not the root user! Please run "su"'
+        exit "$NOT_ROOT_ERROR_CODE"
+    end
 
-    # mkdir -p /etc/ssh >/dev/null 2>&1
-    # cp
+    # Back up former server sshd private configuration if available
+    set --local get_server_sshd_configuratoin "$utility_dir"'/get_server_sshd_configuratoin.py'
+    chmod u+x "$get_server_sshd_configuratoin"
+    set --local delimiter '---'
+    set --local lines
+    if test -e "$global_sshd_config"
+        "$get_server_sshd_configuratoin" "$delimiter" | while read --local line
+            set lines $lines "$line"
+        end
+    end
+
+    ### Track the configuration file with "track_file" function
+    set --local track_file_dir_path "$track_file_DIR_PATH"
+    test -z "$track_file_dir_path"
+    and set track_file_dir_path "$HOME"'/.my_private_configurations'
+    set --local config_file "$track_file_dir_path"'/SSH_sshd_config'
+
+    # Back up former configuration file
+    if test -e "$config_file"
+    or test -L "$config_file"
+        back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$config_file"
+    end
+
+    cp -i "$source_dir"'/sshd_config' "$config_file"
+    # For security
+    chmod 600 "$config_file"
+
+    # Use previous server sshd private configuration if available
+    echo >> "$config_file"
+    set --local in_match_block false
+    for line in $lines
+        if not "$in_match_block"
+            if test "$line" = "$delimiter"
+                set in_match_block true
+                # Ask the user to add new ports
+                echo 'Adding new ports'
+                read --prompt-str='Port (enter empty string to end): ' --local port
+                set port (string trim "$port")
+                while test -n "$port"
+                    echo 'Port' "$port" >> "$config_file"
+                    read --prompt-str='Port (enter empty string to end): ' port
+                    set port (string trim "$port")
+                end
+                echo >> "$config_file"
+            else
+                echo 'Port' "$line" >> "$config_file"
+            end
+        else
+            if test "$line" = "$delimiter"
+                echo >> "$config_file"
+            else
+                echo "$line" >> "$config_file"
+            end
+        end
+    end
+    echo >> "$config_file"
+
+    # Ask the user to add new match block configurations
+    echo
+    echo 'Adding new match blocks'
+    echo 'Example: Match User <username>, LocalPort <port-number>'
+    read --prompt-str='Match (enter empty string to end): ' --local match
+    set match (string trim "$match")
+    while test -n "$match"
+        read --prompt-str='AllowUsers: ' --local allow_users
+        set allow_users (string trim "$allow_users")
+
+        echo 'Match '"$match" >> "$config_file"
+        test -n "$allow_users"
+        and echo '    AllowUsers '"$allow_users" >> "$config_file"
+        echo
+
+        read --prompt-str='Match (enter empty string to end): ' match
+        set match (string trim "$match")
+    end
+
+    # Back up former server sshd configuration
+    if test -e "$global_sshd_config"
+    or test -L "$global_sshd_config"
+        back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$global_sshd_config"
+    end
+
+    ln -si "$config_file" "$global_sshd_config"
+    and track_file --filename=(basename "$config_file") --symlink="$global_sshd_config" --check
 end
-###
+####
 
-### Configure firewall, using "ufw"
+#### Configure firewall, using "ufw"
 function _configure_firewall
     # Make sure that "ufw" is installed
     command -v ufw > '/dev/null' 2>&1
@@ -184,6 +274,6 @@ switch "$client_or_server"
         _configure_ssh_client
 end
 set --universal AM_I_CLIENT_OR_SERVER "$client_or_server"
-###
+####
 
 functions --erase _configure_ssh_client _configure_ssh_server _configure_firewall
