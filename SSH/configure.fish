@@ -242,9 +242,11 @@ function _configure_ssh_server
     # For security
     chmod 600 "$config_file"
 
+    echo
+    echo 'Configuring ssh'
     # Ask the user to add new ports
     echo >> "$config_file"
-    echo 'Adding new ports'
+    echo 'Adding new ssh ports'
     read --prompt-str='Port (enter empty string to end): ' --local port
     set port (string trim "$port")
     while test -n "$port"
@@ -286,6 +288,7 @@ function _configure_ssh_server
         echo 'Match '"$match" >> "$config_file"
         test -n "$allow_users"
         and echo '    AllowUsers '"$allow_users" >> "$config_file"
+        echo >> "$config_file"
         echo
 
         read --prompt-str='Match (enter empty string to end): ' match
@@ -339,6 +342,7 @@ function _configure_firewall
     ufw default deny routed
 
     # Limit/allow tcp ports for incoming traffic from "ssh" and "shadowsocks"
+    echo 'Configuring firewall'
     read --prompt-str='Please enter the ssh port: ' --local --array ports
     for port in $ports
         ufw limit in "$port"'/tcp'
