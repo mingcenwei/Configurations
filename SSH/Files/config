@@ -14,7 +14,7 @@ Host *
     CheckHostIP yes
     AddressFamily any
 #   ConnectTimeout 0
-    StrictHostKeyChecking yes
+    StrictHostKeyChecking ask
     IdentityFile ~/.ssh/id_rsa
 #   IdentityFile ~/.ssh/id_ed25519
 # #   IdentityFile ~/.ssh/id_dsa
