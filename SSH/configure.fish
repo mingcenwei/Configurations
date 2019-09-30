@@ -130,6 +130,85 @@ function _configure_ssh_server
         exit "$NOT_ROOT_ERROR_CODE"
     end
 
+    # Create new users
+    echo 'Creating new users'
+    read --prompt-str='Username (enter empty string to end): ' --local username
+    set username (string trim "$username")
+    ### Find the path to fish shell
+    set --local fish_shell_path (command -v fish)
+    if cat "$etc_shells" 2> '/dev/null' | grep '/fish$' > '/dev/null'
+        if test (cat "$etc_shells" | grep '/fish$' | wc -l) -eq 1
+            set fish_shell_path (cat "$etc_shells" | grep '/fish$')
+        else
+            # Ask the user which one is the "fish" shell they want
+            for line in (cat "$etc_shells" | grep '/fish$')
+                echo $line
+
+                read --prompt-str='Is this shell the "fish" shell that you want to use? (YES/no): ' --local yes_or_no
+                set yes_or_no (string lower "$yes_or_no")
+                while not contains "$yes_or_no" 'yes' 'no'
+                and test -n "$yes_or_no"
+                    read --prompt-str='Please enter YES/no: ' yes_or_no
+                    set yes_or_no (string lower "$yes_or_no")
+                end
+
+                if test -z "$yes_or_no"
+                or test "$yes_or_no" = 'yes'
+                    set fish_shell_path "$line"
+                    break
+                else
+                    continue
+                end
+            end
+        end
+    end
+    ###
+    while test -n "$username"
+        adduser --shell "$fish_shell_path" "$username"
+        # Get the ssh configuration directory of the user
+        # See https://unix.stackexchange.com/questions/247576/how-to-get-home-given-user
+        set --local ssh_dir_of_user (getent passwd "$username" | cut -d: -f6)'/.ssh'
+        set --local authorized_keys "$ssh_dir_of_user"'/authorized_keys'
+        su "$username" -c 'mkdir -p -- '"$ssh_dir_of_user"
+        # Ask the user whether to keep previous authorized keys
+        if test -e "$authorized_keys"
+            read --prompt-str='Keep previous authorized keys? (YES/no): ' --local yes_or_no
+            set yes_or_no (string lower "$yes_or_no")
+            while not contains "$yes_or_no" 'yes' 'no'
+            and test -n "$yes_or_no"
+                read --prompt-str='Please enter YES/no: ' yes_or_no
+                set yes_or_no (string lower "$yes_or_no")
+            end
+
+            if test "$yes_or_no" = 'no'
+                # Back up former server authorized_keys
+                chown (whoami) "$authorized_keys"
+                back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$authorized_keys"
+            end
+        else if test -L "$authorized_keys"
+            # Back up former server authorized_keys
+            chown (whoami) "$authorized_keys"
+            back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$authorized_keys"
+        end
+        su "$username" -c 'touch -- '"$authorized_keys"
+        su "$username" -c 'chmod -- 600 '"$authorized_keys"
+
+        # Add new ssh pubkeys for the user
+        echo 'Adding new ssh pubkeys for the user'
+        read --prompt-str='Pubkey (enter empty string to end): ' --local pubkey
+        set pubkey (string trim "$pubkey")
+        while test -n "$pubkey"
+            su "$username" -c 'echo -- '"$pubkey"' >> '"$authorized_keys"
+
+            read --prompt-str='Pubkey (enter empty string to end): ' pubkey
+            set pubkey (string trim "$pubkey")
+        end
+
+        echo
+        read --prompt-str='Username (enter empty string to end): ' username
+        set username (string trim "$username")
+    end
+
     # Back up former server sshd private configuration if available
     set --local get_server_sshd_configuratoin "$utility_dir"'/get_server_sshd_configuratoin.py'
     chmod u+x "$get_server_sshd_configuratoin"
@@ -214,6 +293,17 @@ function _configure_ssh_server
 
     ln -si "$config_file" "$global_sshd_config"
     and track_file --filename=(basename "$config_file") --symlink="$global_sshd_config" --check
+
+    # Back up former ssh host RSA key
+    set --local ssh_host_rsa_key '/etc/ssh/ssh_host_rsa_key'
+    for file in "$ssh_host_rsa_key" "$ssh_host_rsa_key"'.pub'
+        if test -e "$file"
+        or test -L "$file"
+            back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$file"
+        end
+    end
+    # Generate new ssh host RSA key
+    ssh-keygen -t 'rsa' -b '4096' -N '' -f "$ssh_host_rsa_key"
 end
 ####
 
