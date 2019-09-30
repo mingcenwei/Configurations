@@ -133,6 +133,9 @@ function _configure_ssh_server
     # Change the password
     passwd
 
+    # Configure the firewall
+    _configure_firewall
+
     # Create new users
     echo 'Creating new users'
     read --prompt-str='Username (enter empty string to end): ' --local username
