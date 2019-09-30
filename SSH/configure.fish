@@ -310,6 +310,9 @@ function _configure_ssh_server
     end
     # Generate new ssh host RSA key
     ssh-keygen -t 'rsa' -b '4096' -N '' -f "$ssh_host_rsa_key"
+
+    # Reload sshd
+    systemctl restart sshd
 end
 ####
 
