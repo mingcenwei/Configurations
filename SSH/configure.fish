@@ -114,7 +114,12 @@ function _configure_ssh_client
         back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$local_ssh_config"
     end
 
-    cat "$source_dir"'/config' >> "$config_file"
+    begin
+        cat "$source_dir"'/config' >> "$config_file"
+        if is_platform 'macos'
+            echo '    UseKeychain yes' >> "$config_file"
+        end
+    end
     and ln -si "$config_file" "$local_ssh_config"
     and track_file --filename=(basename "$config_file") --symlink="$local_ssh_config" --check
     ###

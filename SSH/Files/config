@@ -1,6 +1,5 @@
 Host *
     AddKeysToAgent yes
-    UseKeychain yes
 #   ForwardAgent no
 #   ForwardX11 no
 #   ForwardX11Trusted no
