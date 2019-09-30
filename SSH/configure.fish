@@ -242,22 +242,23 @@ function _configure_ssh_server
     # For security
     chmod 600 "$config_file"
 
-    # Use previous server sshd private configuration if available
+    # Ask the user to add new ports
     echo >> "$config_file"
+    echo 'Adding new ports'
+    read --prompt-str='Port (enter empty string to end): ' --local port
+    set port (string trim "$port")
+    while test -n "$port"
+        echo 'Port' "$port" >> "$config_file"
+        read --prompt-str='Port (enter empty string to end): ' port
+        set port (string trim "$port")
+    end
+
+    # Use previous server sshd private configuration if available
     set --local in_match_block false
     for line in $lines
         if not "$in_match_block"
             if test "$line" = "$delimiter"
                 set in_match_block true
-                # Ask the user to add new ports
-                echo 'Adding new ports'
-                read --prompt-str='Port (enter empty string to end): ' --local port
-                set port (string trim "$port")
-                while test -n "$port"
-                    echo 'Port' "$port" >> "$config_file"
-                    read --prompt-str='Port (enter empty string to end): ' port
-                    set port (string trim "$port")
-                end
                 echo >> "$config_file"
             else
                 echo 'Port' "$line" >> "$config_file"
