@@ -1,0 +1,102 @@
+{
+    "java.home": "/Library/Java/JavaVirtualMachines/openjdk-12.0.2.jdk/Contents/Home",
+    "python.pythonPath": "/usr/local/bin/python3",
+    "explorer.confirmDelete": false,
+    "files.autoSave": "afterDelay",
+    "editor.renderWhitespace": "all",
+    "editor.wordWrap": "bounded",
+    "editor.acceptSuggestionOnEnter": "smart",
+    "editor.dragAndDrop": false,
+    "editor.wrappingIndent": "indent",
+    // "workbench.statusBar.feedback.visible": false,
+    "workbench.view.alwaysShowHeaderActions": true,
+    "window.restoreWindows": "all",
+    "search.smartCase": true,
+    "terminal.integrated.cursorBlinking": true,
+    "terminal.integrated.enableBell": true,
+    "telemetry.enableCrashReporter": false,
+    "telemetry.enableTelemetry": false,
+    "python.autoComplete.addBrackets": true,
+    "python.autoComplete.showAdvancedMembers": true,
+    "python.linting.pylintArgs":
+    [
+        "--disable=all",
+        "--enable=F,E,W",
+        "--disable=python3",
+        "--generated-members=ssl\\.Options"
+    ],
+    "C_Cpp.autocomplete": "Default",
+    "C_Cpp.clang_format_fallbackStyle": "Google",
+    "C_Cpp.dimInactiveRegions": true,
+    "C_Cpp.commentContinuationPatterns":
+    [
+        "/**"
+    ],
+    "C_Cpp.clang_format_style": "file",
+    "C_Cpp.errorSquiggles": "Enabled",
+    "C_Cpp.formatting": "Default",
+    "C_Cpp.intelliSenseEngine": "Default",
+    "C_Cpp.intelliSenseEngineFallback": "Enabled",
+    "C_Cpp.loggingLevel": "Warning",
+    "C_Cpp.navigation.length": 60,
+    "C_Cpp.workspaceParsingPriority": "highest",
+    "clang.cxxflags":
+    [
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-Wformat-security",
+        "-pedantic-errors",
+    ],
+    "clang.cflags":
+    [
+        "-std=c17",
+        "-Wall",
+        "-Wextra",
+        "-Wformat-security",
+        "-pedantic-errors",
+    ],
+    "terminal.integrated.rendererType": "dom",
+    "editor.tabCompletion": "on",
+    "editor.suggest.localityBonus": true,
+    "C_Cpp.default.cppStandard": "c++17",
+    "files.trimTrailingWhitespace": true,
+    "debug.inlineValues": true,
+    "terminal.integrated.macOptionIsMeta": true,
+    "terminal.integrated.shell.osx": "/usr/local/bin/fish",
+    "java.configuration.checkProjectSettingsExclusions": false,
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "terminal.external.osxExec": "iTerm.app",
+    "mssql.connections":
+    [
+        {
+            "server": "localhost",
+            "database": "",
+            "authenticationType": "SqlLogin",
+            "user": "SA",
+            "password": "",
+            "emptyPasswordInput": false,
+            "savePassword": true,
+            "profileName": "default-sql-server-of-say"
+        }
+    ],
+    "java.saveActions.organizeImports": true,
+    "java.maven.downloadSources": true,
+    "maven.pomfile.autoUpdateEffectivePOM": true,
+    "C_Cpp.updateChannel": "Insiders",
+    "window.zoomLevel": 0,
+    "python.linting.pylintPath": "/usr/local/bin/pylint",
+    "python.diagnostics.sourceMapsEnabled": false,
+    "python.linting.pylintUseMinimalCheckers": false,
+    "python.linting.pylintEnabled": true,
+    "files.associations": {
+        "vimrc": "viml",
+        "*.plist": "xml",
+        "attributes": "properties",
+        "ignore": "ignore",
+        "config": "ssh_config",
+        "sshd_config": "ssh_config"
+    },
+    "python.jediEnabled": false
+}
