@@ -1,4 +1,4 @@
-# Git
+# SSH
 
 Configure client-side ssh and server-side sshd.
 
