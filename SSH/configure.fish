@@ -167,7 +167,7 @@ function _configure_ssh_server
         adduser --shell "$fish_shell_path" "$username"
         # Get the ssh configuration directory of the user
         # See https://unix.stackexchange.com/questions/247576/how-to-get-home-given-user
-        set --local ssh_dir_of_user (getent passwd "$username" | cut -d: -f6)'/.ssh'
+        set --local ssh_dir_of_user (getent passwd "$username" | cut -d ':' -f 6)'/.ssh'
         set --local authorized_keys "$ssh_dir_of_user"'/authorized_keys'
         su "$username" -c 'mkdir -p -- '"$ssh_dir_of_user"
         # Ask the user whether to keep previous authorized keys

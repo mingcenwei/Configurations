@@ -1,5 +1,8 @@
 #!/usr/bin/env fish
 
+# For security
+chmod -- 700 **
+
 set --local current_dir (dirname (realpath (status --current-filename)))
 set --local my_backups "$current_dir"'/.my_backups'
 set --local my_private_configurations "$current_dir"'/.my_private_configurations'
