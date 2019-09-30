@@ -25,7 +25,7 @@ function is_platform
     # The list of platforms
     set --local platforms \
         'android-termux' \
-        'macos'
+        'macos' \
         'ubuntu'
 
     if test -n "$_flag_l"
