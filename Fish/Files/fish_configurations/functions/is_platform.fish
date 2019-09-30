@@ -26,6 +26,7 @@ function is_platform
     set --local platforms \
         'android-termux' \
         'macos'
+        'ubuntu'
 
     if test -n "$_flag_l"
         for platform in $platforms
@@ -44,6 +45,10 @@ function is_platform
                 case 'macos'
                     test (uname -s) = 'Darwin'
                     or return 1
+                case 'ubuntu'
+                    test (uname -s) = 'Linux'
+                    and test \
+                        (string sub -l 7 (head -n 1 '/etc/issue')) = 'Ubuntu '
                 case '*'
                     echoerr 'Unknown platform:' "$platform"
                     return 1
