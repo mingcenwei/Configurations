@@ -342,6 +342,7 @@ function _configure_firewall
     ufw default deny routed
 
     # Limit/allow tcp ports for incoming traffic from "ssh" and "shadowsocks"
+    echo
     echo 'Configuring firewall'
     read --prompt-str='Please enter the ssh port: ' --local --array ports
     for port in $ports
