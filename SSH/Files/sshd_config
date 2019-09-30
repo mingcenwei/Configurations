@@ -40,8 +40,8 @@ MaxAuthTries 3
 MaxSessions 5
 
 PubkeyAuthentication yes
-PubkeyAcceptedKeyTypes ssh-rsa
-#PubkeyAcceptedKeyTypes ssh-rsa,ssh-ed25519
+PubkeyAcceptedKeyTypes ssh-rsa,rsa-sha2-256,rsa-sha2-512
+#PubkeyAcceptedKeyTypes ssh-rsa,rsa-sha2-256,rsa-sha2-512,ssh-ed25519
 
 # The default is to check both .ssh/authorized_keys and .ssh/authorized_keys2
 # but this is overridden so installations will only check .ssh/authorized_keys
