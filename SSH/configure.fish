@@ -130,6 +130,9 @@ function _configure_ssh_server
         exit "$NOT_ROOT_ERROR_CODE"
     end
 
+    # Change the password
+    passwd
+
     # Create new users
     echo 'Creating new users'
     read --prompt-str='Username (enter empty string to end): ' --local username
