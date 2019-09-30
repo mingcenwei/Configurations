@@ -57,6 +57,8 @@ set --local ENCOUNTERING_ERRORS_WHEN_INSTALLING_FISHER_ERROR_CODE 3
 set --local package_directory (dirname (realpath (status filename)))'/Files/fish_configurations/'
 source "$package_directory"'/functions/echoerr.fish'
 source "$package_directory"'/functions/back_up_files.fish'
+source "$package_directory"'/functions/is_platform.fish'
+source "$package_directory"'/functions/track_file.fish'
 
 # Make sure that "curl" is installed
 command -v curl > '/dev/null' 2>&1
