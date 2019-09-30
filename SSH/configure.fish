@@ -363,7 +363,6 @@ switch "$client_or_server"
         _configure_ssh_server
         _configure_ssh_client
 end
-set --universal AM_I_CLIENT_OR_SERVER "$client_or_server"
 ####
 
 functions --erase _configure_ssh_client _configure_ssh_server _configure_firewall
