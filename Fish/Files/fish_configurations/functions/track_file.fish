@@ -12,8 +12,8 @@
 # Require "echoerr" and "back_up_files" function, and "sed" utility
 function track_file
     # Import "library.fish"
-    source (dirname (dirname \
-        (realpath (status --current-filename))))'/library.fish'
+    source (dirname (dirname (dirname (dirname (dirname \
+        (realpath (status --current-filename)))))))'/library.fish'
 
     # Set error codes
     set --export WRONG_ARGUMENTS_ERROR_CODE 1
