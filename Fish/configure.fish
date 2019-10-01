@@ -6,6 +6,13 @@ umask 077
 # Make sure that the "fish" shell is used
 test -z "$fish_pid" && echo 'Error: The shell is not "fish"!' >&2 && exit 1
 
+# Load required functions
+set --local package_directory (dirname (realpath (status filename)))'/Files/fish_configurations/'
+source "$package_directory"'/functions/echoerr.fish'
+source "$package_directory"'/functions/back_up_files.fish'
+source "$package_directory"'/functions/is_platform.fish'
+source "$package_directory"'/functions/track_file.fish'
+
 ### Change the default login shell to "fish" if possible
 set --local chsh_status 1
 set --local etc_shells '/etc/shells'
@@ -52,13 +59,6 @@ end
 # Set error codes
 set --local CURL_IS_NOT_INSTALLED_ERROR_CODE 2
 set --local ENCOUNTERING_ERRORS_WHEN_INSTALLING_FISHER_ERROR_CODE 3
-
-# Load required functions
-set --local package_directory (dirname (realpath (status filename)))'/Files/fish_configurations/'
-source "$package_directory"'/functions/echoerr.fish'
-source "$package_directory"'/functions/back_up_files.fish'
-source "$package_directory"'/functions/is_platform.fish'
-source "$package_directory"'/functions/track_file.fish'
 
 # Make sure that "curl" is installed
 command -v curl > '/dev/null' 2>&1
