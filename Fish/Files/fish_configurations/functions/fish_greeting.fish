@@ -3,8 +3,11 @@
 function fish_greeting
     # Fortune - print a random, hopefully interesting, adage
     # Prerequisites: "fortune" is installed
-    if test ! (command -v fortune)
-        echoerr -w '"fortune" is not installed!'
+    if not command -v fortune > '/dev/null'
+    and not command -v cowfortune > '/dev/null'
+        echoerr -w '"fortune"/"cowfortune" is not installed!'
+    else if command -v cowfortune > '/dev/null'
+        cowfortune
     else
         set_color --dim
         if is_platform 'android-termux'
@@ -12,6 +15,7 @@ function fish_greeting
         else
             fortune -a
         end
+        set_color normal
     end
 
     # Fish greeting
