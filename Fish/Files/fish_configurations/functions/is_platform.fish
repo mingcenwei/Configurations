@@ -26,7 +26,9 @@ function is_platform
     set --local platforms \
         'android-termux' \
         'macos' \
-        'ubuntu'
+        'ubuntu' \
+        'manjaro' \
+        'kde'
 
     if test -n "$_flag_l"
         for platform in $platforms
@@ -47,8 +49,14 @@ function is_platform
                     or return 1
                 case 'ubuntu'
                     test (uname -s) = 'Linux'
-                    and test \
-                        (string sub -l 7 (head -n 1 '/etc/issue')) = 'Ubuntu '
+                    and test (head -n 1 '/etc/issue' | cut -d ' ' -f 1) \
+                        = 'Ubuntu'
+                case 'manjaro'
+                    test (uname -s) = 'Linux'
+                    and test (head -n 1 '/etc/issue' | cut -d ' ' -f 1) \
+                        = 'Manjaro'
+                case 'kde'
+                    test "$XDG_CURRENT_DESKTOP" = KDE
                 case '*'
                     echoerr 'Unknown platform:' "$platform"
                     return 1
