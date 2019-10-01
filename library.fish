@@ -46,7 +46,8 @@ end
 
 function read_until
     argparse 'd/default-position=' 'p/prompt=' \
-        'P/prompt-on-invalid-input=' 'v/variable=' -- $argv
+        'P/prompt-on-invalid-input=' 'v/variable=' \
+        'D/delimiter=' -- $argv
 
     set --local variable_name "$_flag_v"
     set --local prompt "$_flag_p"
@@ -58,19 +59,22 @@ function read_until
         set prompt_on_invalid_input "Please enter one of "
     end
     set --local default_position "$_flag_d"
+    set --local delimiter "$_flag_D"
+    test -z "$delimiter"
+    and set delimiter '|'
     set --local option_str '('
     set --local position 0
     set --local lowercase_argv
     for option in $argv
         set lowercase_argv $lowercase_argv (string lower "$option")
         set position (math "$position" + 1)
-        if test "$option_str" = "$default_position"
-            set prompt "$option_str"(string upper "$option")'|'
+        if test "$position" = "$default_position"
+            set option_str "$option_str"(string upper "$option")"$delimiter"
         else
-            set prompt "$option_str"(string lower "$option")'|'
+            set option_str "$option_str"(string lower "$option")"$delimiter"
         end
     end
-    set option_str (string --regex '\\|$' ')' "$option_str")
+    set option_str (string replace --regex '\\Q'"$delimiter"'\\E$' '): ' "$option_str")
 
     read --prompt-str="$prompt""$option_str" --global -- "$variable_name"
     test -z "$$variable_name"
