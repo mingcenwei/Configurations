@@ -29,6 +29,9 @@ function fish_greeting
     else if is_platform 'ubuntu'
         set package_update_commands \
             'apt update; apt upgrade; apt autoremove; apt autoclean'
+    else if is_platform 'manjaro'
+        set package_update_commands \
+            'pacman -Syu; pacman -Scc'
     end
 
     # Package updating commands
