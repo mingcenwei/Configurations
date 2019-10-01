@@ -1,12 +1,16 @@
 #!/usr/bin/env fish
 
 # For security
+set --export ORIGINAL_UMASK_CMD (umask -p)
 umask 077
 
-# Set path variable
-set --global PACKAGE_DIR \
+# Set environment variables
+set --export PACKAGE_DIR \
     (dirname (realpath (status --current-filename)))
+set --export FUNCTION_NOT_LOADED_ERROR_CODE 101
+set --export BINARY_NOT_FOUND_ERROR_CODE 102
 
+# Make sure that "echoerr" funtion is loaded
 functions echoerr > '/dev/null' 2>&1
 or source "$PACKAGE_DIR"'/Fish/Files/fish_configurations/functions/echoerr.fish'
 or begin
