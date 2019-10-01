@@ -32,10 +32,10 @@ function fish_greeting
             'apt update; apt upgrade; apt autoremove; apt autoclean'
     else if is_platform 'ubuntu'
         set package_update_commands \
-            'apt update; apt upgrade; apt autoremove; apt autoclean'
+            'sudo apt update; sudo apt upgrade; sudo apt autoremove; sudo apt autoclean'
     else if is_platform 'manjaro'
         set package_update_commands \
-            'pacman -Syu; pacman -Scc'
+            'sudo pacman -Syu; sudo pacman -Scc'
     end
 
     # Package updating commands
