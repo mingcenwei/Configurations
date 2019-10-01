@@ -18,7 +18,7 @@ if test -z "$SSH_AUTH_SOCK"
 end
 
 # Automatically kill the agent on exit
-function auto_kill_ssh_agent_by_say --on-event fish_exit
+function _auto_kill_ssh_agent_by_say --on-event fish_exit
     if test -n "$SSH_AUTH_SOCK"
     and status is-login
         eval (ssh-agent -k -c) > /dev/null

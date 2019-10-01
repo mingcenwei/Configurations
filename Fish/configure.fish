@@ -86,8 +86,12 @@ fisher add "$package_directory"
 ### Configurations that are installed without "fisher"
 set --local non_fisher_directory (dirname "$package_directory")'/non_fisher_fish_configurations'
 
+source "$non_fisher_directory"'/set_environment_variables.fish'
+source "$non_fisher_directory"'/set_fish_theme.fish'
+
 # Create a symlink for this file specifically.
 # If using "fisher" to add it, we'll go to the default working directory
 # every time we enter "fisher" command
-ln -si "$non_fisher_directory"'/set_default_working_directory.fish' ~/.config/fish/conf.d/set_default_working_directory.fish
+ln -si "$non_fisher_directory"'/set_default_working_directory.fish' \
+    ~/.config/fish/conf.d/set_default_working_directory.fish
 ###
