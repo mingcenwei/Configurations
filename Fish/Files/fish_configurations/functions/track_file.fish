@@ -11,52 +11,36 @@
 # Track/untrack files
 # Require "echoerr" and "back_up_files" function, and "sed" utility
 function track_file
-    # For security
-    umask 077
+    # Import "library.fish"
+    source (dirname (dirname \
+        (realpath (status --current-filename))))'/library.fish'
 
-    ### Default settings
-    set --local ECHOERR_NOT_FOUND_ERROR_CODE "$track_file_ECHOERR_NOT_FOUND_ERROR_CODE"
-    test -z "$ECHOERR_NOT_FOUND_ERROR_CODE"
-    and set ECHOERR_NOT_FOUND_ERROR_CODE 101
+    # Set error codes
+    set --export WRONG_ARGUMENTS_ERROR_CODE 1
+    set --export TRACKING_FAILED_ERROR_CODE 2
+    set --export UNTRACKING_FAILED_ERROR_CODE 3
+    set --export NO_SUCH_CONFIG_ERROR_CODE 4
+    set --export SORTING_ERROR_CODE 5
 
-    set --local BACK_UP_FILES_NOT_FOUND_ERROR_CODE "$track_file_BACK_UP_FILES_NOT_FOUND_ERROR_CODE"
-    test -z "$BACK_UP_FILES_NOT_FOUND_ERROR_CODE"
-    and set BACK_UP_FILES_NOT_FOUND_ERROR_CODE 102
-
-    set --local SED_NOT_FOUND_ERROR_CODE "$track_file_SED_NOT_FOUND_ERROR_CODE"
-    test -z "$SED_NOT_FOUND_ERROR_CODE"
-    and set SED_NOT_FOUND_ERROR_CODE 103
-
-    set --local WRONG_ARGUMENTS_ERROR_CODE "$track_file_WRONG_ARGUMENTS_ERROR_CODE"
-    test -z "$WRONG_ARGUMENTS_ERROR_CODE"
-    and set WRONG_ARGUMENTS_ERROR_CODE 104
-
-    set --local TRACKING_FAILED_ERROR_CODE "$track_file_TRACKING_FAILED_ERROR_CODE"
-    test -z "$TRACKING_FAILED_ERROR_CODE"
-    and set TRACKING_FAILED_ERROR_CODE 105
-
-    set --local UNTRACKING_FAILED_ERROR_CODE "$track_file_UNTRACKING_FAILED_ERROR_CODE"
-    test -z "$UNTRACKING_FAILED_ERROR_CODE"
-    and set UNTRACKING_FAILED_ERROR_CODE 106
-
-    set --local NO_SUCH_CONFIG_ERROR_CODE "$track_file_NO_SUCH_CONFIG_ERROR_CODE"
-    test -z "$NO_SUCH_CONFIG_ERROR_CODE"
-    and set NO_SUCH_CONFIGf_ERROR_CODE 107
-
-    set --local SORTING_ERROR_CODE "$track_file_SORTING_ERROR_CODE"
-    test -z "$SORTING_ERROR_CODE"
-    and set SORTING_ERROR_CODE 108
-
-    set --local dir_path "$track_file_DIR_PATH"
+    # Set environment variables
+    set --export dir_path "$track_file_DIR_PATH"
     test -z "$dir_path"
     and set dir_path "$HOME"'/.my_private_configurations'
 
-    set --local record_file_path "$dir_path"'/RECORDS'
+    set --export record_file_path "$dir_path"'/RECORDS'
 
-    set --local delimiter "$track_file_RECORDS_DELIMITER"
+    set --export delimiter "$track_file_RECORDS_DELIMITER"
     test -z "$delimiter"
     and set delimiter ' => '
-    ###
+
+    # Check dependencies
+    set --local required_functions \
+        'echoerr' \
+        'back_up_files'
+    set --local required_binary_executables \
+        'sed'
+    check_function_dependencies $required_functions
+    check_binary_dependencies $required_binary_executables
 
     # f/filename: Basename of the configuration file
     # s/symlink: Path to the symlink
@@ -70,11 +54,17 @@ function track_file
         'h/help' 'v/verbose' \
         -- $argv
     or begin
+        # Restore original umask
+        eval "$ORIGINAL_UMASK_CMD"
+
         set --local status_returned $status
         _track_file_help
         return "$status_returned"
     end
     if test -n "$_flag_h"
+        # Restore original umask
+        eval "$ORIGINAL_UMASK_CMD"
+
         _track_file_help
         return
     end
@@ -82,6 +72,9 @@ function track_file
     and not set --query _flag_s
     and not set --query _flag_u
     and not set --query _flag_c
+        # Restore original umask
+        eval "$ORIGINAL_UMASK_CMD"
+
         _track_file_help
         return
     end
@@ -90,23 +83,6 @@ function track_file
     set --local verbose
     for v in $_flag_v
         set verbose $verbose (string replace --all -- '--verbose' '-v' "$v")
-    end
-
-    # Make sure "echoerr" function is loaded
-    if not functions 'echoerr' > '/dev/null' 2>&1
-        echo 'Error: "echoerr" function wasn\'t found' >&2
-        return "$ECHOERR_NOT_FOUND_ERROR_CODE"
-    end
-    # Make sure "back_up_files" function is loaded
-    if not functions 'back_up_files' > '/dev/null' 2>&1
-        echoerr '"back_up_files" function wasn\'t found'
-        return "$BACK_UP_FILES_NOT_FOUND_ERROR_CODE"
-    end
-    # Make sure that "sed" is installed
-    command -v sed > '/dev/null' 2>&1
-    or begin
-        echoerr '"curl" is not installed! Please install the program'
-        return "$SED_NOT_FOUND_ERROR_CODE"
     end
 
     ### Make sure the directory and the record file exist
@@ -142,14 +118,23 @@ function track_file
     if test -n "$_flag_f"
     and test -z "$_flag_s"
     and test -z "$_flag_u"
+        # Restore original umask
+        eval "$ORIGINAL_UMASK_CMD"
+
         echoerr 'Wrong arguments!'
         return "$WRONG_ARGUMENTS_ERROR_CODE"
     else if test -z "$_flag_f"
     and test -n "$_flag_s"
+        # Restore original umask
+        eval "$ORIGINAL_UMASK_CMD"
+        
         echoerr 'Wrong arguments!'
         return "$WRONG_ARGUMENTS_ERROR_CODE"
     else if test -z "$_flag_f"
     and test -n "$_flag_u"
+        # Restore original umask
+        eval "$ORIGINAL_UMASK_CMD"
+        
         echoerr 'Wrong arguments!'
         return "$WRONG_ARGUMENTS_ERROR_CODE"
     end
@@ -162,6 +147,9 @@ function track_file
             test -n "$verbose"
             and echoerr -i -- 'Line "'"$line"'" added'
         else
+            # Restore original umask
+            eval "$ORIGINAL_UMASK_CMD"
+        
             echoerr 'Tracking failed'
             return "$TRACKING_FAILED_ERROR_CODE"
         end
@@ -169,6 +157,9 @@ function track_file
     else if test -n "$_flag_u"
         set --local pattern "$_flag_f""$delimiter"
         if not grep -E '^\\Q'"$pattern"'\\E' "$record_file_path"
+            # Restore original umask
+            eval "$ORIGINAL_UMASK_CMD"
+        
             echoerr 'No such configuration file'
             return "$NO_SUCH_CONFIG_ERROR_CODE"
         end
@@ -181,6 +172,9 @@ function track_file
 
             rm "$record_file_path"'.BACKUP~'
         else
+            # Restore original umask
+            eval "$ORIGINAL_UMASK_CMD"
+        
             echoerr 'Untracking failed'
             return "$UNTRACKING_FAILED_ERROR_CODE"
         end
@@ -190,8 +184,11 @@ function track_file
     sort -u "$record_file_path" > "$record_file_path"'~'
     and mv "$record_file_path"'~' "$record_file_path"
     or begin
+        # Restore original umask
+        eval "$ORIGINAL_UMASK_CMD"
+        
         echoerr 'Encountering an error when modifying the record file'
-        exit "$SORTING_ERROR_CODE"
+        return "$SORTING_ERROR_CODE"
     end
 
     # List the records
@@ -222,6 +219,9 @@ function track_file
             end
         end < "$record_file_path"
     end
+
+    # Restore original umask
+    eval "$ORIGINAL_UMASK_CMD"
 end
 
 function _track_file_help
