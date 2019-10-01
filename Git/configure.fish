@@ -1,27 +1,20 @@
 #!/usr/bin/env fish
 
-# For security
-umask 077
+# Import "library.fish"
+source (dirname (dirname \
+    (realpath (status --current-filename))))'/library.fish'
 
-# Set error codes
-set --local BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE 1
-set --local GIT_IS_NOT_INSTALLED_ERROR_CODE 2
+# Set environment variables
+set --export source_dir \
+    (dirname (realpath (status --current-filename)))'/Files'
 
-set --local source_dir (dirname (realpath (status --current-filename)))'/Files'
-
-# Make sure that "back_up_files" is loaded
-functions back_up_files > '/dev/null' 2>&1
-or begin
-    echoerr '"back_up_files" function is not loaded!'
-    exit "$BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE"
-end
-
-# Make sure that "git" is installed
-command -v git > '/dev/null' 2>&1
-or begin
-    echoerr '"git" is not installed! Please install the program'
-    exit "$GIT_IS_NOT_INSTALLED_ERROR_CODE"
-end
+# Check dependencies
+set --local required_functions \
+    'back_up_files'
+set --local required_binary_executables \
+    'git'
+check_function_dependencies $required_functions
+check_binary_dependencies $required_binary_executables
 
 # $XDG_CONFIG_HOME/git/config: Second user-specific configuration file.
 # If $XDG_CONFIG_HOME is not set or empty, $HOME/.config/git/config will be used.
@@ -88,8 +81,15 @@ end
 
 ### Platform dependent configurations
 git config --global 'core.excludesFile' "$git_home"'/ignore'
+# Caching GitHub password in git
 if is_platform 'macos'
-    # Caching GitHub password in git
     git config --global credential.helper 'osxkeychain'
+else if is_platform 'kde'
+    # Make sure that "ksshaskpass" is installed
+    check_binary_dependencies 'ksshaskpass'
+    and git config --global core.askpass (command -v ksshaskpass)
 end
 ###
+
+# Restore original umask
+eval "$ORIGINAL_UMASK_CMD"
