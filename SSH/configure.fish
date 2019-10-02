@@ -80,8 +80,8 @@ function _configure_ssh_client
     read --prompt-str='Host (enter empty string to end): ' --local host
     set host (string trim "$host")
     while test -n "$host"
-        read --prompt-str='Hostname: ' --local hostname
-        set hostname (string trim "$hostname")
+        read --prompt-str='Hostname: ' --local the_hostname
+        set the_hostname (string trim "$the_hostname")
         read --prompt-str='User: ' --local user
         set user (string trim "$user")
         read --prompt-str='Port (enter empty string to use the default): ' --local port
@@ -89,13 +89,13 @@ function _configure_ssh_client
         read --prompt-str='IdentityFile (enter empty string to use the default): ' --local identity_file
         set identity_file (string trim "$identity_file")
 
-        if test -z "$hostname"
+        if test -z "$the_hostname"
             echoerr '"Hostname" cannot be empty'
         else if test -z "$user"
             echoerr '"User" cannot be empty'
         else
             echo 'Host '"$host" >> "$config_file"
-            echo '    Hostname '"$hostname" >> "$config_file"
+            echo '    Hostname '"$the_hostname" >> "$config_file"
             echo '    User '"$user" >> "$config_file"
             test -n "$port"
             and echo '    Port '"$port" >> "$config_file"
