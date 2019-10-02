@@ -14,14 +14,17 @@ end
 # Check whether there is an ssh-agent running. If not, create one
 if test -z "$SSH_AUTH_SOCK"
     # Set the maximum lifetime of identities added to the agent to 3600 seconds
-    eval (ssh-agent -c -t 3600) > /dev/null
+    set commands
+    eval (ssh-agent -c -t 3600 | sed -e 's/^setenv/set --export/' -) \
+        > /dev/null
 end
 
 # Automatically kill the agent on exit
 function _auto_kill_ssh_agent_by_say --on-event fish_exit
     if test -n "$SSH_AUTH_SOCK"
     and status is-login
-        eval (ssh-agent -k -c) > /dev/null
+        eval (ssh-agent -k -c | sed -e 's/^unsetenv/set --erase/' -) \
+            > /dev/null
     end
 end
 ###
