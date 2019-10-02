@@ -1,30 +1,31 @@
 #!/usr/bin/env fish
 
-# Set error codes
-set --local SSH_AGENT_IS_NOT_INSTALLED_ERROR_CODE 1
+# ssh-agent is a program to hold private keys used for public key authentication
+# https://github.com/danhper/fish-ssh-agent/
+# https://wiki.archlinux.org/index.php/SSH_keys#SSH_agents
 
-# Make sure that "ssh-agent" is installed
-command -v ssh-agent > '/dev/null' 2>&1
-or begin
-    echoerr '"ssh-agent" is not installed! Please install the "ssh" program'
-    exit "$SSH_AGENT_IS_NOT_INSTALLED_ERROR_CODE"
+# Import "library.fish"
+source (dirname (dirname (dirname (dirname (dirname \
+    (realpath (status --current-filename)))))))'/library.fish'
+check_binary_dependencies 'ssh-agent'
+
+test -z "$_MY_SSH_AGENT_INFORMATION"
+and set --global --export _MY_SSH_AGENT_INFORMATION \
+    "$HOME"'/.ssh/.my_ssh_agent_information'
+
+if test -f "$_MY_SSH_AGENT_INFORMATION"
+    source "$_MY_SSH_AGENT_INFORMATION" > '/dev/null'
 end
 
-### ssh-agent is a program to hold private keys used for public key authentication
 # Check whether there is an ssh-agent running. If not, create one
-if test -z "$SSH_AUTH_SOCK"
+if test -z "$SSH_AGENT_PID"
+or not pgrep -u (whoami) 'ssh-agent' | grep -q "$SSH_AGENT_PID"
     # Set the maximum lifetime of identities added to the agent to 3600 seconds
-    set commands
-    eval (ssh-agent -c -t 3600 | sed -e 's/^setenv/set --export/' -) \
-        > /dev/null
+    ssh-agent -c -t 3600 | sed -e 's/^setenv/set --export/' - \
+        > "$_MY_SSH_AGENT_INFORMATION"
+    chmod 600 "$_MY_SSH_AGENT_INFORMATION"
+    source "$_MY_SSH_AGENT_INFORMATION" > '/dev/null'
 end
 
-# Automatically kill the agent on exit
-function _auto_kill_ssh_agent_by_say --on-event fish_exit
-    if test -n "$SSH_AUTH_SOCK"
-    and status is-login
-        eval (ssh-agent -k -c | sed -e 's/^unsetenv/set --erase/' -) \
-            > /dev/null
-    end
-end
-###
+# Restore original umask
+eval "$ORIGINAL_UMASK_CMD"
