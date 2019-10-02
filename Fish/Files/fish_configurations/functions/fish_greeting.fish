@@ -25,26 +25,37 @@ function fish_greeting
 
     # Commands for respective package managers
     set --local package_update_commands
+    set --local package_clean_commands
     if is_platform 'macos'
-        set package_update_commands 'brew -v update; brew upgrade; brew cleanup'
+        set package_update_commands 'brew -v update; brew upgrade'
+        set package_clean_commands 'brew cleanup'
     else if is_platform 'android-termux'
-        set package_update_commands \
-            'apt update; apt upgrade; apt autoremove; apt autoclean'
+        set package_update_commands 'apt update; apt upgrade'
+        set package_clean_commands 'apt autoremove; apt autoclean'
     else if is_platform 'ubuntu'
-        set package_update_commands \
-            'sudo apt update; sudo apt upgrade; sudo apt autoremove; sudo apt autoclean'
+        set package_update_commands 'sudo apt update; sudo apt upgrade'
+        set package_clean_commands 'sudo apt autoremove; sudo apt autoclean'
     else if is_platform 'manjaro'
-        set package_update_commands \
-            'sudo pacman -Syu; sudo pacman -Scc'
+        set package_update_commands 'sudo pacman -Syu'
+        set package_clean_commands 'sudo pacman -Scc'
     end
 
-    # Package updating commands
+    # Package updating and cleaning commands
     if test -n "$package_update_commands"
         echo -n 'Use '
         set_color --bold "$fish_color_command"
         echo -n "$package_update_commands"
         set_color normal
         echo ' to update packages'
+
+        test -n "$package_clean_commands"
+        and begin
+            echo -n 'Use '
+            set_color --bold "$fish_color_command"
+            echo -n "$package_clean_commands"
+            set_color normal
+            echo ' to clean the package cache'
+        end
     else
         echo -e '#\n#\n#\n#\n#' >&2
         set_color --bold "$fish_color_command"
