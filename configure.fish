@@ -36,7 +36,7 @@ for script in "$PACKAGE_DIR"'/'*'/configure.fish'
 end
 
 
-for config_dir in "$config_dir_list"
+for config_dir in $config_dir_list
     set --local script "$PACKAGE_DIR"'/'"$config_dir"'/configure.fish'
 
     not test -e "$script"
