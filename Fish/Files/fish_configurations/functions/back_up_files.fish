@@ -78,7 +78,7 @@ function back_up_files
     end
 
     # Make sure destination directory exists
-    set --local backup_directory
+    set --local backup_directory '.'
     if set --query _flag_d
         # set backup_directory (realpath "$_flag_d")
         set backup_directory "$_flag_d"
@@ -242,7 +242,7 @@ function back_up_files
                 mv $verbose -i "$file" "$target"
             else
                 $decompressor "$file" $directory_option "$backup_directory"
-                rm -rf $verbose -- "$file"
+                rm -r $verbose -- "$file"
             end
         end
         echo 'Restoring finished'
@@ -356,12 +356,12 @@ function back_up_files
                     if test "$yes_or_no" != yes
                         continue
                     else
-                        rm -rf $verbose -- "$target"
+                        rm -r $verbose -- "$target"
                     end
                 end
 
                 $compressor "$target" "$file"
-                rm -rf $verbose -- "$file"
+                rm -r $verbose -- "$file"
             end
         end
         echo 'Backing up finished'
