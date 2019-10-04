@@ -1,22 +1,22 @@
 # Created by https://www.gitignore.io/api/cmake,linux,macos,windows,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=cmake,linux,macos,windows,visualstudiocode
 
-### CMake ###
-CMakeLists.txt.user
-CMakeCache.txt
-CMakeFiles
-CMakeScripts
-Testing
-Makefile
-cmake_install.cmake
-install_manifest.txt
-compile_commands.json
-CTestTestfile.cmake
-_deps
+# ### CMake ###
+# CMakeLists.txt.user
+# CMakeCache.txt
+# CMakeFiles
+# CMakeScripts
+# Testing
+# Makefile
+# cmake_install.cmake
+# install_manifest.txt
+# compile_commands.json
+# CTestTestfile.cmake
+# _deps
 
-### CMake Patch ###
-# External projects
-*-prefix/
+# ### CMake Patch ###
+# # External projects
+# *-prefix/
 
 ### Linux ###
 *~
