@@ -14,7 +14,16 @@ if is_platform 'macos'
         exit "$CLANGPP_IS_NOT_INSTALLED_ERROR_CODE"
     end
     ###
-    alias c++17='clang++ -std=c++17 -Wall -Wextra -pedantic-errors'
+    alias c++17=(string join -- ' ' \
+        'clang++' \
+        '-std=c++17' \
+        '-Wall' \
+        '-Wextra' \
+        '-pedantic-errors' \
+        '-Wconversion' \
+        '-Wsign-conversion' \
+        # '-Werror' \
+    )
 else
     ### Make sure that "g++" is installed
     command -v g++ > '/dev/null' 2>&1
@@ -23,6 +32,15 @@ else
         exit "$GPP_IS_NOT_INSTALLED_ERROR_CODE"
     end
     ###
-    alias c++17='g++ -std=c++17 -Wall -Wextra -pedantic-errors'
+    alias c++17=(string join -- ' ' \
+        'g++' \
+        '-std=c++17' \
+        '-Wall' \
+        '-Wextra' \
+        '-pedantic-errors' \
+        '-Wconversion' \
+        '-Wsign-conversion' \
+        # '-Werror' \
+    )
 end
 ####
