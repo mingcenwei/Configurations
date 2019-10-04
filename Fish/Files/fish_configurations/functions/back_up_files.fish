@@ -3,9 +3,6 @@
 # Backup files
 # Require "echoerr" function
 function back_up_files
-    # For security
-    umask 077
-
     ### Default settings
     set --local ECHOERR_NOT_FOUND_ERROR_CODE 101
     set --local NOT_A_DIRECTORY_ERROR_CODE 102
@@ -287,7 +284,11 @@ function back_up_files
         end
         ###
 
+        # For security
+        set --local ORIGINAL_UMASK_CMD (umask -p)
+        umask 077
         echo 'Backing up...'
+
         for file in $argv
             # set file (realpath "$file")
 
@@ -365,6 +366,9 @@ function back_up_files
             end
         end
         echo 'Backing up finished'
+
+        # Restore original umask
+        eval "$ORIGINAL_UMASK_CMD"
     end
 end
 
