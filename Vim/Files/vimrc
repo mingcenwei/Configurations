@@ -149,7 +149,7 @@ map Y y$
 
 " Map <C-L> (redraw screen) to also turn off search highlighting until the
 " next search
-" nnoremap <C-L> :noh<CR><C-L>
+nnoremap <C-L> :noh<CR><C-L>
 
 " This works in Insert mode and Command-Line mode: press CTRL-F to make the
 " before the cursor uppercase. Handy to type words in lowercase and then
@@ -165,6 +165,7 @@ map Y y$
 " "You can also make backspace in normal mode delete characters by mapping it to the X command"
 " "I think that "_X would be "more natural" behaviour for <BS>."
 nnoremap <BS> "_X
+xnoremap <BS> "_x
 
 "------------------------------------------------------------
 "------------------------------------------------------------
