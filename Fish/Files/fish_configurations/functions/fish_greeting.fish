@@ -38,6 +38,9 @@ function fish_greeting
     else if is_platform 'manjaro'
         set package_update_commands 'sudo pacman -Syu'
         set package_clean_commands 'sudo pacman -Scc'
+    else if is_platform 'homebrew'
+        set package_update_commands 'brew -v update; brew upgrade'
+        set package_clean_commands 'brew cleanup'
     end
 
     # Package updating and cleaning commands

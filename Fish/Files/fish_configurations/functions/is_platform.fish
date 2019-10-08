@@ -28,7 +28,8 @@ function is_platform
         'macos' \
         'ubuntu' \
         'manjaro' \
-        'kde'
+        'kde' \
+        'homebrew'
 
     if test -n "$_flag_l"
         for platform in $platforms
@@ -40,11 +41,11 @@ function is_platform
         for platform in $argv
             set platform (string lower "$platform")
             switch "$platform"
-                case 'android-termux'
+                case 'android-termux' 'termux'
                     test (uname -s) = 'Linux'
                     and test (uname -o) = 'Android'
                     or return 1
-                case 'macos'
+                case 'macos' 'macosx'
                     test (uname -s) = 'Darwin'
                     or return 1
                 case 'ubuntu'
@@ -57,6 +58,8 @@ function is_platform
                         = 'Manjaro'
                 case 'kde'
                     test "$XDG_CURRENT_DESKTOP" = KDE
+                case 'homebrew' 'brew'
+                    command -v 'brew' > '/dev/null'
                 case '*'
                     echoerr 'Unknown platform:' "$platform"
                     return 1
