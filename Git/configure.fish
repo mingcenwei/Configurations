@@ -71,7 +71,7 @@ for key in $private_keys
         git config --global "$key" "$user_private_confs_values[$index]"
         continue
     else
-        read --prompt-str="$key"': ' --local value
+        read --prompt-str="$key"' (enter empty string to skip): ' --local value
         test -n "$value"
         and git config --global "$key" "$value"
         continue
