@@ -10,10 +10,10 @@
             <string>/Applications/Proxifier.app/Contents/MacOS/Proxifier</string>
         </array>
 
-<!--
+
         <key>RunAtLoad</key>
         <true/>
- -->
+
 
         <key>KeepAlive</key>
         <true/>
