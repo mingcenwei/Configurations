@@ -89,6 +89,7 @@ else if is_platform 'kde'
     check_binary_dependencies 'ksshaskpass'
     and git config --global core.askpass (command -v ksshaskpass)
 end
+git config --global gpg.program (command -v gpg)
 ###
 
 # Restore original umask
