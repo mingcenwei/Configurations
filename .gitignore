@@ -1,3 +1,4 @@
 # Ignore the symlink files ".my_backups" and ".my_private_configurations"
 /.my_backups
 /.my_private_configurations
+/.vscode/settings.json
