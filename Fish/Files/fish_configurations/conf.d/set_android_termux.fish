@@ -30,4 +30,9 @@ if is_platform 'android-termux'
 
         ln -si '/sdcard/Download' "$HOME"'/Downloads/Download'
     end
+
+    # Set "~/bin/termux-file-editor"
+    if not test -e "$HOME"'/bin/termux-file-editor'
+        ln -si (command -v vim) "$HOME"'/bin/termux-file-editor'
+    end
 end

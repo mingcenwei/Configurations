@@ -2,10 +2,18 @@
 
 # Set error codes
 set --local BACK_UP_FILES_IS_NOT_LOADED_ERROR_CODE 1
-set --local VIM_IS_NOT_INSTALLED_ERROR_CODE 2
+set --local IS_PLATFORM_IS_NOT_LOADED_ERROR_CODE 2
+set --local VIM_IS_NOT_INSTALLED_ERROR_CODE 3
 
 set --local source_dir (dirname (realpath (status --current-filename)))'/Files'
 set --local vim_dir "$HOME"'/.vim'
+
+# Make sure that "is_platform" is loaded
+functions is_platform > '/dev/null' 2>&1
+or begin
+    echoerr '"is_platform" function is not loaded!'
+    exit "$IS_PLATFORM_IS_NOT_LOADED_ERROR_CODE"
+end
 
 # Make sure that "back_up_files" is loaded
 functions back_up_files > '/dev/null' 2>&1
@@ -79,3 +87,11 @@ for file in 'ex' 'rview' 'rvim' 'vi' 'view' 'vimdiff'
     end
 end
 ###
+
+# Use vim as the default termux editor
+if is_platform 'android-termux'
+    # Set "~/bin/termux-file-editor"
+    if not test -e "$HOME"'/bin/termux-file-editor'
+        ln -si (command -v vim) "$HOME"'/bin/termux-file-editor'
+    end
+end
