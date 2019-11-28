@@ -92,6 +92,7 @@ end
 if is_platform 'android-termux'
     # Set "~/bin/termux-file-editor"
     if not test -e "$HOME"'/bin/termux-file-editor'
+        mkdir -p "$HOME"'/bin'
         ln -si (command -v vim) "$HOME"'/bin/termux-file-editor'
     end
 end
