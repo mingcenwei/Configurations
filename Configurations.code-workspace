@@ -1,0 +1,21 @@
+{
+    "folders":
+    [
+        {
+            "path": "."
+        }
+    ],
+    "settings":
+    {
+        "files.associations":
+        {
+            "vimrc": "viml",
+            "*.plist": "xml",
+            "attributes": "properties",
+            "ignore": "ignore",
+            "config": "ssh_config",
+            "sshd_config": "ssh_config",
+            "mutex": "cpp"
+        }
+    }
+}
