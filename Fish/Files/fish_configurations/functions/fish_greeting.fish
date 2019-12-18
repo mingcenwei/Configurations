@@ -27,7 +27,7 @@ function fish_greeting
     set --local package_update_commands
     set --local package_clean_commands
     if is_platform 'macos'
-        set package_update_commands 'brew -v update; brew upgrade'
+        set package_update_commands 'brew -v update; brew upgrade; brew cask upgrade'
         set package_clean_commands 'brew cleanup'
     else if is_platform 'android-termux'
         set package_update_commands 'apt update; apt upgrade'
@@ -39,7 +39,7 @@ function fish_greeting
         set package_update_commands 'sudo pacman -Syu'
         set package_clean_commands 'sudo pacman -Scc'
     else if is_platform 'homebrew'
-        set package_update_commands 'brew -v update; brew upgrade'
+        set package_update_commands 'brew -v update; brew upgrade; brew cask upgrade'
         set package_clean_commands 'brew cleanup'
     end
 
