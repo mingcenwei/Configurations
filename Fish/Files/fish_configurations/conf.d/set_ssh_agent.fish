@@ -9,6 +9,9 @@ source (dirname (dirname (dirname (dirname (dirname \
     (realpath (status --current-filename)))))))'/library.fish'
 check_binary_dependencies 'ssh-agent'
 
+test -d "$HOME"'/.ssh'
+or mkdir -p "$HOME"'/.ssh'
+
 test -z "$_MY_SSH_AGENT_INFORMATION"
 and set --global --export _MY_SSH_AGENT_INFORMATION \
     "$HOME"'/.ssh/.my_ssh_agent_information'
