@@ -65,7 +65,7 @@
 				<key>CFBundleVersion</key>
 				<string>1.0.2</string>
 				<key>CanShowSelectedItemsWhenRun</key>
-				<false/>
+				<true/>
 				<key>CanShowWhenRun</key>
 				<true/>
 				<key>Category</key>
@@ -108,8 +108,6 @@
 						<string>0</string>
 					</dict>
 				</dict>
-				<key>conversionLabel</key>
-				<integer>0</integer>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
@@ -169,7 +167,7 @@
 				<key>ActionParameters</key>
 				<dict>
 					<key>COMMAND_STRING</key>
-					<string>touch "$1"</string>
+					<string>touch "$@"</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
@@ -283,12 +281,10 @@
 						<string>4</string>
 					</dict>
 				</dict>
-				<key>conversionLabel</key>
-				<integer>0</integer>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>309.500000:462.000000</string>
+				<string>309.500000:410.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -298,7 +294,7 @@
 	</array>
 	<key>connectors</key>
 	<dict>
-		<key>8A019F72-3D09-4689-8DAC-61C5C0C19F8E</key>
+		<key>5C02BED9-B637-41CE-9BEC-9A3045994D70</key>
 		<dict>
 			<key>from</key>
 			<string>AEBF555F-9A7D-4025-BFF8-7110DCF65146 - AEBF555F-9A7D-4025-BFF8-7110DCF65146</string>
