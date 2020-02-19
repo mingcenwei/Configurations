@@ -27,7 +27,7 @@ function check_function_dependencies \
         functions "$func" > '/dev/null' 2>&1
         or begin
             echoerr "\"$func\""' function is not loaded!'
-            exit "$FUNCTION_NOT_LOADED_ERROR_CODE"
+            return "$FUNCTION_NOT_LOADED_ERROR_CODE"
         end
     end
 end
@@ -39,7 +39,7 @@ function check_binary_dependencies \
         command -v "$bin" > '/dev/null' 2>&1
         or begin
             echoerr "\"$bin\""' is not installed! Please install the program'
-            exit "$BINARY_NOT_FOUND_ERROR_CODE"
+            return "$BINARY_NOT_FOUND_ERROR_CODE"
         end
     end
 end

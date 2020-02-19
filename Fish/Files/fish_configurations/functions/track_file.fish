@@ -40,7 +40,8 @@ function track_file
     set --local required_binary_executables \
         'sed'
     check_function_dependencies $required_functions
-    check_binary_dependencies $required_binary_executables
+    and check_binary_dependencies $required_binary_executables
+    or exit "$status"
 
     # f/filename: Basename of the configuration file
     # s/symlink: Path to the symlink
