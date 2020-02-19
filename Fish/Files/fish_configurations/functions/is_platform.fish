@@ -29,7 +29,12 @@ function is_platform
         'ubuntu' \
         'manjaro' \
         'kde' \
-        'homebrew'
+        'homebrew' \
+        'linux' \
+        'npm' \
+        'apt' \
+        'apt-get' \
+        'yum'
 
     if test -n "$_flag_l"
         for platform in $platforms
@@ -44,10 +49,10 @@ function is_platform
                 case 'android-termux' 'termux'
                     test (uname -s) = 'Linux'
                     and test (uname -o) = 'Android'
-                    or return 1
-                case 'macos' 'macosx'
+                case 'macos' 'macosx' 'osx'
                     test (uname -s) = 'Darwin'
-                    or return 1
+                case 'linux'
+                    test (uname -s) = 'Linux'
                 case 'ubuntu'
                     test (uname -s) = 'Linux'
                     and test (head -n 1 '/etc/issue' | cut -d ' ' -f 1) \
@@ -60,6 +65,16 @@ function is_platform
                     test "$XDG_CURRENT_DESKTOP" = KDE
                 case 'homebrew' 'brew'
                     command -v 'brew' > '/dev/null'
+                case 'pacman'
+                    command -v 'pacman' > '/dev/null'
+                case 'npm'
+                    command -v 'npm' > '/dev/null'
+                case 'apt'
+                    command -v 'apt' > '/dev/null'
+                case 'apt-get'
+                    command -v 'apt-get' > '/dev/null'
+                case 'yum'
+                    command -v 'yum' > '/dev/null'
                 case '*'
                     echoerr 'Unknown platform:' "$platform"
                     return 1
