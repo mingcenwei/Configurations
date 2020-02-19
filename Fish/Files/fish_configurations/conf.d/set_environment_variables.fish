@@ -42,8 +42,8 @@ if is_platform 'macos'
 end
 ###
 
-### Set npm prefix in $PATH
+### Set npm prefix/bin in $PATH
 if is_platform 'npm'
-    set PATH $PATH "$HOME"'/.my_global_node_modules'
+    set PATH $PATH "$HOME"'/.my_global_node_modules/bin'
 end
 ###
