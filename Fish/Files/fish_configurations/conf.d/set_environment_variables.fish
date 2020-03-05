@@ -47,3 +47,11 @@ if is_platform 'npm'
     set PATH $PATH "$HOME"'/.my_global_node_modules/bin'
 end
 ###
+
+### Set JAVA_HOME
+if command -v java > '/dev/null' 2>&1
+    if is_platform 'macos'
+        set --universal --path JAVA_HOME ('/usr/libexec/java_home')
+    end
+end
+###

@@ -18,8 +18,6 @@ end
 
 ### Set macOS path variables
 if is_platform 'macos'
-    set --universal --path JAVA_HOME ('/usr/libexec/java_home')
-
     # For Tomecat installed in "~/Archived/Binary Apps/"
     set --universal --path CATALINA_HOME '/Users/say/Archived/Binary Apps/apache-tomcat-9.0.20'
 end
