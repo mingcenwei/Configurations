@@ -130,13 +130,15 @@ end
 function _configure_ssh_server
     # Make sure that we're the root user
     test (whoami) = 'root'
+    # Change the password
+    and begin
+        passwd
+        true
+    end
     or begin
         echoerr 'You are not the root user! Please run "su"'
         exit "$NOT_ROOT_ERROR_CODE"
     end
-
-    # Change the password
-    passwd
 
     # Configure the firewall
     _configure_firewall
@@ -346,14 +348,14 @@ function _configure_firewall
     ufw default allow outgoing
     ufw default deny routed
 
-    # Limit/allow tcp ports for incoming traffic from "ssh" and "shadowsocks"
+    # Limit/allow tcp ports for incoming traffic from "ssh" and "proxy"
     echo
     echo 'Configuring firewall'
     read --prompt-str='Please enter the ssh port: ' --local --array ports
     for port in $ports
         ufw limit in "$port"'/tcp'
     end
-    read --prompt-str='Please enter the shadowsocks ports: ' --local --array ports
+    read --prompt-str='Please enter the proxy ports: ' --local --array ports
     for port in $ports
         ufw allow in "$port"'/tcp'
     end
