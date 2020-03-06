@@ -7,11 +7,13 @@ set --local LENGTHS_NOT_EQUAL_ERROR_CODE 101
 if is_platform 'macos'
     set --local paths \
         "$HOME"'/Library/Python/3.7/bin' \
-        "$HOME"'/.local/bin'
+        "$HOME"'/.local/bin' \
+        "$HOME"'/Library/Android/sdk/platform-tools/'
 
     set --local filenames \
         'Python3.7-bin' \
-        'Haskell-stack-bin'
+        'Haskell-stack-bin' \
+        'Android-SDK-platform-tools'
 
     # Make sure previous 2 settings are correct
     if not test (count $paths) = (count $filenames)
@@ -34,8 +36,7 @@ if is_platform 'macos'
                 or sudo back_up_files --back-up --timestamp --destination \
                     --compressor --suffix --parents --remove-source "$filepath"
             end
-
-            echo "$paths[$iii]" > "$filepath"
+            echo "$paths[$iii]" | tee "$filepath" > '/dev/null'
             or echo "$paths[$iii]" | sudo tee "$filepath" > '/dev/null'
         end
     end
