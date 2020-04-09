@@ -17,12 +17,38 @@ if is_platform 'macos'
     alias c++17=(string join -- ' ' \
         'clang++' \
         '-std=c++17' \
+        \
         '-Wall' \
         '-Wextra' \
-        '-pedantic-errors' \
         '-Wconversion' \
         '-Wsign-conversion' \
-        # '-Werror' \
+        '-pedantic-errors' \
+        \
+        '-Weverything' \
+        '-Wno-c++98-compat' \
+        '-Wno-c++98-compat-pedantic' \
+        '-Wno-covered-switch-default' \
+        '-Wno-unreachable-code-break' \
+        '-Wno-weak-vtables' \
+        '-Wno-global-constructors' \
+        '-Wno-exit-time-destructors' \
+        \
+        '-DDEBUG_' \
+        '-g' \
+        '-fPIE' \
+        '-Wl,-pie' \
+        \
+        '-fsanitize=address' \
+        \
+        '-fsanitize=undefined' \
+        '-fsanitize=float-divide-by-zero' \
+        '-fsanitize=unsigned-integer-overflow' \
+        '-fsanitize=implicit-conversion' \
+        '-fsanitize=nullability' \
+        \
+        '-fno-omit-frame-pointer' \
+        '-fno-optimize-sibling-calls' \
+        \
     )
 else
     ### Make sure that "g++" is installed
