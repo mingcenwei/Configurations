@@ -353,11 +353,11 @@ function _configure_firewall
     echo 'Configuring firewall'
     read --prompt-str='Please enter the ssh port: ' --local --array ports
     for port in $ports
-        ufw limit in "$port"'/tcp'
+        ufw limit in "$port"'/tcp' comment "ssh port"
     end
     read --prompt-str='Please enter the proxy ports: ' --local --array ports
     for port in $ports
-        ufw allow in "$port"'/tcp'
+        ufw allow in "$port"'/tcp' comment "proxy port"
     end
 
     ufw logging medium
