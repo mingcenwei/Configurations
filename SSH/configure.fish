@@ -357,7 +357,7 @@ function _configure_firewall
     end
     read --prompt-str='Please enter the proxy ports: ' --local --array ports
     for port in $ports
-        ufw allow in "$port"'/tcp' comment "proxy port"
+        ufw allow in "$port" comment "proxy port"
     end
 
     ufw logging medium
