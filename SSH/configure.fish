@@ -348,6 +348,10 @@ function _configure_firewall
     ufw default allow outgoing
     ufw default deny routed
 
+    # Allow tcp ports for http and https
+    ufw allow in 80/tcp comment "http port"
+    ufw allow in 443/tcp comment "https port"
+
     # Limit/allow tcp ports for incoming traffic from "ssh" and "proxy"
     echo
     echo 'Configuring firewall'
