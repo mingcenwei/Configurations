@@ -46,7 +46,7 @@ for config_dir in $config_dir_list
     echo 'Run '"$script"'?'
     read_until --variable='yes_or_no' --default-position=1 'yes' 'no'
     if test "$yes_or_no" = 'yes'
-        "$script"
+        eval "$script"
     end
 end
 
