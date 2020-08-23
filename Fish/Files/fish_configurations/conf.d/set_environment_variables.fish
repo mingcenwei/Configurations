@@ -49,6 +49,12 @@ if is_platform 'npm'
 end
 ###
 
+### Set snap /snap/bin in $PATH
+if is_platform 'snap'
+    set PATH $PATH '/snap/bin'
+end
+###
+
 ### Set JAVA_HOME
 if command -v java > '/dev/null' 2>&1
     if is_platform 'macos'

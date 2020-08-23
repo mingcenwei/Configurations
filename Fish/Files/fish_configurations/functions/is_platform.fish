@@ -34,7 +34,8 @@ function is_platform
         'npm' \
         'apt' \
         'apt-get' \
-        'yum'
+        'yum' \
+        'snap'
 
     if test -n "$_flag_l"
         for platform in $platforms
@@ -75,6 +76,8 @@ function is_platform
                     command -v 'apt-get' > '/dev/null'
                 case 'yum'
                     command -v 'yum' > '/dev/null'
+                case 'snap'
+                    command -v 'snap' > '/dev/null'
                 case '*'
                     echoerr 'Unknown platform:' "$platform"
                     return 1
