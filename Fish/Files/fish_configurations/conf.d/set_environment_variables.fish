@@ -43,6 +43,13 @@ if is_platform 'macos'
 end
 ###
 
+### Set Android Termux environment variables
+if is_platform 'android-termux'
+    # In order to use GPG
+    set --export GPG_TTY (tty)
+end
+###
+
 ### Set npm prefix/bin in $PATH
 if is_platform 'npm'
     set PATH $PATH "$HOME"'/.my_global_node_modules/bin'
