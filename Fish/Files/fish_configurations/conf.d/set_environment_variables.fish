@@ -25,7 +25,7 @@ if is_platform 'macos'
     for iii in (seq (count $paths))
         set --local filepath '/etc/paths.d/'"$filenames[$iii]"
 
-        set --path PATH $PATH "$paths[$iii]"
+        set --path --export PATH "$paths[$iii]"
 
         if not test -e "$filepath"
         or test -d "$filepath"
@@ -45,6 +45,10 @@ end
 
 ### Set Android Termux environment variables
 if is_platform 'android-termux'
+    # Set path variables
+    set --path --export PATH "$PATH" "$PREFIX"'/local/bin'
+    set --path --export MANPATH "$MANPATH" "$PREFIX"'/local/share/man'
+
     # In order to use GPG
     set --export GPG_TTY (tty)
 end

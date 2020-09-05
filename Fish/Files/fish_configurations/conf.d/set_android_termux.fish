@@ -31,6 +31,16 @@ if is_platform 'android-termux'
         ln -si '/sdcard/Download' "$HOME"'/Downloads/Download'
     end
 
+    # Set "$PREFIX/local" directory
+    if test ! -d "$PREFIX"'/local'
+        test -e "$PREFIX"'/local'
+        or test -L "$PREFIX"'/local'
+        and back_up_files --back-up --timestamp --destination --compressor \
+            --suffix --parents --remove-source "$PREFIX"'/local'
+
+        mkdir -p "$PREFIX"'/local'
+    end
+
     # Set "~/bin/termux-file-editor"
     if not test -e "$HOME"'/bin/termux-file-editor'
         mkdir -p "$HOME"'/bin'
