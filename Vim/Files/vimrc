@@ -345,6 +345,8 @@ set ffs=unix,dos,mac
 " set nowb
 " set noswapfile
 
+set backupcopy=yes
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related
