@@ -47,7 +47,10 @@ end
 if is_platform 'android-termux'
     # Set path variables
     set --path --export PATH $PATH "$PREFIX"'/local/bin'
-    set --path --export MANPATH $MANPATH "$PREFIX"'/local/share/man'
+    set --path --export MANPATH \
+		$MANPATH \
+		"$PREFIX"'/local/share/man' \
+		"$PREFIX"'/share/man'
 
     # In order to use GPG
     set --export GPG_TTY (tty)
