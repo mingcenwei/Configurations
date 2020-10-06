@@ -478,6 +478,21 @@ map <leader>s? z=
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Show hidden characters
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" https://askubuntu.com/questions/74485/how-to-display-hidden-characters-in-vim
+" https://www.reddit.com/r/vim/comments/4hoa6e/what_do_you_use_for_your_listchars/
+set list
+set listchars=tab:━━➔,space:·,nbsp:␣,trail:•,eol:¶,precedes:❰,extends:❱
+"match WarningMsg '\s\+$'
+"set listchars=tab:━━➔,space:·,nbsp:␣,trail:\ ,eol:¶,precedes:❰,extends:❱
+match ErrorMsg '\s\+$'
+"set showbreak=↳\ 
+highlight NonText ctermfg=black
+highlight SpecialKey ctermfg=gray
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Misc
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remove the Windows ^M - when the encodings gets messed up
