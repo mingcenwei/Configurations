@@ -16,3 +16,6 @@ if command -v exa > '/dev/null'
 else
 	echoerr --warning 'Please install "exa"'
 end
+
+# Create and enter a temporary directory
+alias cdtemp='cd (mktemp -d)'
