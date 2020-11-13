@@ -88,6 +88,11 @@ else if is_platform 'kde'
     # Make sure that "ksshaskpass" is installed
     check_binary_dependencies 'ksshaskpass'
     and git config --global core.askpass (command -v ksshaskpass)
+else if is_platform 'android-termux'
+    # Make sure that "pass" is installed and intialized
+    check_binary_dependencies 'pass'
+    and git config --global credential.helper '!f() { test "$1" = get && echo "url=$(pass show GitHub)"; }; f'
+    and pass > '/dev/null'
 end
 git config --global gpg.program (command -v gpg)
 ###
