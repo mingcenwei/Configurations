@@ -101,6 +101,7 @@ function _configure_ssh_client
             and echo '    Port '"$port" >> "$config_file"
             test -n "$identity_file"
             and echo '    IdentityFile '"$identity_file" >> "$config_file"
+            echo >> "$config_file"
             echo
         end
 
