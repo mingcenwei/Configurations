@@ -1,18 +1,16 @@
 #!/usr/bin/env fish
 
+# Record the path of the package
+set --universal _Configurations__PATH (dirname (realpath (status --current-filename)))
+
 # Import "library.fish"
-source (dirname (realpath (status --current-filename)))'/library.fish'
+source "$_Configurations__PATH"'/library.fish'
 
 # For security
-for file in **
-    if test -d "$file"
-    or test (string sub -s '-5' "$file") = '.fish'
-    or test (string sub -s '-3' "$file") = '.py'
-        chmod -- 700 "$file"
-    else
-        chmod -- 600 "$file"
-    end
-end
+find "$PACKAGE_DIR" -type f -execdir chmod 600 '{}' '+'
+chmod -- 700 "$PACKAGE_DIR"/*.{fish,py}
+chmod -- 700 "$PACKAGE_DIR"/*/configure.fish
+chmod -- 700 "$PACKAGE_DIR"/*/Utilities/**.{fish,py}
 
 set --local my_backups "$PACKAGE_DIR"'/.my_backups'
 set --local my_private_configurations "$PACKAGE_DIR"'/.my_private_configurations'

@@ -5,8 +5,7 @@
 # https://wiki.archlinux.org/index.php/SSH_keys#SSH_agents
 
 # Import "library.fish"
-source (dirname (dirname (dirname (dirname (dirname \
-    (realpath (status --current-filename)))))))'/library.fish'
+source "$_Configurations__PATH"'/library.fish'
 check_binary_dependencies 'ssh-agent'
 
 test -d "$HOME"'/.ssh'

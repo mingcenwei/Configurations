@@ -12,8 +12,7 @@
 # Require "echoerr" and "back_up_files" function, and "sed" utility
 function track_file
     # Import "library.fish"
-    source (dirname (dirname (dirname (dirname (dirname \
-        (realpath (status --current-filename)))))))'/library.fish'
+    source "$_Configurations__PATH"'/library.fish'
 
     # Set error codes
     set --export WRONG_ARGUMENTS_ERROR_CODE 1
@@ -128,14 +127,14 @@ function track_file
     and test -n "$_flag_s"
         # Restore original umask
         eval "$ORIGINAL_UMASK_CMD"
-        
+
         echoerr 'Wrong arguments!'
         return "$WRONG_ARGUMENTS_ERROR_CODE"
     else if test -z "$_flag_f"
     and test -n "$_flag_u"
         # Restore original umask
         eval "$ORIGINAL_UMASK_CMD"
-        
+
         echoerr 'Wrong arguments!'
         return "$WRONG_ARGUMENTS_ERROR_CODE"
     end
@@ -150,7 +149,7 @@ function track_file
         else
             # Restore original umask
             eval "$ORIGINAL_UMASK_CMD"
-        
+
             echoerr 'Tracking failed'
             return "$TRACKING_FAILED_ERROR_CODE"
         end
@@ -160,7 +159,7 @@ function track_file
         if not grep -E '^\\Q'"$pattern"'\\E' "$record_file_path"
             # Restore original umask
             eval "$ORIGINAL_UMASK_CMD"
-        
+
             echoerr 'No such configuration file'
             return "$NO_SUCH_CONFIG_ERROR_CODE"
         end
@@ -175,7 +174,7 @@ function track_file
         else
             # Restore original umask
             eval "$ORIGINAL_UMASK_CMD"
-        
+
             echoerr 'Untracking failed'
             return "$UNTRACKING_FAILED_ERROR_CODE"
         end
@@ -187,7 +186,7 @@ function track_file
     or begin
         # Restore original umask
         eval "$ORIGINAL_UMASK_CMD"
-        
+
         echoerr 'Encountering an error when modifying the record file'
         return "$SORTING_ERROR_CODE"
     end

@@ -81,7 +81,7 @@ end
 back_up_files --back-up --timestamp --destination --compressor --suffix --parents ~/.config/fish
 
 # Use "fisher" to add configurations and functions
-fisher add "$package_directory"
+fisher install "$package_directory"
 
 ### Configurations that are installed without "fisher"
 set --local non_fisher_directory (dirname "$package_directory")'/non_fisher_fish_configurations'

@@ -77,7 +77,7 @@ function fish_greeting
     # Fisher updating commands
     echo -n 'Use '
     set_color --bold "$fish_color_command"
-    echo -n 'fisher self-update; fisher'
+    echo -n 'fisher update'
     set_color normal
     echo ' to update fisher packages'
 

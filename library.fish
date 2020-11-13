@@ -5,8 +5,7 @@ set --export ORIGINAL_UMASK_CMD (umask -p)
 umask 077
 
 # Set environment variables
-set --export PACKAGE_DIR \
-    (dirname (realpath (status --current-filename)))
+set --export PACKAGE_DIR "$_Configurations__PATH"
 set --export FUNCTION_NOT_LOADED_ERROR_CODE 101
 set --export BINARY_NOT_FOUND_ERROR_CODE 102
 
