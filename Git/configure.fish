@@ -79,6 +79,11 @@ for key in $private_keys
 end
 ###
 
+### Command line configurations
+# Rebase by default
+git config --global pull.rebase true
+###
+
 ### Platform dependent configurations
 git config --global 'core.excludesFile' "$git_home"'/ignore'
 # Caching GitHub password in git
