@@ -38,7 +38,9 @@ for key in $private_keys
 end
 
 # Back up former git configurations if existing
-back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$git_home"
+test -e "$git_home"
+or test -L "$git_home"
+and back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$git_home"
 for file in '.gitconfig' '.gitignore' '.config/git'
     if test -e "$HOME"'/'"$file"
     or test -L "$HOME"'/'"$file"
@@ -55,6 +57,11 @@ end
 set --local track_file_dir_path "$track_file_DIR_PATH"
 test -z "$track_file_dir_path"
 and set track_file_dir_path "$HOME"'/.my_private_configurations'
+test -d "$track_file_dir_path"
+or begin
+    mkdir -p "$track_file_dir_path"
+    chmod 700 "$track_file_dir_path"
+end
 for file in 'config'
     set --local config_file "$track_file_dir_path"'/GIT_'"$file"
     cp -i "$source_dir"'/'"$file" "$config_file"
