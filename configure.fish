@@ -7,7 +7,8 @@ set --universal _Configurations__PATH (dirname (realpath (status --current-filen
 source "$_Configurations__PATH"'/library.fish'
 
 # For security
-find "$PACKAGE_DIR" -type f -execdir chmod 600 '{}' '+'
+find "$PACKAGE_DIR" -type d '!' -path '*/.*' -print0 | xargs -0 chmod 700
+find "$PACKAGE_DIR" -type f '!' -path '*/.*' -print0 | xargs -0 chmod 600
 chmod -- 700 "$PACKAGE_DIR"/*.{fish,py}
 chmod -- 700 "$PACKAGE_DIR"/*/configure.fish
 chmod -- 700 "$PACKAGE_DIR"/*/Utilities/**.{fish,py}
