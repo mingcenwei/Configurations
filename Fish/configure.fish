@@ -75,6 +75,8 @@ if not functions fisher > '/dev/null' 2>&1
         echoerr 'Encountered errors when installing "fisher"'
         exit "$ENCOUNTERING_ERRORS_WHEN_INSTALLING_FISHER_ERROR_CODE"
     end
+else if fisher install 2>&1 | grep --quiet 'unknown flag or command'
+    fisher self-update
 end
 
 # Back up former fish configurations
