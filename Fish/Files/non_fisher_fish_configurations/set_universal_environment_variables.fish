@@ -3,23 +3,23 @@
 ### Set default text editors
 # Prerequisites: Visual Studio Code is installed
 if not test (command -v code)
-    echoerr -w "Visual Studio Code is not installed! \$VISUAL will not be set"
+	echoerr -w "Visual Studio Code is not installed! \$VISUAL will not be set"
 else
-    set --universal VISUAL (command -v code)
+	set --universal VISUAL (command -v code)
 end
 
 # Prerequisites: "vim" is installed
 if not test (command -v vim)
-    echoerr -w "\"vim\" is not installed! \$EDITOR will not be set"
+	echoerr -w "\"vim\" is not installed! \$EDITOR will not be set"
 else
-    set --universal EDITOR (command -v vim)
+	set --universal EDITOR (command -v vim)
 end
 ###
 
 ### Set macOS path variables
 if is_platform 'macos'
-    # For Tomecat installed in "~/Archived/Binary Apps/"
-    set --universal --path CATALINA_HOME '/Users/say/Archived/Binary Apps/apache-tomcat-9.0.20'
+	# For Tomecat installed in "~/Archived/Binary Apps/"
+	set --universal --path CATALINA_HOME '/Users/say/Archived/Binary Apps/apache-tomcat-9.0.20'
 end
 ###
 

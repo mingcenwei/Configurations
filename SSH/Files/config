@@ -1,5 +1,5 @@
 Host *
-    AddKeysToAgent yes
+	AddKeysToAgent yes
 #   ForwardAgent no
 #   ForwardX11 no
 #   ForwardX11Trusted no
@@ -10,24 +10,24 @@ Host *
 #   GSSAPIKeyExchange no
 #   GSSAPITrustDNS no
 #   BatchMode no
-    CheckHostIP yes
-    AddressFamily any
+	CheckHostIP yes
+	AddressFamily any
 #   ConnectTimeout 0
-    StrictHostKeyChecking ask
-    IdentityFile ~/.ssh/id_rsa
+	StrictHostKeyChecking ask
+	IdentityFile ~/.ssh/id_rsa
 #   IdentityFile ~/.ssh/id_ed25519
 # #   IdentityFile ~/.ssh/id_dsa
 # #   IdentityFile ~/.ssh/id_ecdsa
-    Port 22
-    Protocol 2
+	Port 22
+	Protocol 2
 #   Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-cbc,3des-cbc
 #   MACs hmac-md5,hmac-sha1,umac-64@openssh.com
 #   EscapeChar ~
 #   Tunnel no
 #   TunnelDevice any:any
-    PermitLocalCommand no
-    VisualHostKey yes
+	PermitLocalCommand no
+	VisualHostKey yes
 #   ProxyCommand ssh -q -W %h:%p gateway.example.com
-    RekeyLimit default 1h
-    SendEnv LANG LC_*
+	RekeyLimit default 1h
+	SendEnv LANG LC_*
 #   HashKnownHosts yes
