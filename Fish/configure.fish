@@ -69,8 +69,8 @@ end
 
 # Install "fisher" if it hasn't been installed
 if not functions fisher > '/dev/null' 2>&1
-	curl https://git.io/fisher --create-dirs --location --output ~/.config/fish/functions/fisher.fish
-	and source ~/.config/fish/functions/fisher.fish
+	curl https://git.io/fisher --location | source
+	and fisher install jorgebucaran/fisher
 	or begin
 		echoerr 'Encountered errors when installing "fisher"'
 		exit "$ENCOUNTERING_ERRORS_WHEN_INSTALLING_FISHER_ERROR_CODE"
