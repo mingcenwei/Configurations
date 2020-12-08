@@ -183,7 +183,7 @@ function _configure_ssh_server
 		# See https://unix.stackexchange.com/questions/247576/how-to-get-home-given-user
 		set --local ssh_dir_of_user (getent passwd "$username" | cut -d ':' -f 6)'/.ssh'
 		set --local authorized_keys "$ssh_dir_of_user"'/authorized_keys'
-		su "$username" -c 'mkdir -p -- '"$ssh_dir_of_user"
+		su -l "$username" -c 'mkdir -p -- '"$ssh_dir_of_user"
 		# Ask the user whether to keep previous authorized keys
 		if test -e "$authorized_keys"
 			read --prompt-str='Keep previous authorized keys? (YES/no): ' --local yes_or_no
@@ -204,15 +204,15 @@ function _configure_ssh_server
 			chown (whoami) "$authorized_keys"
 			back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$authorized_keys"
 		end
-		su "$username" -c 'touch -- '"$authorized_keys"
-		su "$username" -c 'chmod -- 600 '"$authorized_keys"
+		su -l "$username" -c 'touch -- '"$authorized_keys"
+		su -l "$username" -c 'chmod -- 600 '"$authorized_keys"
 
 		# Add new ssh pubkeys for the user
 		echo 'Adding new ssh pubkeys for the user'
 		read --prompt-str='Pubkey (enter empty string to end): ' --local pubkey
 		set pubkey (string trim "$pubkey")
 		while test -n "$pubkey"
-			su "$username" -c 'echo -- '"$pubkey"' >> '"$authorized_keys"
+			su -l "$username" -c 'echo -- '"$pubkey"' >> '"$authorized_keys"
 
 			read --prompt-str='Pubkey (enter empty string to end): ' pubkey
 			set pubkey (string trim "$pubkey")
