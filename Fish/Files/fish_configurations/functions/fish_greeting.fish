@@ -23,6 +23,14 @@ function fish_greeting
 	echo
 	echo 'Welcome to fish, the friendly interactive shell'
 
+	# Crontab command
+	echo -n 'Use '
+	set_color --bold "$fish_color_command"
+	echo -n 'crontab -e'
+	set_color normal
+	echo ' to schedule commands'
+
+
 	# Commands for respective package managers
 	set --local package_update_commands
 	set --local package_clean_commands
