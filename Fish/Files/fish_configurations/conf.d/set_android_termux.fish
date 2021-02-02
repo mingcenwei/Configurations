@@ -1,45 +1,46 @@
 #!/usr/bin/env fish
 
 if is_platform 'android-termux'
-	# Set "~/sdcard" directory
-	if test ! -d "$HOME"'/sdcard'
-		test -e "$HOME"'/sdcard'
-		or test -L "$HOME"'/sdcard'
-		and back_up_files --back-up --timestamp --destination --compressor \
-			--suffix --parents --remove-source "$HOME"'/sdcard'
+	### Link common directories
+	function __temporary_20200203_try_link --argument-names from to
+		if not test -d "$to"
+			test -e "$to"
+			or test -L "$to"
+			and back_up_files --back-up --timestamp --destination --compressor \
+				--suffix --parents --remove-source "$to"
 
-		ln -si '/sdcard' "$HOME"'/sdcard'
+			ln -si "$from" "$to"
+		end
 	end
 
-	# Set "~/Downloads" directory
-	if test ! -d "$HOME"'/Downloads'
-		test -e "$HOME"'/Downloads'
-		or test -L "$HOME"'/Downloads'
-		and back_up_files --back-up --timestamp --destination --compressor \
-			--suffix --parents --remove-source "$HOME"'/Downloads'
+	__temporary_20200203_try_link '/sdcard' "$HOME"'/sdcard'
+	__temporary_20200203_try_link '/sdcard/Download' "$HOME"'/Download'
+	__temporary_20200203_try_link '/sdcard/DCIM' "$HOME"'/DCIM'
+	__temporary_20200203_try_link '/sdcard/Pictures' "$HOME"'/Pictures'
+	__temporary_20200203_try_link '/sdcard/Telegram' "$HOME"'/Telegram'
+	__temporary_20200203_try_link '/sdcard/Android/data/com.tencent.mobileqq/Tencent/QQfile_recv' "$HOME"'/QQ'
+	__temporary_20200203_try_link '/sdcard/Android/data/com.tencent.mm/MicroMsg/Download' "$HOME"'/WeChat'
 
-		mkdir -p "$HOME"'/Downloads'
+	functions --erase __temporary_20200203_try_link
+	###
+
+	### Make common directories
+	function __temporary_20200203_try_mkdir --argument-names path
+		if not test -d "$path"
+			test -e "$path"
+			or test -L "$path"
+			and back_up_files --back-up --timestamp --destination --compressor \
+				--suffix --parents --remove-source "$path"
+
+			mkdir -p "$path"
+		end
 	end
 
-	# Set "~/Downloads/Download" directory
-	if test ! -d "$HOME"'/Downloads/Download'
-		test -e "$HOME"'/Downloads/Download'
-		or test -L "$HOME"'/Downloads/Download'
-		and back_up_files --back-up --timestamp --destination --compressor \
-			--suffix --parents --remove-source "$HOME"'/Downloads/Download'
+	__temporary_20200203_try_mkdir "$HOME"'/Workspace'
+	__temporary_20200203_try_mkdir "$PREFIX"'/local'
 
-		ln -si '/sdcard/Download' "$HOME"'/Downloads/Download'
-	end
-
-	# Set "$PREFIX/local" directory
-	if test ! -d "$PREFIX"'/local'
-		test -e "$PREFIX"'/local'
-		or test -L "$PREFIX"'/local'
-		and back_up_files --back-up --timestamp --destination --compressor \
-			--suffix --parents --remove-source "$PREFIX"'/local'
-
-		mkdir -p "$PREFIX"'/local'
-	end
+	functions --erase __temporary_20200203_try_mkdir
+	###
 
 	# Set "~/bin/termux-file-editor"
 	if not test -e "$HOME"'/bin/termux-file-editor'

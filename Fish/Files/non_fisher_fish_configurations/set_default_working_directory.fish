@@ -4,7 +4,8 @@
 if status is-login
 and status is-interactive
 	### Set default working directory
-	test -d ~/Downloads
-	and cd ~/Downloads
+	cd "$HOME"'/Workspace' > '/dev/null' 2>&1
+	or cd "$HOME"'/Downloads' > '/dev/null' 2>&1
+	or echoerr --warning 'No default working directory found'
 	###
 end
