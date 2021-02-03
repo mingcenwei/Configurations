@@ -37,8 +37,8 @@ if command -v npm > '/dev/null'
 	if not command -v pnpm > '/dev/null'
 		echoerr --warning 'Please install "pnpm" to replace "npm"'
 	else
-		alias plain_npm='npm'
-		alias plain_npx='npx'
+		alias plain_npm='command npm'
+		alias plain_npx='command npx'
 		function npm
 			echoerr --warning 'Please use "pnpm" (or "plain_npm")'
 		end
