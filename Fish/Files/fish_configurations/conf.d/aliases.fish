@@ -32,6 +32,22 @@ else
 	echoerr --warning 'Please install "exa" or "lsd"'
 end
 
+# Use pnpm instead of npm
+if command -v npm > '/dev/null'
+	if not command -v pnpm > '/dev/null'
+		echoerr --warning 'Please install "pnpm" to replace "npm"'
+	else
+		alias plain_npm='npm'
+		alias plain_npx='npx'
+		function npm
+			echoerr --warning 'Please use "pnpm" (or "plain_npm")'
+		end
+		function npx
+			echoerr --warning 'Please use "pnpx" (or "plain_npx")'
+		end
+	end
+end
+
 # Set compiler flags for C++
 if is_platform 'macos'
 	if command -v clang++ > '/dev/null'
