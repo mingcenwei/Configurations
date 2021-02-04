@@ -37,9 +37,8 @@ if is_platform 'android-termux'
         set --local pattern '^'(string escape --style=regex "$sdcard_realpath")
         if string match --quiet --regex "$pattern" "$from_realpath"
             set --local prefix "$HOME"'/UnderlyingFileSystem'
-            if not test -d "$prefix"/"$to"
+            if not test -L "$prefix"/"$to"
                 test -e "$prefix"/"$to"
-                or test -L "$prefix"/"$to"
                 and back_up_files --back-up --timestamp --destination --compressor \
                     --suffix --parents --remove-source "$prefix"/"$to"
 
