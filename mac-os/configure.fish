@@ -33,7 +33,7 @@ set --local linkDir "$thisDir"'/files/link'
 if test -d "$stowDir"'/mac-os/Library/Services'
 or test -d "$servicesConfigDir" || test -L "$servicesConfigDir"
 	read-choice --variable removePreviousConfigurations --default 2 \
-		--prompt 'Remove previous "macOS Services" configurations? ' -- \
+		--prompt 'Remove all previous "macOS Services" configurations? ' -- \
 		'yes' 'no' || exit 2
 
 	set --local backupCommand \
@@ -96,6 +96,14 @@ end
 ###
 
 ### Add "macOS" configurations
+for file in "$linkDir"'/Library/Services'/*
+	set --local baseFilename (basename "$file")
+	set --local configFile "$servicesConfigDir"/"$baseFilename"
+	if test -f "$configFile" || test -L "$configFile"
+		rm "$configFile" || exit 1
+	end
+end
+
 mkdir -m 700 -p "$stowDir"'/mac-os' || exit 1
 rsync --recursive  "$linkDir"/ "$stowDir"'/mac-os' || exit 1
 stow --verbose --restow --dir "$stowDir" --target "$HOME" 'mac-os' || exit 1

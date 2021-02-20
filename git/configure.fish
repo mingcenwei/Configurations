@@ -43,7 +43,7 @@ end
 if test -d "$stowDir"'/git'
 or test -d "$gitConfigDir" || test -L "$gitConfigDir"
 	read-choice --variable removePreviousConfigurations --default 2 \
-		--prompt 'Remove previous "git" configurations? ' -- \
+		--prompt 'Remove all previous "git" configurations? ' -- \
 		'yes' 'no' || exit 2
 
 	set --local backupCommand 'back-up-files' '--comment' 'git-config' '--'
@@ -61,6 +61,14 @@ end
 ###
 
 ### Add "git" configurations
+for file in "$linkDir"'/.config/git'/*
+	set --local baseFilename (basename "$file")
+	set --local configFile "$gitConfigDir"/"$baseFilename"
+	if test -f "$configFile" || test -L "$configFile"
+		rm "$configFile" || exit 1
+	end
+end
+
 mkdir -m 700 -p "$stowDir"'/git' || exit 1
 rsync --recursive  "$linkDir"/ "$stowDir"'/git' || exit 1
 stow --verbose --restow --dir "$stowDir" --target "$HOME" 'git' || exit 1

@@ -38,6 +38,12 @@ end
 ###
 
 ### Add "gpg" configurations
+for configFile in "$gpgConfigFile"
+	if test -f "$configFile" || test -L "$configFile"
+		rm "$configFile" || exit 1
+	end
+end
+
 mkdir -m 700 -p "$stowDir"'/gpg' || exit 1
 rsync --recursive  "$linkDir"/ "$stowDir"'/gpg' || exit 1
 stow --verbose --restow --dir "$stowDir" --target "$HOME" 'gpg' || exit 1

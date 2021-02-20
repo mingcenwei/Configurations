@@ -41,7 +41,7 @@ or echo-err 'The default login shell isn\'t changed. Maybe you installed the fis
 if test -d "$stowDir"'/fish'
 or test -d "$fishConfigDir" || test -L "$fishConfigDir"
 	read-choice --variable removePreviousConfigurations --default 2 \
-		--prompt 'Remove previous "fish" configurations? ' -- \
+		--prompt 'Remove all previous "fish" configurations? ' -- \
 		'yes' 'no' || exit 2
 
 	set --local backupCommand 'back-up-files' '--comment' 'fish-config' '--'

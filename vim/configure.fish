@@ -36,12 +36,16 @@ or test -f "$vimConfigFile" || test -L "$vimConfigFile"
 	and set --append backupConfigs "$legacyVimConfigFile"
 
 	test -n "$backupConfigs" && $backupCommand $backupConfigs || exit 1
-	test -f "$legacyVimConfigFile" || test -L "$legacyVimConfigFile"
-	and rm "$legacyVimConfigFile" || exit 1
 end
 ###
 
 ### Add "vim" configurations
+for configFile in "$vimConfigFile" "$legacyVimConfigFile"
+	if test -f "$configFile" || test -L "$configFile"
+		rm "$configFile" || exit 1
+	end
+end
+
 mkdir -m 700 -p "$stowDir"'/vim' || exit 1
 rsync --recursive  "$linkDir"/ "$stowDir"'/vim' || exit 1
 stow --verbose --restow --dir "$stowDir" --target "$HOME" 'vim' || exit 1
