@@ -28,6 +28,20 @@ if check-dependencies --program 'parallel'
 	end
 end
 
+# Aliases for "vim"
+if check-dependencies --program 'vim'
+	abbr --add --global vi 'vim'
+	abbr --add --global ex 'vim -e'
+	check-dependencies --program --quiet 'view'
+	or abbr --add --global view 'vim -R'
+	check-dependencies --program --quiet 'rvim'
+	or abbr --add --global rvim 'vim -Z'
+	check-dependencies --program --quiet 'rview'
+	or abbr --add --global rview 'vim -Z -R'
+	check-dependencies --program --quiet 'vimdiff'
+	or abbr --add --global vimdiff 'vim -d'
+end
+
 # Use "exa"/"lsd" instead of "ls"/"ll"/"la" or "tree"
 if check-dependencies --program --quiet 'exa'
 	alias ls 'exa'
