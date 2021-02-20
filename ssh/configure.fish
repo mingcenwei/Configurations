@@ -151,6 +151,12 @@ function configureSshClient
 	###
 
 	### Add "ssh" client configurations
+	for configFile in "$sshClientConfigFile"
+		if test -f "$configFile" || test -L "$configFile"
+			rm "$configFile" || exit 1
+		end
+	end
+
 	mkdir -m 700 -p "$stowDir"'/ssh-client' || return 1
 	rsync --recursive  "$linkDir"/ "$stowDir"'/ssh-client' || return 1
 	stow --verbose --restow --dir "$stowDir" --target "$HOME" 'ssh-client'
