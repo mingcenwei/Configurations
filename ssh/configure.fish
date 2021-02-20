@@ -9,21 +9,21 @@ check-dependencies --function 'is-platform' || exit 3
 check-dependencies --function 'read-choice' || exit 3
 
 # Set variables
-set --local sshClientConfigDir "$HOME"'/.ssh'
-set --local sshClientConfigFile "$sshClientConfigDir"'/config'
-set --local sshServerConfigDir '/etc/ssh'
+set --global sshClientConfigDir "$HOME"'/.ssh'
+set --global sshClientConfigFile "$sshClientConfigDir"'/config'
+set --global sshServerConfigDir '/etc/ssh'
 if is-platform --quiet 'android-termux'
 	set sshServerConfigDir "$PREFIX"'/etc/ssh'
 end
-set --local sshServerConfigFile "$sshServerConfigDir"'/sshd_config'
-set --local sshServerConfigHome (dirname -- "$sshServerConfigDir") || exit 1
-set --local stowDir "$HOME"'/.say-local/stow'
-set --local thisFile (realpath -- (status filename)) || exit 1
-set --local thisDir (dirname -- "$thisFile") || exit 1
-set --local clientLinkDir "$thisDir"'/files/link-client'
-set --local serverLinkDir "$thisDir"'/files/link-server'
+set --global sshServerConfigFile "$sshServerConfigDir"'/sshd_config'
+set --global sshServerConfigHome (dirname -- "$sshServerConfigDir") || exit 1
+set --global stowDir "$HOME"'/.say-local/stow'
+set --global thisFile (realpath -- (status filename)) || exit 1
+set --global thisDir (dirname -- "$thisFile") || exit 1
+set --global clientLinkDir "$thisDir"'/files/link-client'
+set --global serverLinkDir "$thisDir"'/files/link-server'
 
-set --local formerSshClientConfigHostCount 0
+set --global formerSshClientConfigHostCount 0
 function getFormerSshClientConfigHosts
 	if not test -f "$sshClientConfigFile"
 		return
@@ -73,7 +73,7 @@ function getFormerSshClientConfigHosts
 	end
 end
 
-set --local sshClientConfigTempFile
+set --global sshClientConfigTempFile
 function addSshClientConfigHosts
 	set --local tempFile (mktemp) || return 1
 	set sshClientConfigTempFile "$tempFile"
