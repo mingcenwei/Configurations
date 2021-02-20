@@ -199,6 +199,7 @@ end
 # Configure firewall, using "ufw"
 function configureFirewall --argument-names sshPort
 	check-dependencies --program 'ufw' || return 3
+	test 1 -gt "$sshPort" && return 2
 
 	echo 'Configuring firewall, using "ufw"'
 	read-choice --variable resetUfw --prompt 'Reset ufw configurations? ' -- \
@@ -238,9 +239,9 @@ end
 # For servers, add /etc/ssh/sshd_config
 function configureSshServer
 	changePassword || return
-
-#	# Configure the firewall
-#	configureFirewall
+	if not is-platform --quiet 'android-termux'
+		configureFirewall
+	end
 
 #	# Create new users
 #	echo 'Creating new users'
