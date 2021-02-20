@@ -95,7 +95,13 @@ or test -d "$karabinerElementsConfigDir" || test -L "$karabinerElementsConfigDir
 end
 ###
 
-### LaunchAgents
+### Add "macOS" configurations
+mkdir -m 700 -p "$stowDir"'/mac-os' || exit 1
+rsync --archive "$linkDir"/ "$stowDir"'/mac-os' || exit 1
+stow --verbose --restow --dir "$stowDir" --target "$HOME" 'mac-os' || exit 1
+###
+
+### Reload LaunchAgents
 for file in "$linkDir"'/Library/Services'/*
 	set --local launchAgent "$launchAgentsConfigDir"/(basename -- "$file")
 	launchctl bootstrap 'gui'/(id -u) "$launchAgent"
@@ -103,8 +109,9 @@ for file in "$linkDir"'/Library/Services'/*
 end
 ###
 
-### Karabiner-Elements
+### Reload Karabiner-Elements
 # You have to restart karabiner_console_user_server process by the following command after you made a symlink in order to tell Karabiner-Elements that the parent directory is changed.
 launchctl kickstart -k \
 	'gui'/(id -u)/'org.pqrs.karabiner.karabiner_console_user_server'
+or echo-err 'Failed kickstarting: org.pqrs.karabiner.karabiner_console_user_server'
 ###
