@@ -159,7 +159,7 @@ function configureSshClient
 	end
 
 	mkdir -m 700 -p "$stowDir"'/ssh-client' || return 1
-	rsync --recursive  "$linkDir"/ "$stowDir"'/ssh-client' || return 1
+	rsync --recursive  "$clientLinkDir"/ "$stowDir"'/ssh-client' || return 1
 	stow --verbose --restow --dir "$stowDir" --target "$HOME" 'ssh-client'
 	or return 1
 	###
