@@ -182,6 +182,8 @@ function configureSshClient
 		set editor "$EDITOR"
 	end
 	"$editor" "$sshClientConfigFile"
+
+	echo-err --info 'You perhaps need to run: ssh-keygen'
 end
 
 set --global formerSshServerConfigMatchCount 0
