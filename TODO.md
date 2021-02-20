@@ -1,8 +1,5 @@
 # TODO
 
-- Refactor previous code using `library.fish`
-- **Shadowsocks**
-- **V2ray**
-- **VS Code**
+- **v2ray/xray**
+- **vs-code**
 - Automatically add sftp accounts
-- Use library.fish to restore umask on exit event
