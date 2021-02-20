@@ -403,6 +403,10 @@ function configureSshServer
 		createNewUsers-linuxServer
 	end
 
+	echo-err --info \
+		'You perhaps need to add authorized keys to: '(string escape -- \
+		"$HOME"'/.ssh/authorized_keys')
+
 	# Add new sshd config match blocks
 	set --local matchUsernames
 	set --local matchPorts
@@ -507,9 +511,23 @@ function configureSshServer
 			sudo tee -a "$sshServerConfigHome" > '/dev/null' || return 1
 	end
 
+	echo-err --info 'Please review and/or edit the server-side ssh config file'
+	read --prompt-str 'Enter anything to continue: ' > '/dev/null'
+	set --local editor 'vi'
+	if test -n "$EDITOR" && check-dependencies --program --quiet "$EDITOR"
+		set editor "$EDITOR"
+	end
+	sudo "$editor" "$sshServerConfigHome"
+
 	# Generate new ssh host RSA key
-	ssh-keygen -t 'rsa' -b '4096' -N '' -f "$sshHostRsaSecretKey"
+	sudo ssh-keygen -t 'rsa' -b '4096' -N '' -f "$sshHostRsaSecretKey"
 	or return 1
+
+	if is-platform --quiet 'android-termux'
+		sudo chown (id -un):(id -un) "$sshServerConfigHome"
+		sudo chown (id -un):(id -un) "$sshHostRsaSecretKey"
+		sudo chown (id -un):(id -un) "$sshHostRsaPublicKey"
+	end
 
 	# Reload sshd
 	if not is-platform --quiet 'android-termux'
