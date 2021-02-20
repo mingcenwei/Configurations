@@ -16,6 +16,7 @@ if is-platform --quiet 'android-termux'
 	set sshServerConfigDir "$PREFIX"'/etc/ssh'
 end
 set --local sshServerConfigFile "$sshServerConfigDir"'/sshd_config'
+set --local sshServerConfigHome (dirname -- "$sshServerConfigDir") || exit 1
 set --local stowDir "$HOME"'/.say-local/stow'
 set --local thisFile (realpath -- (status filename)) || exit 1
 set --local thisDir (dirname -- "$thisFile") || exit 1
@@ -191,6 +192,45 @@ function changePassword
 		end
 	end
 	true
+end
+
+# Configure firewall, using "ufw"
+function configureFirewall --argument-names sshPort
+	check-dependencies --program 'ufw' || return 3
+
+	echo 'Configuring firewall, using "ufw"'
+	read-choice --variable resetUfw --prompt 'Reset ufw configurations? ' -- \
+		'yes' 'no' || return 2
+	read-choice --variable enableHttpPort --prompt 'Enable HTTP port 80? ' \
+		--default 1 -- 'yes' 'no' || return 2
+	read-choice --variable enableHttpsPort --prompt 'Enable HTTPS port 443? ' \
+		--default 1 -- 'yes' 'no' || return 2
+	read --prompt-str 'Please enter the proxy ports (space delimited): ' \
+		--local --array proxyPorts || return 2
+
+	sudo systemctl disable --now firewalld.service > '/dev/null' 2>&1
+	sudo systemctl enable --now ufw.service || return 1
+
+	if test "$resetUfw" = 'yes'
+		sudo ufw reset
+	end
+	sudo ufw default deny incoming
+	sudo ufw default allow outgoing
+	sudo ufw default deny routed
+	if test "$enableHttpPort" = 'yes'
+		sudo ufw allow in 'http/tcp' comment "http"
+	end
+	if test "$enableHttpsPort" = 'yes'
+		sudo ufw allow in 'https/tcp' comment "https"
+	end
+	sudo ufw limit in "$sshPort"/'tcp' comment "ssh"
+	for port in $proxyPorts
+		test 1 -le "$port"
+		and sudo ufw allow in "$port" comment "proxy"
+	end
+	sudo ufw logging medium
+	sudo ufw enable
+	sudo ufw status numbered
 end
 
 # For servers, add /etc/ssh/sshd_config
@@ -383,49 +423,10 @@ function configureSshServer
 #	systemctl restart sshd
 end
 
-# Configure firewall, using "ufw"
-function configureFirewall --argument-names sshPort
-	check-dependencies --program 'ufw' || return 3
-
-	echo 'Configuring firewall, using "ufw"'
-	read-choice --variable resetUfw --prompt 'Reset ufw configurations? ' -- \
-		'yes' 'no' || return 2
-	read-choice --variable enableHttpPort --prompt 'Enable HTTP port 80? ' \
-		--default 1 -- 'yes' 'no' || return 2
-	read-choice --variable enableHttpsPort --prompt 'Enable HTTPS port 443? ' \
-		--default 1 -- 'yes' 'no' || return 2
-	read --prompt-str 'Please enter the proxy ports (space delimited): ' \
-		--local --array proxyPorts || return 2
-
-	sudo systemctl disable --now firewalld.service > '/dev/null' 2>&1
-	sudo systemctl enable --now ufw.service || return 1
-
-	if test "$resetUfw" = 'yes'
-		sudo ufw reset
-	end
-	sudo ufw default deny incoming
-	sudo ufw default allow outgoing
-	sudo ufw default deny routed
-	if test "$enableHttpPort" = 'yes'
-		sudo ufw allow in 'http/tcp' comment "http"
-	end
-	if test "$enableHttpsPort" = 'yes'
-		sudo ufw allow in 'https/tcp' comment "https"
-	end
-	sudo ufw limit in "$sshPort"/'tcp' comment "ssh"
-	for port in $proxyPorts
-		test 1 -le "$port"
-		and sudo ufw allow in "$port" comment "proxy"
-	end
-	sudo ufw logging medium
-	sudo ufw enable
-	sudo ufw status numbered
-end
-
 read-choice --variable clientOrServer \
 	--prompt 'Are you an ssh client or server or both? ' -- \
 	'client' 'server' 'both' || exit 2
-switch "$client_or_server"
+switch "$clientOrServer"
 	case 'client'
 		configureSshClient
 	case 'server'
