@@ -171,6 +171,8 @@ function configureSshClient
 	and cat "$sshClientConfigTempFile" > "$sshClientConfigFile"
 	or echo-err 'Cannot add former ssh client-side hosts'
 
+	rm "$sshClientConfigTempFile"
+
 	echo-err --info 'Please review and/or edit the client-side ssh config file'
 	read --prompt-str 'Enter anything to continue: ' > '/dev/null'
 	set --local editor 'vi'
