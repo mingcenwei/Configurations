@@ -3,6 +3,11 @@
 # For security
 umask 077
 
+check-dependencies --program 'gpg' || exit 3
+check-dependencies --function 'back-up-files' || exit 3
+check-dependencies --function 'echo-err' || exit 3
+check-dependencies --function 'read-choice' || exit 3
+
 # Set variables
 set --local gpgConfigDir "$HOME"'/.gnupg'
 set --local gpgConfigFile "$gpgConfigDir"'/gpg.conf'
@@ -10,11 +15,6 @@ set --local stowDir "$HOME"'/.say-local/stow'
 set --local thisFile (realpath -- (status filename)) || exit 1
 set --local thisDir (dirname -- "$thisFile") || exit 1
 set --local linkDir "$thisDir"'/files/link'
-
-check-dependencies --program 'gpg' || exit 3
-check-dependencies --function 'back-up-files' || exit 3
-check-dependencies --function 'echo-err' || exit 3
-check-dependencies --function 'read-choice' || exit 3
 
 ### Back up previous "gpg" configurations
 if test -d "$stowDir"'/gpg'

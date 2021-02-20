@@ -3,16 +3,6 @@
 # For security
 umask 077
 
-### Set variables
-set --local servicesConfigDir "$HOME"'/Library/Services'
-set --local launchAgentsConfigDir "$HOME"'/Library/LaunchAgents'
-set --local karabinerElementsConfigDir "$HOME"'/.config/karabiner'
-set --local stowDir "$HOME"'/.say-local/stow'
-set --local thisFile (realpath -- (status filename)) || exit 1
-set --local thisDir (dirname -- "$thisFile") || exit 1
-set --local linkDir "$thisDir"'/files/link'
-###
-
 check-dependencies --function 'back-up-files' || exit 3
 check-dependencies --function 'echo-err' || exit 3
 check-dependencies --function 'is-platform' || exit 3
@@ -25,9 +15,19 @@ if not is-platform 'macos'
 end
 
 # Tell the user to install Karabiner-Elements if it's not installed
-if test -e '/Applications/Karabiner-Elements.app'
+if not test -e '/Applications/Karabiner-Elements.app'
 	check-dependencies --program 'Karabiner-Elements' || exit 3
 end
+
+### Set variables
+set --local servicesConfigDir "$HOME"'/Library/Services'
+set --local launchAgentsConfigDir "$HOME"'/Library/LaunchAgents'
+set --local karabinerElementsConfigDir "$HOME"'/.config/karabiner'
+set --local stowDir "$HOME"'/.say-local/stow'
+set --local thisFile (realpath -- (status filename)) || exit 1
+set --local thisDir (dirname -- "$thisFile") || exit 1
+set --local linkDir "$thisDir"'/files/link'
+###
 
 ### Back up previous "Services" configurations
 if test -d "$stowDir"'/mac-os/Library/Services'
