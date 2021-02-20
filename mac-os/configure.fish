@@ -97,7 +97,7 @@ end
 
 ### Add "macOS" configurations
 mkdir -m 700 -p "$stowDir"'/mac-os' || exit 1
-rsync --archive "$linkDir"/ "$stowDir"'/mac-os' || exit 1
+rsync --recursive  "$linkDir"/ "$stowDir"'/mac-os' || exit 1
 stow --verbose --restow --dir "$stowDir" --target "$HOME" 'mac-os' || exit 1
 ###
 

@@ -39,7 +39,7 @@ end
 
 ### Add "gpg" configurations
 mkdir -m 700 -p "$stowDir"'/gpg' || exit 1
-rsync --archive "$linkDir"/ "$stowDir"'/gpg' || exit 1
+rsync --recursive  "$linkDir"/ "$stowDir"'/gpg' || exit 1
 stow --verbose --restow --dir "$stowDir" --target "$HOME" 'gpg' || exit 1
 ###
 

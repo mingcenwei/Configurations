@@ -62,7 +62,7 @@ end
 
 ### Add "git" configurations
 mkdir -m 700 -p "$stowDir"'/git' || exit 1
-rsync --archive "$linkDir"/ "$stowDir"'/git' || exit 1
+rsync --recursive  "$linkDir"/ "$stowDir"'/git' || exit 1
 stow --verbose --restow --dir "$stowDir" --target "$HOME" 'git' || exit 1
 ###
 

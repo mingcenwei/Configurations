@@ -43,6 +43,6 @@ end
 
 ### Add "vim" configurations
 mkdir -m 700 -p "$stowDir"'/vim' || exit 1
-rsync --archive "$linkDir"/ "$stowDir"'/vim' || exit 1
+rsync --recursive  "$linkDir"/ "$stowDir"'/vim' || exit 1
 stow --verbose --restow --dir "$stowDir" --target "$HOME" 'vim' || exit 1
 ###

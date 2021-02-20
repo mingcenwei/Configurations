@@ -60,7 +60,7 @@ end
 
 ### Add "fish" configurations
 mkdir -m 700 -p "$stowDir"'/fish' || exit 1
-rsync --archive "$linkDir"/ "$stowDir"'/fish' || exit 1
+rsync --recursive "$linkDir"/ "$stowDir"'/fish' || exit 1
 stow --verbose --restow --dir "$stowDir" --target "$HOME" 'fish' || exit 1
 ###
 
