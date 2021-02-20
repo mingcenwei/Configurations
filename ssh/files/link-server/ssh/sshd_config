@@ -19,7 +19,7 @@ AddressFamily any
 
 HostKey /etc/ssh/ssh_host_rsa_key
 #HostKey /etc/ssh/ssh_host_ed25519_key
-# #HostKey /etc/ssh/ssh_host_ecdsa_key
+##HostKey /etc/ssh/ssh_host_ecdsa_key
 
 HostKeyAlgorithms ssh-rsa
 #HostKeyAlgorithms ssh-rsa,ssh-ed25519
@@ -97,8 +97,8 @@ UsePAM yes
 #X11Forwarding no
 #X11DisplayOffset 10
 #X11UseLocalhost yes
-# # XAuthLocation added by XQuartz (http://xquartz.macosforge.org)
-# #XAuthLocation /opt/X11/bin/xauth
+## XAuthLocation added by XQuartz (http://xquartz.macosforge.org)
+##XAuthLocation /opt/X11/bin/xauth
 #PermitTTY yes
 PrintMotd yes
 PrintLastLog yes
@@ -126,7 +126,7 @@ Subsystem sftp internal-sftp
 
 # Example of overriding settings on a per-user basis
 #Match User anoncvs
-#    X11Forwarding no
-#    AllowTcpForwarding no
-#    PermitTTY no
-#    ForceCommand cvs server
+#	X11Forwarding no
+#	AllowTcpForwarding no
+#	PermitTTY no
+#	ForceCommand cvs server
