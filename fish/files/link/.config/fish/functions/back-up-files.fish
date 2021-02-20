@@ -61,7 +61,7 @@ function back-up-files --description 'Back up files'
 	end
 	set --local timestamp (date +"%Y-%m-%d_%H-%M-%S")
 	test -d "$backupDir" || mkdir -m 700 -p -- "$backupDir" || return 1
-	set backupDir (realpath "$backupDir") || return 1
+	set backupDir (realpath -- "$backupDir") || return 1
 	set --local backupRoot \
 		(mktemp -d "$backupDir"/"$timestamp""$comment"'.XXXXXXXXXX') || return 1
 

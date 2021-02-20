@@ -6,8 +6,8 @@ umask 077
 ### Set variables
 set --local gitConfigDir "$HOME"'/.config/git'
 set --local stowDir "$HOME"'/.say-local/stow'
-set --local thisFile (realpath (status filename)) || exit 1
-set --local thisDir (dirname "$thisFile") || exit 1
+set --local thisFile (realpath -- (status filename)) || exit 1
+set --local thisDir (dirname -- "$thisFile") || exit 1
 set --local linkDir "$thisDir"'/files/link'
 ###
 

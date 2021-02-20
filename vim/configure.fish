@@ -8,8 +8,8 @@ set --local vimConfigDir "$HOME"'/.vim'
 set --local vimConfigFile "$vimConfigDir"'/vimrc'
 set --local legacyVimConfigFile "$HOME"'/.vimrc'
 set --local stowDir "$HOME"'/.say-local/stow'
-set --local thisFile (realpath (status filename)) || exit 1
-set --local thisDir (dirname "$thisFile") || exit 1
+set --local thisFile (realpath -- (status filename)) || exit 1
+set --local thisDir (dirname -- "$thisFile") || exit 1
 set --local linkDir "$thisDir"'/files/link'
 
 check-dependencies --program 'vim' || exit 3

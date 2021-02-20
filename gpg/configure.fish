@@ -7,8 +7,8 @@ umask 077
 set --local gpgConfigDir "$HOME"'/.gnupg'
 set --local gpgConfigFile "$gpgConfigDir"'/gpg.conf'
 set --local stowDir "$HOME"'/.say-local/stow'
-set --local thisFile (realpath (status filename)) || exit 1
-set --local thisDir (dirname "$thisFile") || exit 1
+set --local thisFile (realpath -- (status filename)) || exit 1
+set --local thisDir (dirname -- "$thisFile") || exit 1
 set --local linkDir "$thisDir"'/files/link'
 
 check-dependencies --program 'gpg' || exit 3
