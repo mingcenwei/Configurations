@@ -52,7 +52,7 @@ function check-dependencies --description  'Check dependencies'
 			functions "$func" > '/dev/null' 2>&1
 			or begin
 				test -z "$quiet" && echo-err \
-					'"'(string escape "$func")'" function is not loaded!'
+					(string escape "$func")' function is not loaded!'
 				set statusToReturn 1
 			end
 		end
@@ -61,7 +61,7 @@ function check-dependencies --description  'Check dependencies'
 			command -v "$program" > '/dev/null' 2>&1
 			or begin
 				test -z "$quiet" && echo-err \
-					'"'(string escape "$program")'" is not installed! Please install the program'
+					(string escape "$program")' is not installed! Please install the program'
 				set statusToReturn 1
 			end
 		end
@@ -70,7 +70,7 @@ function check-dependencies --description  'Check dependencies'
 			type -p "$executable" > '/dev/null' 2>&1
 			or begin
 				test -z "$quiet" && echo-err \
-					'"'(string escape "$executable")'" is not found'
+					(string escape "$executable")' is not found'
 				set statusToReturn 1
 			end
 		end

@@ -71,7 +71,8 @@ function is-platform --description 'Test whether we are on the given platform(s)
 	else
 		set --local statusToReturn 0
 		for platform in $givenPlatforms
-			set platform (string lower -- (string escape -- "$platform"))
+			set platform (string lower -- \
+				(string escape --style 'url' -- "$platform"))
 			set --local isUnknown 'false'
 			switch "$platform"
 				case 'linux' 'gnu-linux' 'linux-gnu'

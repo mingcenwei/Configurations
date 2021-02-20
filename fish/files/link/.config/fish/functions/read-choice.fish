@@ -68,7 +68,7 @@ function read-choice --description  'Read user choice'
 		if test "$defaultPosition" -ge 1
 		and test "$defaultPosition" -le (count $argv)
 		else
-			echo-err 'Invalid default choice: "'(string escape "$defaultPosition")'"'
+			echo-err 'Invalid default choice: '(string escape "$defaultPosition")
 			__sayAnonymousNamespace_check-dependencies_help
 			return 2
 		end
@@ -83,7 +83,7 @@ function read-choice --description  'Read user choice'
 	set --local position 0
 	set --local choices
 	for choice in $argv
-		set choice (string lower (string escape --style 'var' -- "$choice"))
+		set choice (string lower (string escape --style 'url' -- "$choice"))
 		set --append choices "$choice"
 		set position (math "$position" + 1)
 		if test "$position" = "$defaultPosition"

@@ -49,7 +49,7 @@ for configDir in $configDirs
 	and echo-err 'Not found: '(string escape -- "$configScript")
 	and continue
 
-	echo 'Run "'(string escape -- "$configScript")'"?'
+	echo 'Run '(string escape -- "$configScript")' ?'
 	read-choice --variable runScript --default 1 -- 'yes' 'no' || exit 2
 	if test "$runScript" = 'yes'
 		fish -- "$configScript"
