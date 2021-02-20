@@ -9,7 +9,7 @@
 # These symlinks are recorded in "~/.my_private_configurations/RECORDS"
 
 # Track/untrack files
-# Require "echoerr" and "back_up_files" function, and "sed" utility
+# Require "echo-err" and "back_up_files" function, and "sed" utility
 function track_file
 	# Import "library.fish"
 	source "$_Configurations__PATH"'/library.fish'
@@ -34,7 +34,7 @@ function track_file
 
 	# Check dependencies
 	set --local required_functions \
-		'echoerr' \
+		'echo-err' \
 		'back_up_files'
 	set --local required_binary_executables \
 		'sed'
@@ -107,7 +107,7 @@ function track_file
 		touch "$record_file_path"
 		# Verbosity
 		if test -n "$verbose"
-			echoerr -i -- '"'"$record_file_path"'" is created'
+			echo-err -i -- '"'"$record_file_path"'" is created'
 		end
 
 		chmod $verbose 600 "$record_file_path"
@@ -121,21 +121,21 @@ function track_file
 		# Restore original umask
 		eval "$ORIGINAL_UMASK_CMD"
 
-		echoerr 'Wrong arguments!'
+		echo-err 'Wrong arguments!'
 		return "$WRONG_ARGUMENTS_ERROR_CODE"
 	else if test -z "$_flag_f"
 	and test -n "$_flag_s"
 		# Restore original umask
 		eval "$ORIGINAL_UMASK_CMD"
 
-		echoerr 'Wrong arguments!'
+		echo-err 'Wrong arguments!'
 		return "$WRONG_ARGUMENTS_ERROR_CODE"
 	else if test -z "$_flag_f"
 	and test -n "$_flag_u"
 		# Restore original umask
 		eval "$ORIGINAL_UMASK_CMD"
 
-		echoerr 'Wrong arguments!'
+		echo-err 'Wrong arguments!'
 		return "$WRONG_ARGUMENTS_ERROR_CODE"
 	end
 
@@ -145,12 +145,12 @@ function track_file
 		if echo $line >> "$record_file_path"
 			# Verbosity
 			test -n "$verbose"
-			and echoerr -i -- 'Line "'"$line"'" added'
+			and echo-err -i -- 'Line "'"$line"'" added'
 		else
 			# Restore original umask
 			eval "$ORIGINAL_UMASK_CMD"
 
-			echoerr 'Tracking failed'
+			echo-err 'Tracking failed'
 			return "$TRACKING_FAILED_ERROR_CODE"
 		end
 	# Untrack
@@ -160,7 +160,7 @@ function track_file
 			# Restore original umask
 			eval "$ORIGINAL_UMASK_CMD"
 
-			echoerr 'No such configuration file'
+			echo-err 'No such configuration file'
 			return "$NO_SUCH_CONFIG_ERROR_CODE"
 		end
 
@@ -168,14 +168,14 @@ function track_file
 		if sed -i'.BACKUP~' -e '/^'"$pattern"'/d' "$record_file_path"
 			# Verbosity
 			test -n "$verbose"
-			and echoerr -i -- 'Record removed successfully'
+			and echo-err -i -- 'Record removed successfully'
 
 			rm "$record_file_path"'.BACKUP~'
 		else
 			# Restore original umask
 			eval "$ORIGINAL_UMASK_CMD"
 
-			echoerr 'Untracking failed'
+			echo-err 'Untracking failed'
 			return "$UNTRACKING_FAILED_ERROR_CODE"
 		end
 	end
@@ -187,7 +187,7 @@ function track_file
 		# Restore original umask
 		eval "$ORIGINAL_UMASK_CMD"
 
-		echoerr 'Encountering an error when modifying the record file'
+		echo-err 'Encountering an error when modifying the record file'
 		return "$SORTING_ERROR_CODE"
 	end
 
@@ -204,17 +204,17 @@ function track_file
 			set line_number (math "$line_number + 1")
 			set --local paths (string split "$delimiter" "$line")
 			if test (count $paths) -ne 2
-				echoerr -e '"'"$record_file_path"'" line '"$line_number"': syntax error\n    '"$line"
+				echo-err -e '"'"$record_file_path"'" line '"$line_number"': syntax error\n    '"$line"
 			else if test "$paths[1]" != (basename "$paths[1]")
-				echoerr -e '"'"$record_file_path"'" line '"$line_number"': configuration file\'s basename should be used\n    '"$line"
+				echo-err -e '"'"$record_file_path"'" line '"$line_number"': configuration file\'s basename should be used\n    '"$line"
 			else if contains "$paths[1]" $config_names
-				echoerr -e '"'"$record_file_path"'" line '"$line_number"': duplicate configuration filenames\n    '"$line"
+				echo-err -e '"'"$record_file_path"'" line '"$line_number"': duplicate configuration filenames\n    '"$line"
 			else
 				set config_names $config_names "$paths[1]"
 				if not test -e "$dir_path""/$paths[1]"
-					echoerr -e '"'"$record_file_path"'" line '"$line_number"': configuration file doesn\'t exist\n    '"$line"
+					echo-err -e '"'"$record_file_path"'" line '"$line_number"': configuration file doesn\'t exist\n    '"$line"
 				else if not test -e "$paths[2]"
-					echoerr -e '"'"$record_file_path"'" line '"$line_number"': symlink does\'t exist\n    '"$line"
+					echo-err -e '"'"$record_file_path"'" line '"$line_number"': symlink does\'t exist\n    '"$line"
 				end
 			end
 		end < "$record_file_path"

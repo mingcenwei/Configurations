@@ -33,22 +33,22 @@ function fish_greeting
 	# Commands for respective package managers
 	set --local packageUpdateCommands
 	set --local packageCleanCommands
-	if is_platform 'macos'
+	if is-platform 'macos'
 		set packageUpdateCommands 'brew -v update; brew upgrade; brew cask upgrade'
 		set packageCleanCommands 'brew cleanup'
-	else if is_platform 'android-termux'
+	else if is-platform 'android-termux'
 		set packageUpdateCommands 'apt update; apt upgrade'
 		set packageCleanCommands 'apt autoremove; apt autoclean'
-	else if is_platform 'ubuntu'
+	else if is-platform 'ubuntu'
 		set packageUpdateCommands 'sudo apt update; sudo apt upgrade'
 		set packageCleanCommands 'sudo apt autoremove; sudo apt autoclean'
-	else if is_platform 'manjaro'
+	else if is-platform 'manjaro'
 		set packageUpdateCommands 'sudo pacman -Syu'
 		set packageCleanCommands 'sudo pacman -Scc'
-	else if is_platform 'arch'
+	else if is-platform 'arch'
 		set packageUpdateCommands 'sudo pacman -Syu'
 		set packageCleanCommands 'sudo pacman -Scc'
-	else if is_platform 'homebrew'
+	else if is-platform 'homebrew'
 		set packageUpdateCommands 'brew -v update; brew upgrade; brew cask upgrade'
 		set packageCleanCommands 'brew cleanup'
 	end
