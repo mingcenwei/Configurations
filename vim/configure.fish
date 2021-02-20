@@ -5,7 +5,6 @@ umask 077
 
 check-dependencies --program 'vim' || exit 3
 check-dependencies --function 'back-up-files' || exit 3
-check-dependencies --function 'echo-err' || exit 3
 check-dependencies --function 'read-choice' || exit 3
 
 # Set variables
