@@ -1,10 +1,10 @@
 #!/usr/bin/env fish
 
-# For security
-umask 077
-
 # Make sure that the "fish" shell is used
 test -z "$fish_pid" && echo 'Error: The shell is not "fish"!' >&2 && exit 3
+
+# For security
+umask 077
 
 # Set variables
 set --local fishConfigDir "$HOME"'/.config/fish'
