@@ -128,7 +128,7 @@ function configureSshClient
 	getFormerSshClientConfigHosts
 	addSshClientConfigHosts || return
 
-	### Back up previous "ssh client" configurations
+	### Back up previous "ssh" client configurations
 	if test -d "$stowDir"'/ssh-client'
 	or test -f "$sshClientConfigFile" || test -L "$sshClientConfigFile"
 		read-choice --variable removePreviousConfigurations --default 2 \
@@ -147,7 +147,9 @@ function configureSshClient
 		test -f "$sshClientConfigFile" || test -L "$sshClientConfigFile"
 		and set --append backupConfigs "$sshClientConfigFile"
 
-		test -n "$backupConfigs" && $backupCommand $backupConfigs || return 1
+		if test -n "$backupConfigs"
+			$backupCommand $backupConfigs || return 1
+		end
 	end
 	###
 
@@ -182,6 +184,68 @@ function configureSshClient
 	"$editor" "$sshClientConfigFile"
 end
 
+set --global formerSshServerConfigMatchCount 0
+set --global formerSshServerConfigPorts
+function getFormerSshServerConfigMatches
+	if not test -f "$sshServerConfigDir"
+		return
+	end
+
+	set --local lines (sudo cat "$sshServerConfigDir") || return 1
+	set --local isInMatch 'false'
+	for line in $lines
+		set --local fieldNamePort \
+			(string lower -- \
+			(string trim -- \
+			(string sub --length 5 -- \
+			(string trim -- "$line"))))
+		set --local fieldNameMatch \
+			(string lower -- \
+			(string trim -- \
+			(string sub --length 6 -- \
+			(string trim -- "$line"))))
+		if test "$isInMatch" = 'false'
+			if test 'port' = "$fieldNamePort"
+				set --local ports \
+					(string split -- ' ' \
+					(string trim -- \
+					(string sub --start 6 -- \
+					(string trim -- "$line"))))
+				for port in $ports
+					if test -n "$port"
+						set --append formerSshServerConfigPorts "$port"
+					end
+				end
+			else if test 'match' = "$fieldNameMatch"
+				set isInMatch 'true'
+				set formerSshServerConfigMatchCount \
+					(math "$formerSshServerConfigMatchCount" + 1)
+				set --global \
+					formerSshServerConfigMatch"$formerSshServerConfigMatchCount" \
+					"$line"
+				continue
+			else
+				continue
+			end
+		else
+			if test 'match' = "$fieldNameMatch"
+				set formerSshServerConfigMatchCount \
+					(math "$formerSshServerConfigMatchCount" + 1)
+				set --global \
+					formerSshServerConfigMatch"$formerSshServerConfigMatchCount" \
+					"$line"
+				continue
+			else if test -z (string trim -- "$line")
+				continue
+			else
+				set --append \
+					formerSshServerConfigMatch"$formerSshServerConfigMatchCount" \
+					"$line"
+			end
+		end
+	end
+end
+
 function changePassword
 	read-choice --variable changePassword --default 1 \
 		--prompt 'Change user and root password? ' -- 'yes' 'no' || return 2
@@ -196,10 +260,93 @@ function changePassword
 	true
 end
 
+function addAuthorizedKeys --argument-names username authorizedKeysFile
+	set username (string trim -- "$username")
+	set authorizedKeysFile (string trim -- "$authorizedKeysFile")
+	test -z "$username" && return 2
+	if test -z "$authorizedKeysFile"
+		# See https://unix.stackexchange.com/questions/247576/how-to-get-home-given-user
+		#set --local userHome (getent passwd "$username" | cut -d ':' -f 6)
+		set --local userHome \
+			(sudo su -s (command -v fish) -l "$username" -c 'echo "$HOME"')
+		or return 2
+		set --local sshDir "$userHome"'/.ssh'
+		set authorizedKeysFile "$sshDir"'/authorized_keys'
+	end
+	set --local sshDir (dirname -- "$authorizedKeysFile") || return 2
+
+	# Ask the user whether to keep previous authorized keys
+	set --local backupCommand \
+		'sudo' 'back-up-files' '--comment' 'ssh-authorized_keys' \
+		'--backup-dir' "$HOME"'/.say-local/backups'
+	if test -e "$authorizedKeysFile"
+		read-choice --variable keepPreviousAuthorizedKeys --default 1 \
+			--prompt 'Keep previous authorized keys? ' -- \
+			'yes' 'no' || return 2
+		if test "$keepPreviousAuthorizedKeys" = 'no'
+			set --append backupCommand '--remove-source'
+		end
+		$backupCommand -- "$authorizedKeysFile" || return 1
+	else if test -L "$authorizedKeysFile"
+		set --append backupCommand '--remove-source'
+		$backupCommand -- "$authorizedKeysFile" || return 1
+	end
+
+	sudo su -s (command -v fish) -l "$username" -c \
+		'mkdir -m 700 -p -- '(string escape -- "$sshDir")
+	sudo su -s (command -v fish) -l "$username" -c \
+		'touch -- '(string escape -- "$authorizedKeysFile")
+	sudo su -s (command -v fish) -l "$username" -c \
+		'chmod -- 600 '(string escape -- "$authorizedKeysFile")
+
+	# Add new ssh pubkeys for the user
+	echo 'Adding new ssh pubkeys for user: '"$username"
+	read --prompt-str 'Pubkey (enter none to end): ' --local pubkey
+	and set pubkey (string trim -- "$pubkey")
+	and while test -n "$pubkey"
+		set --local command \
+			'printf -- '(string escape -- \
+				"$pubkey")'\'\\n\' >> '(string escape -- "$authorizedKeysFile")
+		sudo su -s (command -v fish) -l "$username" -c "$command"
+		and read --prompt-str 'Pubkey (enter none to end): ' pubkey
+		and set pubkey (string trim -- "$pubkey")
+		or break
+	end
+end
+
+set --global newUsers
+function createNewUsers-linuxServer
+	# Create new users
+	echo 'Creating new users'
+	read --prompt-str 'Username (enter none to end): ' --local username
+	and set username (string trim -- "$username")
+	or return 2
+	while test -n "$username"
+		if check-dependencies --program --quiet 'adduser'
+			sudo adduser --shell (command -v fish) -- "$username"
+		else
+			sudo useradd --shell (command -v fish) --create-home -- "$username"
+			and sudo passwd -- "$username"
+		end
+		and set --append newUsers "$username"
+
+		addAuthorizedKeys "$username"
+
+		echo
+		read --prompt-str 'Username (enter none to end): ' username
+		and set username (string trim --"$username")
+		or return 2
+	end
+end
+
 # Configure firewall, using "ufw"
-function configureFirewall --argument-names sshPort
+# Parameters: ssh ports
+function configureFirewall
 	check-dependencies --program 'ufw' || return 3
-	test 1 -gt "$sshPort" && return 2
+	set --local sshPorts $argv
+	for sshPort in $sshPorts
+		test 1 -gt "$sshPort" && return 2
+	end
 
 	echo 'Configuring firewall, using "ufw"'
 	read-choice --variable resetUfw --prompt 'Reset ufw configurations? ' -- \
@@ -226,7 +373,9 @@ function configureFirewall --argument-names sshPort
 	if test "$enableHttpsPort" = 'yes'
 		sudo ufw allow in 'https/tcp' comment "https"
 	end
-	sudo ufw limit in "$sshPort"/'tcp' comment "ssh"
+	for sshPort in $sshPorts
+		sudo ufw limit in "$sshPort"/'tcp' comment "ssh"
+	end
 	for port in $proxyPorts
 		test 1 -le "$port"
 		and sudo ufw allow in "$port" comment "proxy"
@@ -238,192 +387,135 @@ end
 
 # For servers, add /etc/ssh/sshd_config
 function configureSshServer
-	changePassword || return
-	if not is-platform --quiet 'android-termux'
-		configureFirewall
+	if is-platform --quiet 'macos'
+		echo-err 'Not implemented for macOS'
+		return 3
+	else if not is-platform --quiet 'android-termux'
+	and not check-dependencies --program 'systemctl'
+		return 3
 	end
 
-#	# Create new users
-#	echo 'Creating new users'
-#	read --prompt-str 'Username (enter none to end): ' --local username
-#	set username (string trim "$username")
-#	### Find the path to fish shell
-#	set --local fish_shell_path (command -v fish)
-#	if cat "$etc_shells" 2> '/dev/null' | grep '/fish$' > '/dev/null'
-#		if test (cat "$etc_shells" | grep '/fish$' | wc -l) -eq 1
-#			set fish_shell_path (cat "$etc_shells" | grep '/fish$')
-#		else
-#			# Ask the user which one is the "fish" shell they want
-#			for line in (cat "$etc_shells" | grep '/fish$')
-#				echo $line
+	check-dependencies --program 'ssh-keygen' || return 3
 
-#				read --prompt-str 'Is this shell the "fish" shell that you want to use? (YES/no): ' --local yes_or_no
-#				set yes_or_no (string lower "$yes_or_no")
-#				while not contains "$yes_or_no" 'yes' 'no'
-#				and test -n "$yes_or_no"
-#					read --prompt-str 'Please enter YES/no: ' yes_or_no
-#					set yes_or_no (string lower "$yes_or_no")
-#				end
+	getFormerSshServerConfigMatches
+	changePassword || return
+	if not is-platform --quiet 'android-termux'
+		createNewUsers-linuxServer
+	end
 
-#				if test -z "$yes_or_no"
-#				or test "$yes_or_no" = 'yes'
-#					set fish_shell_path "$line"
-#					break
-#				else
-#					continue
-#				end
-#			end
-#		end
-#	end
-#	###
-#	while test -n "$username"
-#		adduser --shell "$fish_shell_path" "$username"
-#		# Get the ssh configuration directory of the user
-#		# See https://unix.stackexchange.com/questions/247576/how-to-get-home-given-user
-#		set --local ssh_dir_of_user (getent passwd "$username" | cut -d ':' -f 6)'/.ssh'
-#		set --local authorized_keys "$ssh_dir_of_user"'/authorized_keys'
-#		su -l "$username" -c 'mkdir -p -- '"$ssh_dir_of_user"
-#		# Ask the user whether to keep previous authorized keys
-#		if test -e "$authorized_keys"
-#			read --prompt-str 'Keep previous authorized keys? (YES/no): ' --local yes_or_no
-#			set yes_or_no (string lower "$yes_or_no")
-#			while not contains "$yes_or_no" 'yes' 'no'
-#			and test -n "$yes_or_no"
-#				read --prompt-str 'Please enter YES/no: ' yes_or_no
-#				set yes_or_no (string lower "$yes_or_no")
-#			end
+	# Add new sshd config match blocks
+	set --local matchUsernames
+	set --local matchPorts
+	echo 'Adding ssh server-side user/port pairs'
+	read --prompt-str 'Username (enter none to end): ' --local matchUsername
+	and set matchUsername (string trim -- "$matchUsername")
+	and read --prompt-str 'Port: ' --local matchPort
+	and set matchPort (string trim -- "$matchPort")
+	and test 1 -le "$matchPort"
+	and set --append matchUsernames "$matchUsername"
+	and set --append matchPorts "$matchPort"
+	or return 2
+	and while test -n "$matchUsername"
+		echo
+		read --prompt-str 'Username (enter none to end): ' matchUsername
+		and set matchUsername (string trim -- "$matchUsername")
+		and read --prompt-str 'Port: ' matchPort
+		and set matchPort (string trim -- "$matchPort")
+		and test 1 -le "$matchPort"
+		and set --append matchUsernames "$matchUsername"
+		and set --append matchPorts "$matchPort"
+		or return 2
+	end
 
-#			if test "$yes_or_no" = 'no'
-#				# Back up former server authorized_keys
-#				chown (whoami) "$authorized_keys"
-#				back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$authorized_keys"
-#			end
-#		else if test -L "$authorized_keys"
-#			# Back up former server authorized_keys
-#			chown (whoami) "$authorized_keys"
-#			back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$authorized_keys"
-#		end
-#		su -l "$username" -c 'touch -- '"$authorized_keys"
-#		su -l "$username" -c 'chmod -- 600 '"$authorized_keys"
+	set --local allSshPorts (for port in $formerSshServerConfigPorts $matchPorts
+			test 1 -le "$port" && echo "$port"
+		end | sort | uniq
+	) || exit 2
 
-#		# Add new ssh pubkeys for the user
-#		echo 'Adding new ssh pubkeys for the user'
-#		read --prompt-str 'Pubkey (enter none to end): ' --local pubkey
-#		set pubkey (string trim "$pubkey")
-#		while test -n "$pubkey"
-#			su -l "$username" -c 'echo -- '"$pubkey"' >> '"$authorized_keys"
+	if not is-platform --quiet 'android-termux'
+		configureFirewall $allSshPorts
+	end
 
-#			read --prompt-str 'Pubkey (enter none to end): ' pubkey
-#			set pubkey (string trim "$pubkey")
-#		end
+	### Back up previous "ssh" server configurations
+	set --local sshHostRsaSecretKey "$sshServerConfigDir"'/ssh_host_rsa_key'
+	set --local sshHostRsaPublicKey "$sshHostRsaSecretKey"'.pub'
+	if test -d "$stowDir"'/ssh-server'
+	or test -f "$sshServerConfigFile" || test -L "$sshServerConfigFile"
+	or test -f "$sshHostRsaSecretKey" || test -L "$sshHostRsaSecretKey"
+	or test -f "$sshHostRsaPublicKey" || test -L "$sshHostRsaPublicKey"
+		read-choice --variable removePreviousConfigurations --default 2 \
+			--prompt 'Remove previous "ssh" server configurations? ' -- \
+			'yes' 'no' || return 2
 
-#		echo
-#		read --prompt-str 'Username (enter none to end): ' username
-#		set username (string trim "$username")
-#	end
+		set --local backupCommand \
+			'back-up-files' '--comment' 'ssh_server-config' '--'
+		test "$removePreviousConfigurations" = 'yes'
+		and set backupCommand \
+			'back-up-files' '--comment' 'ssh_server-config' '--remove-source' '--'
 
-#	# Back up former server sshd private configuration if available
-#	set --local get_server_sshd_configuratoin "$utility_dir"'/get_server_sshd_configuratoin.py'
-#	chmod u+x "$get_server_sshd_configuratoin"
-#	set --local delimiter '---'
-#	set --local lines
-#	if test -e "$global_sshd_config"
-#		"$get_server_sshd_configuratoin" "$delimiter" | while read --local line
-#			set lines $lines "$line"
-#		end
-#	end
+		set --local backupConfigs
+		test -d "$stowDir"'/ssh-server'
+		and set --append backupConfigs "$stowDir"'/ssh-server'
+		test -f "$sshServerConfigFile" || test -L "$sshServerConfigFile"
+		and set --append backupConfigs "$sshServerConfigFile"
+		test -f "$sshHostRsaSecretKey" || test -L "$sshHostRsaSecretKey"
+		and set --append backupConfigs "$sshHostRsaSecretKey"
+		test -f "$sshHostRsaPublicKey" || test -L "$sshHostRsaPublicKey"
+		and set --append backupConfigs "$sshHostRsaPublicKey"
 
-#	### Track the configuration file with "track_file" function
-#	set --local track_file_dir_path "$track_file_DIR_PATH"
-#	test -z "$track_file_dir_path"
-#	and set track_file_dir_path "$HOME"'/.my_private_configurations'
-#	set --local config_file "$track_file_dir_path"'/SSH_sshd_config'
+		if test -n "$backupConfigs"
+			sudo $backupCommand $backupConfigs || return 1
+		end
+	end
+	###
 
-#	# Back up former configuration file
-#	if test -e "$config_file"
-#	or test -L "$config_file"
-#		back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$config_file"
-#	end
+	### Add "ssh" server configurations
+	for configFile in "$sshServerConfigFile" "$sshHostRsaSecretKey" "$sshHostRsaPublicKey"
+		if test -f "$configFile" || test -L "$configFile"
+			sudo rm "$configFile" || exit 1
+		end
+	end
 
-#	cp -i "$source_dir"'/sshd_config' "$config_file"
-#	# For security
-#	chmod 600 "$config_file"
+	mkdir -m 700 -p "$stowDir"'/ssh-server' || return 1
+	rsync --recursive  "$serverLinkDir"/ "$stowDir"'/ssh-server' || return 1
+	sudo stow --verbose --restow --dir "$stowDir" \
+		--target "$sshServerConfigHome" 'ssh-server' || return 1
+	###
 
-#	echo
-#	echo 'Configuring ssh'
-#	# Ask the user to add new ports
-#	echo >> "$config_file"
-#	echo 'Adding new ssh ports'
-#	read --prompt-str 'Port (enter none to end): ' --local port
-#	set port (string trim "$port")
-#	while test -n "$port"
-#		echo 'Port' "$port" >> "$config_file"
-#		read --prompt-str 'Port (enter none to end): ' port
-#		set port (string trim "$port")
-#	end
+	echo | sudo tee -a "$sshServerConfigHome" > '/dev/null' || return 1
+	for sshPort in $allSshPorts
+		echo 'Port '"$sshPort" | \
+			sudo tee -a "$sshServerConfigHome" > '/dev/null' || return 1
+	end
 
-#	# Use previous server sshd private configuration if available
-#	set --local in_match_block false
-#	for line in $lines
-#		if not "$in_match_block"
-#			if test "$line" = "$delimiter"
-#				set in_match_block true
-#				echo >> "$config_file"
-#			else
-#				echo 'Port' "$line" >> "$config_file"
-#			end
-#		else
-#			if test "$line" = "$delimiter"
-#				echo >> "$config_file"
-#			else
-#				echo "$line" >> "$config_file"
-#			end
-#		end
-#	end
-#	echo >> "$config_file"
+	for matchNumber in (seq "$formerSshServerConfigMatchCount")
+		echo | sudo tee -a "$sshServerConfigHome" > '/dev/null' || return 1
+		set --local match 'formerSshServerConfigMatch'"$matchNumber"
+		for line in $$match
+			echo "$line" | sudo tee -a "$sshServerConfigHome" > '/dev/null'
+			or return 1
+		end
+	end
 
-#	# Ask the user to add new match block configurations
-#	echo
-#	echo 'Adding new match blocks'
-#	echo 'Example: Match User <username>, LocalPort <port-number>'
-#	read --prompt-str 'Match (enter none to end): ' --local match
-#	set match (string trim "$match")
-#	while test -n "$match"
-#		read --prompt-str 'AllowUsers: ' --local allow_users
-#		set allow_users (string trim "$allow_users")
+	for iii in (seq (count $matchPorts))
+		echo | sudo tee -a "$sshServerConfigHome" > '/dev/null' || return 1
+		set --local matchUsername "$matchUsernames[$iii]"
+		set --local matchPort "$matchPorts[$iii]"
+		echo 'Match User '"$matchUsername"', LocalPort '"$matchPort" | \
+			sudo tee -a "$sshServerConfigHome" > '/dev/null' || return 1
+		echo \t'AllowUsers '"$matchUsername" | \
+			sudo tee -a "$sshServerConfigHome" > '/dev/null' || return 1
+	end
 
-#		echo 'Match '"$match" >> "$config_file"
-#		test -n "$allow_users"
-#		and echo '    AllowUsers '"$allow_users" >> "$config_file"
-#		echo >> "$config_file"
-#		echo
+	# Generate new ssh host RSA key
+	ssh-keygen -t 'rsa' -b '4096' -N '' -f "$sshHostRsaSecretKey"
+	or return 1
 
-#		read --prompt-str 'Match (enter none to end): ' match
-#		set match (string trim "$match")
-#	end
-
-#	# Back up former server sshd configuration
-#	if test -e "$global_sshd_config"
-#	or test -L "$global_sshd_config"
-#		back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$global_sshd_config"
-#	end
-
-#	ln -si "$config_file" "$global_sshd_config"
-#	and track_file --filename=(basename "$config_file") --symlink="$global_sshd_config" --check
-
-#	# Back up former ssh host RSA key
-#	set --local ssh_host_rsa_key '/etc/ssh/ssh_host_rsa_key'
-#	for file in "$ssh_host_rsa_key" "$ssh_host_rsa_key"'.pub'
-#		if test -e "$file"
-#		or test -L "$file"
-#			back_up_files --back-up --timestamp --destination --compressor --suffix --parents --remove-source "$file"
-#		end
-#	end
-#	# Generate new ssh host RSA key
-#	ssh-keygen -t 'rsa' -b '4096' -N '' -f "$ssh_host_rsa_key"
-
-#	# Reload sshd
-#	systemctl restart sshd
+	# Reload sshd
+	if not is-platform --quiet 'android-termux'
+		sudo systemctl enable --now sshd.service
+		sudo systemctl reload sshd.service
+	end
 end
 
 read-choice --variable clientOrServer \
