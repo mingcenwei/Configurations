@@ -5,10 +5,13 @@ if is-platform --quiet 'homebrew'
 		(brew --prefix)'/Homebrew/Library/Taps/homebrew/homebrew-command-not-found/handler.fish'
 	if test -f "$homebrewCommandNotFoundHandler"
 		source "$homebrewCommandNotFoundHandler"
-	else
+	else if status is-interactive
 		echo-err --warning 'Please run `brew tap homebrew/command-not-found`'
 	end
 else if is-platform --quiet 'pacman'
-	check-dependencies --program --quiet 'pkgfile'
-	or echo-err --warning 'Please install "pkgfile" and run `sudo pkgfile --update`'
+	if not check-dependencies --program --quiet 'pkgfile'
+	and status is-interactive
+		echo-err --warning \
+			'Please install "pkgfile" and run `sudo pkgfile --update`'
+	end
 end
