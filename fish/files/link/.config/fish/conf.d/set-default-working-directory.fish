@@ -1,8 +1,7 @@
 #!/usr/bin/env fish
 
 # For login and interactive shells
-if status is-login
-and status is-interactive
+if status is-login && status is-interactive
 and test (pwd) = "$HOME"
 	### Set default working directory
 	cd "$HOME"'/Workspace' > '/dev/null' 2>&1

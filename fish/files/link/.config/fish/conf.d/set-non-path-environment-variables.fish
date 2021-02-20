@@ -3,13 +3,13 @@
 ### Set default text editors
 if not check-dependencies --program --quiet 'vim'
 	echo-err --warning '"vim" is not installed! $EDITOR will not be set'
-else if status is-interactive
+else if status is-login && status is-interactive
 	set --export --universal EDITOR (command -v vim)
 end
 
 if not check-dependencies --program --quiet 'code'
 	echo-err --warning '"Visual Studio Code" is not installed! $VISUAL will not be set'
-else if status is-interactive
+else if status is-login && status is-interactive
 	set --export --universal VISUAL (command -v code)
 end
 ###
