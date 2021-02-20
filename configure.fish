@@ -1,53 +1,49 @@
 #!/usr/bin/env fish
 
-# Record the path of the package
-set --universal _Configurations__PATH (dirname (realpath (status --current-filename)))
-
-# Import "library.fish"
-source "$_Configurations__PATH"'/library.fish'
+# Make sure that the "fish" shell is used
+test -z "$fish_pid" && echo 'Error: The shell is not "fish"!' >&2 && exit 3
 
 # For security
-find "$PACKAGE_DIR" -type d '!' -path '*/.*' -print0 | xargs -0 chmod 700
-find "$PACKAGE_DIR" -type f '!' -path '*/.*' -print0 | xargs -0 chmod 600
-chmod -- 700 "$PACKAGE_DIR"/*.{fish,py}
-chmod -- 700 "$PACKAGE_DIR"/*/configure.fish
-chmod -- 700 "$PACKAGE_DIR"/*/Utilities/**.{fish,py}
+umask 077
 
-set --local my_backups "$PACKAGE_DIR"'/.my_backups'
-set --local my_private_configurations "$PACKAGE_DIR"'/.my_private_configurations'
-set --local config_dir_list \
-	'Fish' \
-	'Vim' \
-	'Git' \
-	'SSH' \
-	'GPG' \
-	'macOS'
+# Set variables
+set --local thisFile (realpath -- (status filename)) || exit 1
+set --local thisDir (dirname -- "$thisFile") || exit 1
+set --local functionDir "$thisDir"'/fish/files/link/.config/fish/functions'
 
-test -L "$my_backups"
-or ln -si "$HOME"'/.my_backups' "$my_backups"
-test -L "$my_private_configurations"
-or ln -si "$HOME"'/.my_private_configurations' "$my_private_configurations"
-
-for script in "$PACKAGE_DIR"'/'*'/configure.fish'
-	not contains (basename (dirname "$script")) $config_dir_list
-	and echoerr \
-		'Please add "'(basename (dirname "$script"))'" to $config_dir_list'
+# Load required functions
+for file in "$functionDir"/*
+	source -- "$file" || exit
 end
+or exit 3
+
+set --local configDirs \
+	'fish' \
+	'vim' \
+	'gpg' \
+	'git'
+
+for configScript in "$thisDir"/*/'configure.fish'
+	set --local configName (basename -- (dirname -- "$configScript"))
+	test "$configName" = 'TODO' && continue
+
+	not contains -- "$configName" $configDirs
+	and echo-err --warning -- 'Please add `'"$configName"'` to $configDirs'
+	or true
+end
+or exit 1
 
 
-for config_dir in $config_dir_list
-	set --local script "$PACKAGE_DIR"'/'"$config_dir"'/configure.fish'
+for configDir in $configDirs
+	set --local configScript "$thisDir"/"$configDir"/'configure.fish'
 
-	not test -e "$script"
-	and echoerr "$script"' isn\'t found'
+	not test -f "$configScript"
+	and echo-err 'Not found: '(string escape -- "$configScript")
 	and continue
 
-	echo 'Run '"$script"'?'
-	read_until --variable='yes_or_no' --default-position=1 'yes' 'no'
-	if test "$yes_or_no" = 'yes'
-		eval "$script"
+	echo 'Run "'(string escape -- "$configScript")'"?'
+	read-choice --variable runScript --default 1 -- 'yes' 'no' || exit 2
+	if test "$runScript" = 'yes'
+		fish -- "$configScript"
 	end
 end
-
-# Restore original umask
-eval "$ORIGINAL_UMASK_CMD"

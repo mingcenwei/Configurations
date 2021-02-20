@@ -15,6 +15,10 @@
 			"ignore": "ignore",
 			"config": "ssh_config",
 			"sshd_config": "ssh_config"
-		}
+		},
+		"cSpell.words": [
+			"viml",
+			"vimrc"
+		]
 	}
 }
