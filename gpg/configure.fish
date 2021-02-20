@@ -9,7 +9,7 @@ set --local gpgConfigFile "$gpgConfigDir"'/gpg.conf'
 set --local stowDir "$HOME"'/.say-local/stow'
 set --local thisFile (realpath (status filename)) || exit 1
 set --local thisDir (dirname "$thisFile") || exit 1
-set --local fixedDir "$thisDir"'/files/fixed'
+set --local linkDir "$thisDir"'/files/link'
 
 check-dependencies --program 'gpg' || exit 3
 check-dependencies --function 'back-up-files' || exit 3
@@ -39,7 +39,7 @@ end
 
 ### Add "gpg" configurations
 mkdir -m 700 -p "$stowDir"'/gpg' || exit 1
-rsync --archive "$fixedDir"/ "$stowDir"'/gpg' || exit 1
+rsync --archive "$linkDir"/ "$stowDir"'/gpg' || exit 1
 stow --verbose --restow --dir "$stowDir" --target "$HOME" 'gpg' || exit 1
 ###
 

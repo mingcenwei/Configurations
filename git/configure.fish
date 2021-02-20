@@ -8,7 +8,7 @@ set --local gitConfigDir "$HOME"'/.config/git'
 set --local stowDir "$HOME"'/.say-local/stow'
 set --local thisFile (realpath (status filename)) || exit 1
 set --local thisDir (dirname "$thisFile") || exit 1
-set --local fixedDir "$thisDir"'/files/fixed'
+set --local linkDir "$thisDir"'/files/link'
 ###
 
 check-dependencies --program 'git' || exit 3
@@ -62,7 +62,7 @@ end
 
 ### Add "git" configurations
 mkdir -m 700 -p "$stowDir"'/git' || exit 1
-rsync --archive "$fixedDir"/ "$stowDir"'/git' || exit 1
+rsync --archive "$linkDir"/ "$stowDir"'/git' || exit 1
 stow --verbose --restow --dir "$stowDir" --target "$HOME" 'git' || exit 1
 ###
 

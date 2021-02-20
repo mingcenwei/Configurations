@@ -11,9 +11,9 @@ set --local fishConfigDir "$HOME"'/.config/fish'
 set --local stowDir "$HOME"'/.say-local/stow'
 set --local thisFile (realpath (status filename)) || exit 1
 set --local thisDir (dirname "$thisFile") || exit 1
-set --local fixedDir "$thisDir"'/files/fixed'
+set --local linkDir "$thisDir"'/files/link'
 set --local onceDir "$thisDir"'/files/once'
-set --local functionDir "$fixedDir"'/.config/fish/functions'
+set --local functionDir "$linkDir"'/.config/fish/functions'
 
 # Load required functions
 for file in "$functionDir"/*
@@ -59,7 +59,7 @@ end
 
 ### Add "fish" configurations
 mkdir -m 700 -p "$stowDir"'/fish' || exit 1
-rsync --archive "$fixedDir"/ "$stowDir"'/fish' || exit 1
+rsync --archive "$linkDir"/ "$stowDir"'/fish' || exit 1
 stow --verbose --restow --dir "$stowDir" --target "$HOME" 'fish' || exit 1
 ###
 
