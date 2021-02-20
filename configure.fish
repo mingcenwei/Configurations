@@ -17,6 +17,12 @@ for file in "$functionDir"/*
 end
 or exit 3
 
+# For security
+for filesDir in "$thisDir"/*/'files'
+	find "$filesDir" -type d -exec chmod 700 '{}' ';'
+	find "$filesDir" -type f -exec chmod 600 '{}' ';'
+end
+
 set --local configDirs \
 	'fish' \
 	'vim' \
