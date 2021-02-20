@@ -46,7 +46,7 @@ or test -d "$fishConfigDir" || test -L "$fishConfigDir"
 
 	set --local backupCommand 'back-up-files' '--comment' 'fish-config' '--'
 	test "$removePreviousConfigurations" = 'yes'
-	and set backupDirs \
+	and set backupCommand \
 		'back-up-files' '--comment' 'fish-config' '--remove-source' '--'
 
 	set --local backupConfigs

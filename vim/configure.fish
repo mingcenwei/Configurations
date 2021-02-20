@@ -26,7 +26,7 @@ or test -f "$vimConfigFile" || test -L "$vimConfigFile"
 
 	set --local backupCommand 'back-up-files' '--comment' 'vim-config' '--'
 	test "$removePreviousConfigurations" = 'yes'
-	and set backupDirs \
+	and set backupCommand \
 		'back-up-files' '--comment' 'vim-config' '--remove-source' '--'
 
 	set --local backupConfigs

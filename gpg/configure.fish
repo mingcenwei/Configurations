@@ -25,7 +25,7 @@ or test -f "$gpgConfigFile" || test -L "$gpgConfigFile"
 
 	set --local backupCommand 'back-up-files' '--comment' 'gpg-config' '--'
 	test "$removePreviousConfigurations" = 'yes'
-	and set backupDirs \
+	and set backupCommand \
 		'back-up-files' '--comment' 'gpg-config' '--remove-source' '--'
 
 	set --local backupConfigs

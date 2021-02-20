@@ -48,7 +48,7 @@ or test -d "$gitConfigDir" || test -L "$gitConfigDir"
 
 	set --local backupCommand 'back-up-files' '--comment' 'git-config' '--'
 	test "$removePreviousConfigurations" = 'yes'
-	and set backupDirs \
+	and set backupCommand \
 		'back-up-files' '--comment' 'git-config' '--remove-source' '--'
 
 	set --local backupConfigs
