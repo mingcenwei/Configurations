@@ -173,19 +173,23 @@ function configureSshClient
 	"$editor" "$sshClientConfigFile"
 end
 
+function changePassword
+	read-choice --variable changePassword --default 1 \
+		--prompt 'Change user and root password? ' -- 'yes' 'no' || return 2
+	if test "$changePassword" = 'yes'
+		echo-err --info 'Change current user\'s password'
+		passwd
+		if test (id -u) -ne 0
+			echo-err --info 'Change root password'
+			sudo passwd
+		end
+	end
+	true
+end
+
 # For servers, add /etc/ssh/sshd_config
 function configureSshServer
-#	# Make sure that we're the root user
-#	test (whoami) = 'root'
-#	# Change the password
-#	and begin
-#		passwd
-#		true
-#	end
-#	or begin
-#		echo-err 'You are not the root user! Please run "su"'
-#		exit "$NOT_ROOT_ERROR_CODE"
-#	end
+	changePassword || return
 
 #	# Configure the firewall
 #	configureFirewall
