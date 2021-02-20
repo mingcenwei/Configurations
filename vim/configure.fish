@@ -35,7 +35,9 @@ or test -f "$vimConfigFile" || test -L "$vimConfigFile"
 	test -f "$legacyVimConfigFile" || test -L "$legacyVimConfigFile"
 	and set --append backupConfigs "$legacyVimConfigFile"
 
-	test -n "$backupConfigs" && $backupCommand $backupConfigs || exit 1
+	if test -n "$backupConfigs"
+		$backupCommand $backupConfigs || exit 1
+	end
 end
 ###
 

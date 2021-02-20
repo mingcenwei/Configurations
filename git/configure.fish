@@ -56,7 +56,9 @@ or test -d "$gitConfigDir" || test -L "$gitConfigDir"
 	test -d "$gitConfigDir" || test -L "$gitConfigDir"
 	and set --append backupConfigs "$gitConfigDir"
 
-	test -n "$backupConfigs" && $backupCommand $backupConfigs || exit 1
+	if test -n "$backupConfigs"
+		$backupCommand $backupConfigs || exit 1
+	end
 end
 ###
 

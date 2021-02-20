@@ -54,7 +54,9 @@ or test -d "$fishConfigDir" || test -L "$fishConfigDir"
 	test -d "$fishConfigDir" || test -L "$fishConfigDir"
 	and set --append backupConfigs "$fishConfigDir"
 
-	test -n "$backupConfigs" && $backupCommand $backupConfigs || exit 1
+	if test -n "$backupConfigs"
+		$backupCommand $backupConfigs || exit 1
+	end
 end
 ###
 

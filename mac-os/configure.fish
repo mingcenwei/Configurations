@@ -47,7 +47,9 @@ or test -d "$servicesConfigDir" || test -L "$servicesConfigDir"
 	test -d "$servicesConfigDir" || test -L "$servicesConfigDir"
 	and set --append backupConfigs "$servicesConfigDir"
 
-	test -n "$backupConfigs" && $backupCommand $backupConfigs || exit 1
+	if test -n "$backupConfigs"
+		$backupCommand $backupConfigs || exit 1
+	end
 end
 ###
 
@@ -70,9 +72,10 @@ begin
 			set --append launchAgentsToBackUp "$stowLaunchAgent"
 		end
 	end
-	test -n "$launchAgentsToBackUp"
-	and back-up-files --comment 'mac_os-launch_agents-config' \
-		--remove-source -- $launchAgentsToBackUp || exit 1
+	if test -n "$launchAgentsToBackUp"
+		back-up-files --comment 'mac_os-launch_agents-config' \
+			--remove-source -- $launchAgentsToBackUp || exit 1
+	end
 end
 ###
 
@@ -90,7 +93,9 @@ or test -d "$karabinerElementsConfigDir" || test -L "$karabinerElementsConfigDir
 	test -d "$karabinerElementsConfigDir" || test -L "$karabinerElementsConfigDir"
 	and set --append backupConfigs "$karabinerElementsConfigDir"
 
-	test -n "$backupConfigs" && $backupCommand $backupConfigs || exit 1
+	if test -n "$backupConfigs"
+		$backupCommand $backupConfigs || exit 1
+	end
 end
 ###
 

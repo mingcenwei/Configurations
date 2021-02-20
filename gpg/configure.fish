@@ -33,7 +33,9 @@ or test -f "$gpgConfigFile" || test -L "$gpgConfigFile"
 	test -f "$gpgConfigFile" || test -L "$gpgConfigFile"
 	and set --append backupConfigs "$gpgConfigFile"
 
-	test -n "$backupConfigs" && $backupCommand $backupConfigs || exit 1
+	if test -n "$backupConfigs"
+		$backupCommand $backupConfigs || exit 1
+	end
 end
 ###
 
