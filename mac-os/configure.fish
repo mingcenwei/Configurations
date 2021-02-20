@@ -10,7 +10,6 @@ check-dependencies --function 'read-choice' || exit 3
 
 # Exit if the operating system is not macOS
 if not is-platform 'macos'
-	echo-err 'The operating system is not macOS'
 	exit 3
 end
 
