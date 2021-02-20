@@ -19,6 +19,7 @@ set --local functionDir "$linkDir"'/.config/fish/functions'
 for file in "$functionDir"/*
 	source -- "$file" || exit
 end
+or exit 3
 
 check-dependencies --program 'stow' || exit 3
 check-dependencies --program 'rsync' || exit 3
@@ -67,5 +68,6 @@ stow --verbose --restow --dir "$stowDir" --target "$HOME" 'fish' || exit 1
 for file in "$onceDir"/*
 	source -- "$file" || exit
 end
+or exit 3
 
 echo-err --info 'Run `exec fish` to use the new configurations'
