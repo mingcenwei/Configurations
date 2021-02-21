@@ -23,7 +23,7 @@ if check-dependencies --program 'parallel'
 	--description 'GNU Parallel for fish shell'
 		set --local tempHome (mktemp -d)
 		and ln -s (realpath "$HOME"'/.parallel') "$tempHome"'/.parallel'
-		and env HOME="$tempHome" (command -v parallel) $argv
+		and env HOME="$tempHome" (command --search parallel) $argv
 		and rm -r "$tempHome"
 	end
 end

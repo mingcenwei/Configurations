@@ -25,12 +25,12 @@ check-dependencies --program 'stow' || exit 3
 check-dependencies --program 'rsync' || exit 3
 
 ### Change the default login shell to "fish" if possible
-test "$SHELL" = (command -v fish)
+test "$SHELL" = (command --search fish)
 or if is-platform --quiet 'android-termux'
 	# For Android Termux
 	chsh -s 'fish'
 else
-	chsh -s (command -v fish)
+	chsh -s (command --search fish)
 end
 # If the default login shell isn't changed to "fish" successfully,
 # e.g. when "fish" was installed by "Homebrew" to the user's local directory

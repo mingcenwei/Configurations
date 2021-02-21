@@ -13,7 +13,7 @@ function __sayAnonymousNamespace_check-dependencies_help
 end
 
 function check-dependencies --description  'Check dependencies'
-	if not functions 'echo-err' > '/dev/null' 2>&1
+	if not functions --query 'echo-err'
 		echo 'Error: "echo-err" function is not found' >&2
 		return 3
 	end
@@ -49,8 +49,7 @@ function check-dependencies --description  'Check dependencies'
 	set --local statusToReturn 0
 	if test -n "$checkFunction"
 		for func in $argv
-			functions "$func" > '/dev/null' 2>&1
-			or begin
+			if not functions --query "$func"
 				test -z "$quiet" && echo-err \
 					(string escape "$func")' function is not loaded!'
 				set statusToReturn 1
@@ -58,8 +57,7 @@ function check-dependencies --description  'Check dependencies'
 		end
 	else if test -n "$checkProgram"
 		for program in $argv
-			command -v "$program" > '/dev/null' 2>&1
-			or begin
+			if not command --search --quiet "$program"
 				test -z "$quiet" && echo-err \
 					(string escape "$program")' is not installed! Please install the program'
 				set statusToReturn 1
@@ -67,8 +65,7 @@ function check-dependencies --description  'Check dependencies'
 		end
 	else
 		for executable in $argv
-			type -p "$executable" > '/dev/null' 2>&1
-			or begin
+			if not type --path --quiet "$executable"
 				test -z "$quiet" && echo-err \
 					(string escape "$executable")' is not found'
 				set statusToReturn 1

@@ -9,6 +9,7 @@ check-dependencies --function 'is-platform' || exit 3
 check-dependencies --function 'read-choice' || exit 3
 
 # Set variables
+set --global fishPath (command --search fish) || exit 3
 set --global sshClientConfigDir "$HOME"'/.ssh'
 set --global sshClientConfigFile "$sshClientConfigDir"'/config'
 set --global sshServerConfigDir '/etc/ssh'
@@ -31,7 +32,7 @@ function getFormerSshClientConfigHosts
 
 	if cat "$sshClientConfigFile" | \
 	string match --regex --invert '^(Host |\\t|\\#).*$' | \
-	string match --regex --invert '^\\s*$' > '/dev/null'
+	string match --regex --invert --quiet '^\\s*$'
 		echo-err --warning 'Unknown ssh client config format'
 	end
 
@@ -288,7 +289,7 @@ function addAuthorizedKeys --argument-names username authorizedKeysFile
 		# See https://unix.stackexchange.com/questions/247576/how-to-get-home-given-user
 		#set --local userHome (getent passwd "$username" | cut -d ':' -f 6)
 		set --local userHome \
-			(sudo su -s (command -v fish) -l "$username" -c 'echo "$HOME"')
+			(sudo su -s (command --search fish) -l "$username" -c 'echo "$HOME"')
 		or return 2
 		set --local sshDir "$userHome"'/.ssh'
 		set authorizedKeysFile "$sshDir"'/authorized_keys'
@@ -312,11 +313,11 @@ function addAuthorizedKeys --argument-names username authorizedKeysFile
 		$backupCommand -- "$authorizedKeysFile" || return 1
 	end
 
-	sudo su -s (command -v fish) -l "$username" -c \
+	sudo su -s "$fishPath" -l "$username" -c \
 		'mkdir -m 700 -p -- '(string escape -- "$sshDir")
-	sudo su -s (command -v fish) -l "$username" -c \
+	sudo su -s "$fishPath" -l "$username" -c \
 		'touch -- '(string escape -- "$authorizedKeysFile")
-	sudo su -s (command -v fish) -l "$username" -c \
+	sudo su -s "$fishPath" -l "$username" -c \
 		'chmod -- 600 '(string escape -- "$authorizedKeysFile")
 
 	# Add new ssh pubkeys for the user
@@ -329,7 +330,7 @@ function addAuthorizedKeys --argument-names username authorizedKeysFile
 		set --local command \
 			'printf -- '(string escape -- \
 				"$pubkey")'\'\\n\' >> '(string escape -- "$authorizedKeysFile")
-		sudo su -s (command -v fish) -l "$username" -c "$command"
+		sudo su -s "$fishPath" -l "$username" -c "$command"
 		and read --prompt-str 'Pubkey (enter none to end): ' pubkey
 		and begin
 			set pubkey (string trim -- "$pubkey") || true
@@ -349,9 +350,9 @@ function createNewUsers-linuxServer
 	or return 2
 	while test -n "$username"
 		if check-dependencies --program --quiet 'adduser'
-			sudo adduser --shell (command -v fish) -- "$username"
+			sudo adduser --shell "$fishPath" -- "$username"
 		else
-			sudo useradd --shell (command -v fish) --create-home -- "$username"
+			sudo useradd --shell "$fishPath" --create-home -- "$username"
 			and sudo passwd -- "$username"
 		end
 		and set --append newUsers "$username"

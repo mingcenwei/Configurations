@@ -93,7 +93,8 @@ end
 # Rebase by default
 git config --global 'pull.rebase' true
 git config --global 'core.excludesFile' "$gitConfigDir"'/ignore'
-git config --global 'gpg.program' (command -v gpg || exit 1)
+check-dependencies --program 'gpg'
+and git config --global 'gpg.program' (command --search gpg)
 ###
 
 ### Platform dependent configurations
@@ -102,7 +103,7 @@ if is-platform --quiet 'macos'
 	git config --global 'credential.helper' 'osxkeychain'
 else if is-platform --quiet 'kde'
 	check-dependencies --program 'ksshaskpass'
-	and git config --global 'core.askpass' (command -v ksshaskpass)
+	and git config --global 'core.askpass' (command --search ksshaskpass)
 else if is-platform --quiet 'android-termux'
 	check-dependencies --program 'pass'
 	and git config --global 'credential.helper' \

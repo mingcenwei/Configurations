@@ -66,6 +66,6 @@ if is-platform --quiet 'android-termux'
 	if not test -f "$HOME"'/bin/termux-file-editor'
 		mkdir -m 700 -p "$HOME"'/bin'
 		and check-dependencies --program 'vim'
-		and ln -si (command -v vim) "$HOME"'/bin/termux-file-editor'
+		and ln -si (command --search vim) "$HOME"'/bin/termux-file-editor'
 	end
 end
