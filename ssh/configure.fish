@@ -138,6 +138,8 @@ end
 
 # For clients, add ~/.ssh/config
 function configureSshClient
+	echo-err --info 'Configuring ssh client'
+
 	check-dependencies --program 'ssh' || return 3
 
 	getFormerSshClientConfigHosts
@@ -414,6 +416,8 @@ end
 
 # For servers, add /etc/ssh/sshd_config
 function configureSshServer
+	echo-err --info 'Configuring ssh server'
+
 	if is-platform --quiet 'macos'
 		echo-err 'Not implemented for macOS'
 		return 3
