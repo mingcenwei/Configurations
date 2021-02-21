@@ -527,31 +527,31 @@ function configureSshServer
 		--target "$sshServerConfigHome" 'ssh-server' || return 1
 	###
 
-	echo | $sudoTee -a "$sshServerConfigHome" > '/dev/null' || return 1
+	echo | $sudoTee -a "$sshServerConfigFile" > '/dev/null' || return 1
 	for sshPort in $allSshPorts
 		echo 'Port '"$sshPort" | \
-			$sudoTee -a "$sshServerConfigHome" > '/dev/null' || return 1
+			$sudoTee -a "$sshServerConfigFile" > '/dev/null' || return 1
 	end
 
 	for matchNumber in (seq "$formerSshServerConfigMatchCount")
-		echo | $sudoTee -a "$sshServerConfigHome" > '/dev/null'
+		echo | $sudoTee -a "$sshServerConfigFile" > '/dev/null'
 		or return 1
 		set --local match 'formerSshServerConfigMatch'"$matchNumber"
 		for line in $$match
-			echo "$line" | $sudoTee -a "$sshServerConfigHome" > '/dev/null'
+			echo "$line" | $sudoTee -a "$sshServerConfigFile" > '/dev/null'
 			or return 1
 		end
 	end
 
 	for iii in (seq (count $matchPorts))
-		echo | $sudoTee -a "$sshServerConfigHome" > '/dev/null'
+		echo | $sudoTee -a "$sshServerConfigFile" > '/dev/null'
 		or return 1
 		set --local matchUsername "$matchUsernames[$iii]"
 		set --local matchPort "$matchPorts[$iii]"
 		echo 'Match User '"$matchUsername"', LocalPort '"$matchPort" | \
-			$sudoTee -a "$sshServerConfigHome" > '/dev/null' || return 1
+			$sudoTee -a "$sshServerConfigFile" > '/dev/null' || return 1
 		echo \t'AllowUsers '"$matchUsername" | \
-			$sudoTee -a "$sshServerConfigHome" > '/dev/null' || return 1
+			$sudoTee -a "$sshServerConfigFile" > '/dev/null' || return 1
 	end
 
 	echo-err --info 'Please review and/or edit the server-side ssh config file'
@@ -561,7 +561,7 @@ function configureSshServer
 		set editor "$EDITOR"
 	end
 	set --local sudoEditor $maybeSudo "$editor"
-	$sudoEditor "$sshServerConfigHome"
+	$sudoEditor "$sshServerConfigFile"
 
 	# Generate new ssh host RSA key
 	$sudoSshKeygen -t 'rsa' -b '4096' -N '' -f "$sshHostRsaSecretKey"
