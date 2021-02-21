@@ -194,7 +194,7 @@ function configureSshClient
 	rm "$sshClientConfigTempFile"
 
 	echo-err --info 'Please review and/or edit the client-side ssh config file'
-	read --prompt-str 'Enter anything to continue: ' > '/dev/null'
+	read --prompt-str 'Press "enter" to continue: ' > '/dev/null'
 	set --local editor 'vi'
 	if test -n "$EDITOR" && check-dependencies --program --quiet "$EDITOR"
 		set editor "$EDITOR"
@@ -581,7 +581,7 @@ function configureSshServer
 	end
 
 	echo-err --info 'Please review and/or edit the server-side ssh config file'
-	read --prompt-str 'Enter anything to continue: ' > '/dev/null'
+	read --prompt-str 'Press "enter" to continue: ' > '/dev/null'
 	set --local editor 'vi'
 	if test -n "$EDITOR" && check-dependencies --program --quiet "$EDITOR"
 		set editor "$EDITOR"
