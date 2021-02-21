@@ -57,4 +57,5 @@ function set-proxies --description 'Set HTTP/SOCKS proxies'
 		set --export --global "$proxy" "$noProxy"
 		set --export --global (string upper "$proxy") "$noProxy"
 	end
+	return 0
 end
