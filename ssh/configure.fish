@@ -435,7 +435,8 @@ function configureSshServer
 	check-dependencies --program 'sshd' || return 3
 	check-dependencies --program 'ssh-keygen' || return 3
 	if not is-platform --quiet 'android-termux'
-	and not sudo check-dependencie --function 'back-up-files' > '/dev/null' 2>&1
+	and not sudo --shell \
+	check-dependencies --function 'back-up-files' > '/dev/null' 2>&1
 		echo-err 'Please configure fish shell for root first!'
 		return 3
 	end
