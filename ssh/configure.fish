@@ -467,11 +467,18 @@ function configureSshServer
 		end | sort | uniq
 	) || return 2
 
-	set --local maybeSudo
 	if not is-platform --quiet 'android-termux'
 		configureFirewall $allSshPorts || return
+	end
+
+	set --local maybeSudo
+	if not is-platform --quiet 'android-termux'
 		set maybeSudo 'sudo'
 	end
+	set --local sudoRm $maybeSudo 'rm'
+	set --local sudoStow $maybeSudo 'stow'
+	set --local sudoTee $maybeSudo 'tee'
+	set --local sudoSsh-keygen $maybeSudo 'ssh-keygen'
 
 	### Back up previous "ssh" server configurations
 	set --local sshHostRsaSecretKey "$sshServerConfigDir"'/ssh_host_rsa_key'
@@ -501,7 +508,8 @@ function configureSshServer
 		and set --append backupConfigs "$sshHostRsaPublicKey"
 
 		if test -n "$backupConfigs"
-			"$maybeSudo" $backupCommand $backupConfigs || return 1
+			set --local sudoBackupCommand $maybeSudo $backupCommand
+			$sudoBackupCommand $backupConfigs || return 1
 		end
 	end
 	###
@@ -509,41 +517,41 @@ function configureSshServer
 	### Add "ssh" server configurations
 	for configFile in "$sshServerConfigFile" "$sshHostRsaSecretKey" "$sshHostRsaPublicKey"
 		if test -f "$configFile" || test -L "$configFile"
-			"$maybeSudo" rm "$configFile" || return 1
+			$sudoRm "$configFile" || return 1
 		end
 	end
 
 	mkdir -m 700 -p "$stowDir"'/ssh-server' || return 1
 	rsync --recursive  "$serverLinkDir"/ "$stowDir"'/ssh-server' || return 1
-	"$maybeSudo" stow --verbose --restow --dir "$stowDir" \
+	$sudoStow --verbose --restow --dir "$stowDir" \
 		--target "$sshServerConfigHome" 'ssh-server' || return 1
 	###
 
-	echo | "$maybeSudo" tee -a "$sshServerConfigHome" > '/dev/null' || return 1
+	echo | $sudoTee -a "$sshServerConfigHome" > '/dev/null' || return 1
 	for sshPort in $allSshPorts
 		echo 'Port '"$sshPort" | \
-			"$maybeSudo" tee -a "$sshServerConfigHome" > '/dev/null' || return 1
+			$sudoTee -a "$sshServerConfigHome" > '/dev/null' || return 1
 	end
 
 	for matchNumber in (seq "$formerSshServerConfigMatchCount")
-		echo | "$maybeSudo" tee -a "$sshServerConfigHome" > '/dev/null'
+		echo | $sudoTee -a "$sshServerConfigHome" > '/dev/null'
 		or return 1
 		set --local match 'formerSshServerConfigMatch'"$matchNumber"
 		for line in $$match
-			echo "$line" | "$maybeSudo" tee -a "$sshServerConfigHome" > '/dev/null'
+			echo "$line" | $sudoTee -a "$sshServerConfigHome" > '/dev/null'
 			or return 1
 		end
 	end
 
 	for iii in (seq (count $matchPorts))
-		echo | "$maybeSudo" tee -a "$sshServerConfigHome" > '/dev/null'
+		echo | $sudoTee -a "$sshServerConfigHome" > '/dev/null'
 		or return 1
 		set --local matchUsername "$matchUsernames[$iii]"
 		set --local matchPort "$matchPorts[$iii]"
 		echo 'Match User '"$matchUsername"', LocalPort '"$matchPort" | \
-			"$maybeSudo" tee -a "$sshServerConfigHome" > '/dev/null' || return 1
+			$sudoTee -a "$sshServerConfigHome" > '/dev/null' || return 1
 		echo \t'AllowUsers '"$matchUsername" | \
-			"$maybeSudo" tee -a "$sshServerConfigHome" > '/dev/null' || return 1
+			$sudoTee -a "$sshServerConfigHome" > '/dev/null' || return 1
 	end
 
 	echo-err --info 'Please review and/or edit the server-side ssh config file'
@@ -552,10 +560,11 @@ function configureSshServer
 	if test -n "$EDITOR" && check-dependencies --program --quiet "$EDITOR"
 		set editor "$EDITOR"
 	end
-	"$maybeSudo" "$editor" "$sshServerConfigHome"
+	set --local sudoEditor $maybeSudo "$editor"
+	$sudoEditor "$sshServerConfigHome"
 
 	# Generate new ssh host RSA key
-	"$maybeSudo" ssh-keygen -t 'rsa' -b '4096' -N '' -f "$sshHostRsaSecretKey"
+	$sudoSsh-keygen -t 'rsa' -b '4096' -N '' -f "$sshHostRsaSecretKey"
 	or return 1
 
 	# Reload sshd
