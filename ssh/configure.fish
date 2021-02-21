@@ -527,6 +527,10 @@ function configureSshServer
 		--target "$sshServerConfigHome" 'ssh-server' || return 1
 	###
 
+	if is-platform --quiet 'android-termux'
+		sed -i 's|HostKey /etc/ssh/ssh_host_rsa_key|HostKey '"$PREFIX"'/etc/ssh/ssh_host_rsa_key|' "$sshServerConfigFile" || return 1
+	end
+
 	echo | $sudoTee -a "$sshServerConfigFile" > '/dev/null' || return 1
 	for sshPort in $allSshPorts
 		echo 'Port '"$sshPort" | \
