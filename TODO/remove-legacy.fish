@@ -13,4 +13,5 @@ end
 back-up-files --remove-source -- \
 	"$HOME"/.ssh/.my_ssh_agent_information \
 	"$HOME"/.my_backups \
-	"$HOME"/.my_private_configurations
+	"$HOME"/.my_private_configurations \
+	"$HOME"/.say-local/.ssh-agent-info
