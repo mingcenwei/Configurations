@@ -478,7 +478,7 @@ function configureSshServer
 	set --local sudoRm $maybeSudo 'rm'
 	set --local sudoStow $maybeSudo 'stow'
 	set --local sudoTee $maybeSudo 'tee'
-	set --local sudoSsh-keygen $maybeSudo 'ssh-keygen'
+	set --local sudoSshKeygen $maybeSudo 'ssh-keygen'
 
 	### Back up previous "ssh" server configurations
 	set --local sshHostRsaSecretKey "$sshServerConfigDir"'/ssh_host_rsa_key'
@@ -564,7 +564,7 @@ function configureSshServer
 	$sudoEditor "$sshServerConfigHome"
 
 	# Generate new ssh host RSA key
-	$sudoSsh-keygen -t 'rsa' -b '4096' -N '' -f "$sshHostRsaSecretKey"
+	$sudoSshKeygen -t 'rsa' -b '4096' -N '' -f "$sshHostRsaSecretKey"
 	or return 1
 
 	# Reload sshd
