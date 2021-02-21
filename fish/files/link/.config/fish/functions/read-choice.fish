@@ -116,4 +116,5 @@ function read-choice --description  'Read user choice'
 		set tempVariable (string lower (string trim -- "$tempVariable"))
 	end
 	set --global "$variableName" "$tempVariable"
+	return 0
 end
