@@ -524,7 +524,10 @@ function configureSshServer
 		and set --append backupConfigs "$sshHostRsaPublicKey"
 
 		if test -n "$backupConfigs"
-			set --local sudoBackupCommand $maybeSudo $backupCommand
+			set --local sudoBackupCommand $backupCommand
+			if test -n "$maybeSudo"
+				set --prepend sudoBackupCommand 'sudo' '--shell'
+			end
 			$sudoBackupCommand $backupConfigs || return 1
 		end
 	end
