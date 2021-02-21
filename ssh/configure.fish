@@ -88,18 +88,28 @@ function addSshClientConfigHosts
 	# Ask the user to add new client-side host configurations
 	echo 'Adding new ssh hosts'
 	read --prompt-str 'Host (enter none to end): ' --local hostHost
-	and set hostHost (string trim -- "$hostHost")
+	and begin
+		set hostHost (string trim -- "$hostHost") || true
+	end
 	and while test -n "$hostHost"
 		read --prompt-str 'Hostname: ' --local hostHostname
-		and set hostHostname (string trim -- "$hostHostname")
+		and begin
+			set hostHostname (string trim -- "$hostHostname") || true
+		end
 		and read --prompt-str 'User: ' --local hostUser
-		and set hostUser (string trim -- "$hostUser")
+		and begin
+			set hostUser (string trim -- "$hostUser") || true
+		end
 		and read --prompt-str 'Port (enter none to use the default): ' \
 			--hostPort hostPort
-		and set hostPort (string trim -- "$hostPort")
+		and begin
+			set hostPort (string trim -- "$hostPort") || true
+		end
 		and read --prompt-str 'IdentityFile (enter none to use the default): ' \
 			--local hostIdentityFile
-		and set hostIdentityFile (string trim -- "$hostIdentityFile")
+		and begin
+			set hostIdentityFile (string trim -- "$hostIdentityFile") || true
+		end
 		and if test -z "$hostHostname"
 			echo-err '"Hostname" cannot be empty'
 		else if test -z "$hostUser"
@@ -117,7 +127,9 @@ function addSshClientConfigHosts
 		end
 
 		read --prompt-str 'Host (enter none to end): ' hostHost
-		and set hostHost (string trim -- "$hostHost")
+		and begin
+			set hostHost (string trim -- "$hostHost") || true
+		end
 		or set --erase hostHost
 	end
 	return 0
@@ -125,6 +137,8 @@ end
 
 # For clients, add ~/.ssh/config
 function configureSshClient
+	check-dependencies --program 'ssh' || return 3
+
 	getFormerSshClientConfigHosts
 	addSshClientConfigHosts || return
 
@@ -183,6 +197,7 @@ function configureSshClient
 	end
 	"$editor" "$sshClientConfigFile"
 
+	check-dependencies --program 'ssh-keygen'
 	echo-err --info 'You perhaps need to run: ssh-keygen'
 end
 
@@ -304,14 +319,18 @@ function addAuthorizedKeys --argument-names username authorizedKeysFile
 	# Add new ssh pubkeys for the user
 	echo 'Adding new ssh pubkeys for user: '"$username"
 	read --prompt-str 'Pubkey (enter none to end): ' --local pubkey
-	and set pubkey (string trim -- "$pubkey")
+	and begin
+		set pubkey (string trim -- "$pubkey") || true
+	end
 	and while test -n "$pubkey"
 		set --local command \
 			'printf -- '(string escape -- \
 				"$pubkey")'\'\\n\' >> '(string escape -- "$authorizedKeysFile")
 		sudo su -s (command -v fish) -l "$username" -c "$command"
 		and read --prompt-str 'Pubkey (enter none to end): ' pubkey
-		and set pubkey (string trim -- "$pubkey")
+		and begin
+			set pubkey (string trim -- "$pubkey") || true
+		end
 		or break
 	end
 end
@@ -321,7 +340,9 @@ function createNewUsers-linuxServer
 	# Create new users
 	echo 'Creating new users'
 	read --prompt-str 'Username (enter none to end): ' --local username
-	and set username (string trim -- "$username")
+	and begin
+		set username (string trim -- "$username") || true
+	end
 	or return 2
 	while test -n "$username"
 		if check-dependencies --program --quiet 'adduser'
@@ -336,7 +357,9 @@ function createNewUsers-linuxServer
 
 		echo
 		read --prompt-str 'Username (enter none to end): ' username
-		and set username (string trim --"$username")
+		and begin
+			set username (string trim --"$username") || true
+		end
 		or return 2
 	end
 end
@@ -344,6 +367,7 @@ end
 # Configure firewall, using "ufw"
 # Parameters: ssh ports
 function configureFirewall
+	check-dependencies --program 'systemctl' || return 3
 	check-dependencies --program 'ufw' || return 3
 	set --local sshPorts $argv
 	for sshPort in $sshPorts
@@ -397,6 +421,7 @@ function configureSshServer
 		return 3
 	end
 
+	check-dependencies --program 'sshd' || return 3
 	check-dependencies --program 'ssh-keygen' || return 3
 
 	getFormerSshServerConfigMatches
@@ -414,9 +439,13 @@ function configureSshServer
 	set --local matchPorts
 	echo 'Adding ssh server-side user/port pairs'
 	read --prompt-str 'Username (enter none to end): ' --local matchUsername
-	and set matchUsername (string trim -- "$matchUsername")
+	and begin
+		set matchUsername (string trim -- "$matchUsername") || true
+	end
 	and read --prompt-str 'Port: ' --local matchPort
-	and set matchPort (string trim -- "$matchPort")
+	and begin
+		set matchPort (string trim -- "$matchPort") || true
+	end
 	and test 1 -le "$matchPort"
 	and set --append matchUsernames "$matchUsername"
 	and set --append matchPorts "$matchPort"
@@ -424,9 +453,13 @@ function configureSshServer
 	and while test -n "$matchUsername"
 		echo
 		read --prompt-str 'Username (enter none to end): ' matchUsername
-		and set matchUsername (string trim -- "$matchUsername")
+		and begin
+			set matchUsername (string trim -- "$matchUsername") || true
+		end
 		and read --prompt-str 'Port: ' matchPort
-		and set matchPort (string trim -- "$matchPort")
+		and begin
+			set matchPort (string trim -- "$matchPort") || true
+		end
 		and test 1 -le "$matchPort"
 		and set --append matchUsernames "$matchUsername"
 		and set --append matchPorts "$matchPort"
