@@ -387,6 +387,11 @@ function configureFirewall
 	read --prompt-str 'Please enter the proxy ports (space delimited): ' \
 		--local --array proxyPorts || return 2
 
+	if test -d '/etc/ufw'
+		sudo find /etc/ufw -type d -exec chmod 700 {} \; || return 1
+		sudo find /etc/ufw -type f -exec chmod 600 {} \; || return 1
+	end
+
 	sudo systemctl disable --now firewalld.service > '/dev/null' 2>&1
 	sudo systemctl enable --now ufw.service || return 1
 
@@ -512,7 +517,8 @@ function configureSshServer
 		and set --append backupConfigs "$sshHostRsaPublicKey"
 
 		if test -n "$backupConfigs"
-			set --local sudoBackupCommand $maybeSudo $backupCommand
+			set --local sudoBackupCommand $backupCommand
+			test -n "$maybeSudo" && set --prepend sudoBackupCommand 'sudo' '-sE'
 			$sudoBackupCommand $backupConfigs || return 1
 		end
 	end
