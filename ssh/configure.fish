@@ -543,7 +543,10 @@ function configureSshServer
 	###
 
 	if is-platform --quiet 'android-termux'
-		sed -i 's|HostKey /etc/ssh/ssh_host_rsa_key|HostKey '"$PREFIX"'/etc/ssh/ssh_host_rsa_key|' "$sshServerConfigFile" || return 1
+		sed --in-place --follow-symlinks \
+			's|HostKey /etc/ssh/ssh_host_rsa_key|HostKey '"$PREFIX"'/etc/ssh/ssh_host_rsa_key|' \
+			"$sshServerConfigFile"
+		or return 1
 	end
 
 	echo | $sudoTee -a "$sshServerConfigFile" > '/dev/null' || return 1
