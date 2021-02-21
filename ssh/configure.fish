@@ -207,11 +207,11 @@ end
 set --global formerSshServerConfigMatchCount 0
 set --global formerSshServerConfigPorts
 function getFormerSshServerConfigMatches
-	if not test -f "$sshClientConfigFile"
+	if not test -f "$sshServerConfigFile"
 		return
 	end
 
-	set --local lines (sudo cat "$sshClientConfigFile") || return 1
+	set --local lines (sudo cat "$sshServerConfigFile") || return 1
 	set --local isInMatch 'false'
 	for line in $lines
 		set --local fieldNamePort \
