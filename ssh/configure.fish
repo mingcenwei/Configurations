@@ -202,7 +202,7 @@ function configureSshClient
 	"$editor" "$sshClientConfigFile"
 
 	check-dependencies --program 'ssh-keygen'
-	echo-err --info 'You perhaps need to run: ssh-keygen'
+	echo-err --info 'You perhaps need to run: ssh-keygen -t \'rsa\' -b \'4096\''
 end
 
 set --global formerSshServerConfigMatchCount 0
