@@ -111,9 +111,9 @@ function addSshClientConfigHosts
 			set hostIdentityFile (string trim -- "$hostIdentityFile") || true
 		end
 		and if test -z "$hostHostname"
-			echo-err '"Hostname" cannot be empty'
+			echo-err '"Hostname" cannot be empty' || true
 		else if test -z "$hostUser"
-			echo-err '"User" cannot be empty'
+			echo-err '"User" cannot be empty' || true
 		else
 			echo 'Host '"$hostHost" >> "$tempFile"
 			echo \t'Hostname '"$hostHostname" >> "$tempFile"
@@ -125,12 +125,13 @@ function addSshClientConfigHosts
 			echo >> "$tempFile"
 			echo
 		end
+		or break
 
 		read --prompt-str 'Host (enter none to end): ' hostHost
 		and begin
 			set hostHost (string trim -- "$hostHost") || true
 		end
-		or set --erase hostHost
+		or break
 	end
 	return 0
 end
@@ -170,7 +171,7 @@ function configureSshClient
 	### Add "ssh" client configurations
 	for configFile in "$sshClientConfigFile"
 		if test -f "$configFile" || test -L "$configFile"
-			rm "$configFile" || exit 1
+			rm "$configFile" || return 1
 		end
 	end
 
@@ -427,7 +428,7 @@ function configureSshServer
 	getFormerSshServerConfigMatches
 	changePassword || return
 	if not is-platform --quiet 'android-termux'
-		createNewUsers-linuxServer
+		createNewUsers-linuxServer || return
 	end
 
 	echo-err --info \
@@ -442,21 +443,9 @@ function configureSshServer
 	and begin
 		set matchUsername (string trim -- "$matchUsername") || true
 	end
-	and read --prompt-str 'Port: ' --local matchPort
-	and begin
-		set matchPort (string trim -- "$matchPort") || true
-	end
-	and test 1 -le "$matchPort"
-	and set --append matchUsernames "$matchUsername"
-	and set --append matchPorts "$matchPort"
 	or return 2
 	and while test -n "$matchUsername"
-		echo
-		read --prompt-str 'Username (enter none to end): ' matchUsername
-		and begin
-			set matchUsername (string trim -- "$matchUsername") || true
-		end
-		and read --prompt-str 'Port: ' matchPort
+		read --prompt-str 'Port: ' --local matchPort
 		and begin
 			set matchPort (string trim -- "$matchPort") || true
 		end
@@ -464,15 +453,24 @@ function configureSshServer
 		and set --append matchUsernames "$matchUsername"
 		and set --append matchPorts "$matchPort"
 		or return 2
+
+		echo
+		read --prompt-str 'Username (enter none to end): ' matchUsername
+		and begin
+			set matchUsername (string trim -- "$matchUsername") || true
+		end
+		or return 2
 	end
 
 	set --local allSshPorts (for port in $formerSshServerConfigPorts $matchPorts
 			test 1 -le "$port" && echo "$port"
 		end | sort | uniq
-	) || exit 2
+	) || return 2
 
+	set --local maybeSudo
 	if not is-platform --quiet 'android-termux'
-		configureFirewall $allSshPorts
+		configureFirewall $allSshPorts || return
+		set maybeSudo 'sudo'
 	end
 
 	### Back up previous "ssh" server configurations
@@ -503,7 +501,7 @@ function configureSshServer
 		and set --append backupConfigs "$sshHostRsaPublicKey"
 
 		if test -n "$backupConfigs"
-			sudo $backupCommand $backupConfigs || return 1
+			"$maybeSudo" $backupCommand $backupConfigs || return 1
 		end
 	end
 	###
@@ -511,39 +509,41 @@ function configureSshServer
 	### Add "ssh" server configurations
 	for configFile in "$sshServerConfigFile" "$sshHostRsaSecretKey" "$sshHostRsaPublicKey"
 		if test -f "$configFile" || test -L "$configFile"
-			sudo rm "$configFile" || exit 1
+			"$maybeSudo" rm "$configFile" || return 1
 		end
 	end
 
 	mkdir -m 700 -p "$stowDir"'/ssh-server' || return 1
 	rsync --recursive  "$serverLinkDir"/ "$stowDir"'/ssh-server' || return 1
-	sudo stow --verbose --restow --dir "$stowDir" \
+	"$maybeSudo" stow --verbose --restow --dir "$stowDir" \
 		--target "$sshServerConfigHome" 'ssh-server' || return 1
 	###
 
-	echo | sudo tee -a "$sshServerConfigHome" > '/dev/null' || return 1
+	echo | "$maybeSudo" tee -a "$sshServerConfigHome" > '/dev/null' || return 1
 	for sshPort in $allSshPorts
 		echo 'Port '"$sshPort" | \
-			sudo tee -a "$sshServerConfigHome" > '/dev/null' || return 1
+			"$maybeSudo" tee -a "$sshServerConfigHome" > '/dev/null' || return 1
 	end
 
 	for matchNumber in (seq "$formerSshServerConfigMatchCount")
-		echo | sudo tee -a "$sshServerConfigHome" > '/dev/null' || return 1
+		echo | "$maybeSudo" tee -a "$sshServerConfigHome" > '/dev/null'
+		or return 1
 		set --local match 'formerSshServerConfigMatch'"$matchNumber"
 		for line in $$match
-			echo "$line" | sudo tee -a "$sshServerConfigHome" > '/dev/null'
+			echo "$line" | "$maybeSudo" tee -a "$sshServerConfigHome" > '/dev/null'
 			or return 1
 		end
 	end
 
 	for iii in (seq (count $matchPorts))
-		echo | sudo tee -a "$sshServerConfigHome" > '/dev/null' || return 1
+		echo | "$maybeSudo" tee -a "$sshServerConfigHome" > '/dev/null'
+		or return 1
 		set --local matchUsername "$matchUsernames[$iii]"
 		set --local matchPort "$matchPorts[$iii]"
 		echo 'Match User '"$matchUsername"', LocalPort '"$matchPort" | \
-			sudo tee -a "$sshServerConfigHome" > '/dev/null' || return 1
+			"$maybeSudo" tee -a "$sshServerConfigHome" > '/dev/null' || return 1
 		echo \t'AllowUsers '"$matchUsername" | \
-			sudo tee -a "$sshServerConfigHome" > '/dev/null' || return 1
+			"$maybeSudo" tee -a "$sshServerConfigHome" > '/dev/null' || return 1
 	end
 
 	echo-err --info 'Please review and/or edit the server-side ssh config file'
@@ -552,17 +552,11 @@ function configureSshServer
 	if test -n "$EDITOR" && check-dependencies --program --quiet "$EDITOR"
 		set editor "$EDITOR"
 	end
-	sudo "$editor" "$sshServerConfigHome"
+	"$maybeSudo" "$editor" "$sshServerConfigHome"
 
 	# Generate new ssh host RSA key
-	sudo ssh-keygen -t 'rsa' -b '4096' -N '' -f "$sshHostRsaSecretKey"
+	"$maybeSudo" ssh-keygen -t 'rsa' -b '4096' -N '' -f "$sshHostRsaSecretKey"
 	or return 1
-
-	if is-platform --quiet 'android-termux'
-		sudo chown (id -un):(id -un) "$sshServerConfigHome"
-		sudo chown (id -un):(id -un) "$sshHostRsaSecretKey"
-		sudo chown (id -un):(id -un) "$sshHostRsaPublicKey"
-	end
 
 	# Reload sshd
 	if not is-platform --quiet 'android-termux'
