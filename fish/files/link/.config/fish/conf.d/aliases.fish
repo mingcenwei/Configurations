@@ -30,16 +30,16 @@ end
 
 # Aliases for "vim"
 if check-dependencies --program 'vim'
-	abbr --add --global vi 'vim'
-	abbr --add --global ex 'vim -e'
+	alias vi 'vim'
+	alias ex 'vim -e'
 	check-dependencies --program --quiet 'view'
-	or abbr --add --global view 'vim -R'
+	or alias view 'vim -R'
 	check-dependencies --program --quiet 'rvim'
-	or abbr --add --global rvim 'vim -Z'
+	or alias rvim 'vim -Z'
 	check-dependencies --program --quiet 'rview'
-	or abbr --add --global rview 'vim -Z -R'
+	or alias rview 'vim -Z -R'
 	check-dependencies --program --quiet 'vimdiff'
-	or abbr --add --global vimdiff 'vim -d'
+	or alias vimdiff 'vim -d'
 end
 
 # Use "exa"/"lsd" instead of "ls"/"ll"/"la" or "tree"
