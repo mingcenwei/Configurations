@@ -19,6 +19,13 @@ end
 # In order to use GPG
 set --export --global GPG_TTY (tty)
 
+# For ssh agent
+if is-platform --quiet 'kde'
+	if check-dependencies --program 'ksshaskpass'
+		set --export --global SSH_ASKPASS (command --search ksshaskpass)
+	end
+end
+
 # Set JAVA_HOME
 if check-dependencies --program --quiet 'java'
 	if is-platform --quiet 'macos'
