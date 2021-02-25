@@ -31,11 +31,8 @@ if is-platform --quiet 'android-termux'
 			ln -si "$from" "$HOME"/"$to"
 		end
 
-		set --local fromRealpath (realpath -- "$from") || return 1
-		set --local sdcardRealpath (realpath '/sdcard') || return 1
-		set --local pattern \
-			'^'(string escape --style=regex -- "$sdcardRealpath")
-		if string match --quiet --regex "$pattern" "$fromRealpath"
+		set --local pattern '^'(string escape --style=regex '/sdcard')
+		if string match --quiet --regex "$pattern" "$from"
 			set --local prefix "$HOME"'/UnderlyingFileSystem'
 			if not test -L "$prefix"/"$to"
 				if test -e "$prefix"/"$to"
@@ -44,8 +41,7 @@ if is-platform --quiet 'android-termux'
 
 				set --local underlying '/data/media/0'
 				set --local fromUnderlying \
-					(string replace --regex -- \
-					"$pattern" "$underlying" "$fromRealpath")
+					(string replace --regex -- "$pattern" "$underlying" "$from")
 				ln -si "$fromUnderlying" "$prefix"/"$to"
 			end
 		end
