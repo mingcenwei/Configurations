@@ -4,6 +4,7 @@
 umask 077
 
 check-dependencies --program 'gpg' || exit 3
+check-dependencies --program 'gpg-agent' || exit 3
 check-dependencies --function 'back-up-files' || exit 3
 check-dependencies --function 'echo-err' || exit 3
 check-dependencies --function 'read-choice' || exit 3
@@ -11,6 +12,7 @@ check-dependencies --function 'read-choice' || exit 3
 # Set variables
 set --local gpgConfigDir "$HOME"'/.gnupg'
 set --local gpgConfigFile "$gpgConfigDir"'/gpg.conf'
+set --local gpgAgentConfigFile "$gpgConfigDir"'/gpg-agent.conf'
 set --local stowDir "$HOME"'/.say-local/stow'
 set --local thisFile (realpath -- (status filename)) || exit 1
 set --local thisDir (dirname -- "$thisFile") || exit 1
@@ -19,6 +21,7 @@ set --local linkDir "$thisDir"'/files/link'
 ### Back up previous "gpg" configurations
 if test -d "$stowDir"'/gpg'
 or test -f "$gpgConfigFile" || test -L "$gpgConfigFile"
+or test -f "$gpgAgentConfigFile" || test -L "$gpgAgentConfigFile"
 	read-choice --variable removePreviousConfigurations --default 2 \
 		--prompt 'Remove previous "gpg" configurations? ' -- \
 		'yes' 'no' || exit 2
@@ -32,6 +35,8 @@ or test -f "$gpgConfigFile" || test -L "$gpgConfigFile"
 	test -d "$stowDir"'/gpg' && set --append backupConfigs "$stowDir"'/gpg'
 	test -f "$gpgConfigFile" || test -L "$gpgConfigFile"
 	and set --append backupConfigs "$gpgConfigFile"
+	test -f "$gpgAgentConfigFile" || test -L "$gpgAgentConfigFile"
+	and set --append backupConfigs "$gpgAgentConfigFile"
 
 	if test -n "$backupConfigs"
 		$backupCommand $backupConfigs || exit 1
@@ -40,7 +45,7 @@ end
 ###
 
 ### Add "gpg" configurations
-for configFile in "$gpgConfigFile"
+for configFile in "$gpgConfigFile" "$gpgAgentConfigFile"
 	if test -f "$configFile" || test -L "$configFile"
 		rm "$configFile" || exit 1
 	end
@@ -50,6 +55,13 @@ mkdir -m 700 -p "$stowDir"'/gpg' || exit 1
 rsync --recursive  "$linkDir"/ "$stowDir"'/gpg' || exit 1
 stow --verbose --restow --dir "$stowDir" --target "$HOME" 'gpg' || exit 1
 ###
+
+if is-platform --quiet 'kde'
+	if check-dependencies --program 'pinentry-qt'
+		echo 'pinentry-program '(command --search pinentry-qt) \
+			>> "$gpgAgentConfigFile"
+	end
+end
 
 ### Generate key pairs
 if test (gpg --list-secret-keys --keyid-format LONG | wc -l) -eq 0
