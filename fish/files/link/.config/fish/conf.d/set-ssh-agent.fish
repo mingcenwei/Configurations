@@ -38,8 +38,8 @@ if check-dependencies 'ssh-agent'
 	end
 end
 
-if check-dependencies 'ssh-add'
-	if test -n "$SSH_ASKPASS"
-		ssh-add -q < '/dev/null'
-	end
-end
+#if check-dependencies 'ssh-add'
+#	if test -n "$SSH_ASKPASS"
+#		ssh-add -q < '/dev/null'
+#	end
+#end
