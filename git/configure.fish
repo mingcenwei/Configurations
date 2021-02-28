@@ -21,7 +21,8 @@ set --local linkDir "$thisDir"'/files/link'
 # Any single-valued variable set in this file will be overwritten by whatever is in ~/.gitconfig.
 # It is a good idea not to create this file if you sometimes use older versions of Git, as support for this file was added fairly recently.
 if test -n "$XDG_CONFIG_HOME"
-	echo-err '"$XDG_CONFIG_HOME" is not empty'
+and test "$XDG_CONFIG_HOME" !=  "$HOME"'/.config'
+	echo-err '"$XDG_CONFIG_HOME" is not "$HOME"/.config: '(string escape -- "$XDG_CONFIG_HOME")
 	exit 2
 end
 

@@ -10,14 +10,33 @@ abbr --add --global lni 'ln -i'
 abbr --add --global cdtemp 'cd (mktemp -d)'
 
 # Add user agent and referer automatically
-abbr --add --global curl2 (string escape -- curl --location --user-agent 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2725.0 Safari/537.36' --referer 'https://www.google.com/')
-abbr --add --global wget2 (string escape -- wget --user-agent 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2725.0 Safari/537.36' --referer 'https://www.google.com/')
+abbr --add --global curl2 (string escape -- \
+	curl --location --user-agent 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2725.0 Safari/537.36' --referer 'https://www.google.com/')
+abbr --add --global wget2 (string escape -- \
+	wget --user-agent 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2725.0 Safari/537.36' --referer 'https://www.google.com/')
+
+# For "pacman"
+if is-platform --quiet 'pacman'
+	if check-dependencies --program 'makepkg'
+	and check-dependencies --program 'git'
+		abbr --add --global makepkg2 \
+			'makepkg --syncdeps --rmdeps --install && git clean -xd --interactive'
+		abbr --add --global makepkg2-asdeps \
+			'makepkg --asdeps --syncdeps --rmdeps --install && git clean -xd --interactive'
+	end
+end
 
 # Auto refresh `sudo` cached credentials
 if command sudo --help 2> '/dev/null' | fgrep --quiet -- '--validate'
 	function sudo --wraps='sudo' --description 'sudo'
 		command sudo --validate
 		and command sudo $argv
+	end
+	if check-dependencies --program --quiet 'sudoedit'
+		function sudoedit --wraps='sudoedit' --description 'sudoedit'
+			command sudo --validate
+			and command sudoedit $argv
+		end
 	end
 end
 

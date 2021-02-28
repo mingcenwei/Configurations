@@ -1,5 +1,15 @@
 #!/usr/bin/env fish
 
+# Set XDG variables
+set --export --global XDG_CACHE_HOME "$HOME"'/.cache'
+set --export --global XDG_CONFIG_HOME "$HOME"'/.config'
+set --export --global XDG_DATA_HOME "$HOME"'/.local/share'
+
+set --export --global PAGER 'less'
+set --export --global LESS  \
+	'--ignore-case' '--status-column' '--LONG-PROMPT' '--RAW-CONTROL-CHARS' \
+	'--HILITE-UNREAD' '--tabs=4' '--window=-2'
+
 ### Set default text editors
 if not check-dependencies --program --quiet 'vim'
 and status is-login && status is-interactive
