@@ -5,10 +5,18 @@ set --export --global XDG_CACHE_HOME "$HOME"'/.cache'
 set --export --global XDG_CONFIG_HOME "$HOME"'/.config'
 set --export --global XDG_DATA_HOME "$HOME"'/.local/share'
 
+# For "less"
 set --export --global PAGER 'less'
 set --export --global LESS  \
 	'--ignore-case' '--status-column' '--LONG-PROMPT' '--RAW-CONTROL-CHARS' \
-	'--HILITE-UNREAD' '--tabs=4' '--window=-2'
+	'--HILITE-UNREAD' '--tabs=4' '--window=-3'
+set --export --global LESS_TERMCAP_mb (set_color --bold 'brmagenta')
+set --export --global LESS_TERMCAP_md (set_color --bold 'brred')
+set --export --global LESS_TERMCAP_me (set_color 'normal')
+set --export --global LESS_TERMCAP_so (set_color --bold --background 'cyan' 'white')
+set --export --global LESS_TERMCAP_se (set_color 'normal')
+set --export --global LESS_TERMCAP_us (set_color --underline --bold 'brblue')
+set --export --global LESS_TERMCAP_ue (set_color 'normal')
 
 ### Set default text editors
 if not check-dependencies --program --quiet 'vim'

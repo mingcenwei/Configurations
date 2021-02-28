@@ -6,6 +6,11 @@ abbr --add --global cpi 'cp -i'
 abbr --add --global mvi 'mv -i'
 abbr --add --global lni 'ln -i'
 
+# Add colors: https://wiki.archlinux.org/index.php/Color_output_in_console
+alias diff 'diff --color=auto'
+alias grep 'grep --color=auto'
+alias ip 'ip -color=auto'
+
 # Create and enter a temporary directory
 abbr --add --global cdtemp 'cd (mktemp -d)'
 
