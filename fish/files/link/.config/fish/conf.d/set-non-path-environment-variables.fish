@@ -24,6 +24,7 @@ and status is-login && status is-interactive
 	echo-err --warning '"vim" is not installed! $EDITOR will not be set'
 else
 	set --export --universal EDITOR (command --search vim)
+	set --export --universal SUDO_EDITOR (command --search vim)
 end
 
 if not check-dependencies --program --quiet 'code'
