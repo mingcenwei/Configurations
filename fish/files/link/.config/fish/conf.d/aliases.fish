@@ -14,6 +14,12 @@ alias ip 'ip -color=auto'
 # Create and enter a temporary directory
 abbr --add --global cdtemp 'cd (mktemp -d)'
 
+if check-dependencies --program --quiet 'systemctl'
+	abbr --add --global sc 'systemctl'
+	abbr --add --global scr 'sudo systemctl'
+	abbr --add --global scu 'systemctl --user'
+end
+
 # Add user agent and referer automatically
 abbr --add --global curl2 (string escape -- \
 	curl --location --user-agent 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2725.0 Safari/537.36' --referer 'https://www.google.com/')
