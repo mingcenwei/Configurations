@@ -19,6 +19,9 @@ if check-dependencies --program --quiet 'systemctl'
 	abbr --add --global scr 'sudo systemctl'
 	abbr --add --global scu 'systemctl --user'
 end
+if check-dependencies --program --quiet 'journalctl'
+	abbr --add --global jcu 'journalctl --pager-end --catalog --unit'
+end
 
 # Add user agent and referer automatically
 abbr --add --global curl2 (string escape -- \
