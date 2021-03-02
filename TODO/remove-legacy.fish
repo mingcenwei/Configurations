@@ -16,6 +16,6 @@ for file in "$HOME"/.ssh/.my_ssh_agent_information \
 "$HOME"/.my_private_configurations \
 "$HOME"/.say-local/.ssh-agent-info
 	test -e "$file"
-	and set filesToRemove "$file"
+	and set --append filesToRemove "$file"
 end
 back-up-files --remove-source -- $filesToRemove
