@@ -6,6 +6,15 @@ function aur-clone --description 'Git-clone AUR repos'
 	set --local packages $argv
 
 	for package in $packages
-		git clone -- 'https://aur.archlinux.org/'"$package"'.git' || return 2
+		if not string match --regex --quiet -- \
+		'^'(string escape --style 'regex' -- \
+		'https://aur.archlinux.org/') "$package"
+			set package 'https://aur.archlinux.org/'"$package"
+		end
+		if not string match --regex --quiet -- \
+		(string escape --style 'regex' -- '.git')'$' "$package"
+			set package "$package"'.git'
+		end
+		git clone -- "$package" || return 2
 	end
 end
