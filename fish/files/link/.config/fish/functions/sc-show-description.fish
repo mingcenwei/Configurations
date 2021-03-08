@@ -24,9 +24,11 @@ function sc-show-description --description 'Show systemd unit descriptions' \
 	set --local units $argv
 
 	for unit in $units
-		printf '%s\t%s\n' \
-			"$nameColor""$unit""$normal" \
+		set --local description \
 			(systemctl $userOpt show --property 'Description' "$unit" | \
 				string replace --regex '^Description\\=' '')
+		or continue
+		
+		printf '%s\t%s\n' "$nameColor""$unit""$normal" "$description"
 	end
 end
