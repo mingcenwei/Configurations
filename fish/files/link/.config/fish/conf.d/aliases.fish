@@ -1,6 +1,17 @@
 #!/usr/bin/env fish
 
 # Interactive mode (prompting for confirmation)
+if not is-platform --quiet 'macos'
+	abbr --add --global rm 'rm -I'
+else
+	if check-dependencies --program 'grm'
+		abbr --add --global rm 'grm -I'
+	else
+		abbr --add --global rm 'rm -i'
+	end
+end
+abbr --add --global cp 'cp -i'
+abbr --add --global mv 'mv -i'
 abbr --add --global rmi 'rm -i'
 abbr --add --global cpi 'cp -i'
 abbr --add --global mvi 'mv -i'
@@ -9,7 +20,11 @@ abbr --add --global lni 'ln -i'
 # Add colors: https://wiki.archlinux.org/index.php/Color_output_in_console
 alias diff 'diff --color=auto'
 alias grep 'grep --color=auto'
-alias ip 'ip -color=auto'
+if not is-platform --quiet 'android-termux'
+	alias ip 'ip -color=auto'
+else
+	alias ip 'ip -color'
+end
 
 # Create and enter a temporary directory
 abbr --add --global cdtemp 'cd (mktemp -d)'
@@ -37,6 +52,10 @@ if is-platform --quiet 'pacman'
 			'makepkg --syncdeps --rmdeps --install && git clean -xd --interactive'
 		abbr --add --global makepkg2-asdeps \
 			'makepkg --asdeps --syncdeps --rmdeps --install && git clean -xd --interactive'
+		abbr --add --global makepkg3 \
+			'makepkg --syncdeps --install && git clean -xd --interactive'
+		abbr --add --global makepkg3-asdeps \
+			'makepkg --asdeps --syncdeps --install && git clean -xd --interactive'
 	end
 end
 
