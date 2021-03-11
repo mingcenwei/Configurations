@@ -18,7 +18,8 @@ if is-platform --quiet 'android-termux'
 end
 set --global sshServerConfigFile "$sshServerConfigDir"'/sshd_config'
 set --global sshServerConfigHome (dirname -- "$sshServerConfigDir") || exit 1
-set --global stowDir "$HOME"'/.say-local/stow'
+set --global sshClientStowDir "$HOME"'/.say-local/stow'
+set --global sshServerStowDir "$sshServerConfigHome"'/.stow.say-local'
 set --global thisFile (realpath -- (status filename)) || exit 1
 set --global thisDir (dirname -- "$thisFile") || exit 1
 set --global clientLinkDir "$thisDir"'/files/link-client'
@@ -147,7 +148,7 @@ function configureSshClient
 	addSshClientConfigHosts || return
 
 	### Back up previous "ssh" client configurations
-	if test -d "$stowDir"'/ssh-client'
+	if test -d "$sshClientStowDir"'/ssh-client'
 	or test -f "$sshClientConfigFile" || test -L "$sshClientConfigFile"
 		read-choice --variable removePreviousConfigurations --default 2 \
 			--prompt 'Remove previous "ssh" client configurations? ' -- \
@@ -160,8 +161,8 @@ function configureSshClient
 			'back-up-files' '--comment' 'ssh_client-config' '--remove-source' '--'
 
 		set --local backupConfigs
-		test -d "$stowDir"'/ssh-client'
-		and set --append backupConfigs "$stowDir"'/ssh-client'
+		test -d "$sshClientStowDir"'/ssh-client'
+		and set --append backupConfigs "$sshClientStowDir"'/ssh-client'
 		test -f "$sshClientConfigFile" || test -L "$sshClientConfigFile"
 		and set --append backupConfigs "$sshClientConfigFile"
 
@@ -178,9 +179,9 @@ function configureSshClient
 		end
 	end
 
-	mkdir -m 700 -p "$stowDir"'/ssh-client' || return 1
-	rsync --recursive  "$clientLinkDir"/ "$stowDir"'/ssh-client' || return 1
-	stow --verbose --restow --dir "$stowDir" --target "$HOME" 'ssh-client'
+	mkdir -m 700 -p "$sshClientStowDir"'/ssh-client' || return 1
+	rsync --recursive  "$clientLinkDir"/ "$sshClientStowDir"'/ssh-client' || return 1
+	stow --verbose --restow --dir "$sshClientStowDir" --target "$HOME" 'ssh-client'
 	or return 1
 	###
 	if is-platform --quiet 'macos'
@@ -499,7 +500,7 @@ function configureSshServer
 	### Back up previous "ssh" server configurations
 	set --local sshHostRsaSecretKey "$sshServerConfigDir"'/ssh_host_rsa_key'
 	set --local sshHostRsaPublicKey "$sshHostRsaSecretKey"'.pub'
-	if test -d "$stowDir"'/ssh-server'
+	if test -d "$sshServerStowDir"'/ssh-server'
 	or test -f "$sshServerConfigFile" || test -L "$sshServerConfigFile"
 	or test -f "$sshHostRsaSecretKey" || test -L "$sshHostRsaSecretKey"
 	or test -f "$sshHostRsaPublicKey" || test -L "$sshHostRsaPublicKey"
@@ -514,8 +515,8 @@ function configureSshServer
 			'back-up-files' '--comment' 'ssh_server-config' '--remove-source' '--'
 
 		set --local backupConfigs
-		test -d "$stowDir"'/ssh-server'
-		and set --append backupConfigs "$stowDir"'/ssh-server'
+		test -d "$sshServerStowDir"'/ssh-server'
+		and set --append backupConfigs "$sshServerStowDir"'/ssh-server'
 		test -f "$sshServerConfigFile" || test -L "$sshServerConfigFile"
 		and set --append backupConfigs "$sshServerConfigFile"
 		test -f "$sshHostRsaSecretKey" || test -L "$sshHostRsaSecretKey"
@@ -540,9 +541,9 @@ function configureSshServer
 		end
 	end
 
-	mkdir -m 700 -p "$stowDir"'/ssh-server' || return 1
-	rsync --recursive  "$serverLinkDir"/ "$stowDir"'/ssh-server' || return 1
-	$sudoStow --verbose --restow --dir "$stowDir" \
+	sudo mkdir -m 700 -p "$sshServerStowDir"'/ssh-server' || return 1
+	sudo rsync --recursive  "$serverLinkDir"/ "$sshServerStowDir"'/ssh-server' || return 1
+	$sudoStow --verbose --restow --dir "$sshServerStowDir" \
 		--target "$sshServerConfigHome" 'ssh-server' || return 1
 	###
 
