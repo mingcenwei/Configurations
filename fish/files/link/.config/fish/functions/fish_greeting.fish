@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
 
 function fish_greeting
-	set --local commandColor (set_color --bold "$fish_color_command")
+	set --local commandColor (set_color --bold $fish_color_command)
 	set --local dimColor (set_color --dim)
 	set --local normalColor (set_color 'normal')
 
@@ -25,7 +25,7 @@ function fish_greeting
 	printf '\nWelcome to fish, the friendly interactive shell\n'
 
 	# Crontab command
-	printf 'Use %s%s%s to schedule commands\n' "$dimColor" 'crontab -e' "$normalColor"
+	printf 'Use %s%s%s to schedule commands\n' "$commandColor" 'crontab -e' "$normalColor"
 
 	# Commands for respective package managers
 	set --local packageUpdateCommands
@@ -46,20 +46,20 @@ function fish_greeting
 
 	# Package updating and cleaning commands
 	if test -n "$packageUpdateCommands"
-		printf 'Use %s%s%s to update packages\n' "$dimColor" "$packageUpdateCommands" "$normalColor"
+		printf 'Use %s%s%s to update packages\n' "$commandColor" "$packageUpdateCommands" "$normalColor"
 
 		if test -n "$packageCleanCommands"
-			printf 'Use %s%s%s to clean the package cache\n' "$dimColor" "$packageCleanCommands" "$normalColor"
+			printf 'Use %s%s%s to clean the package cache\n' "$commandColor" "$packageCleanCommands" "$normalColor"
 		end
 	else
 		echo-err --warning 'Unknown package manager!'
 	end
 
 	# Fish completion updating command
-	printf 'Use %s%s%s to update fish completions\n' "$dimColor" 'fish_update_completions' "$normalColor"
+	printf 'Use %s%s%s to update fish completions\n' "$commandColor" 'fish_update_completions' "$normalColor"
 
 	# "umask" command
-	printf 'Use %s%s%s to display the symbolic umask\n' "$dimColor" 'umask -S' "$normalColor"
+	printf 'Use %s%s%s to display the symbolic umask\n' "$commandColor" 'umask -S' "$normalColor"
 
 	printf '\n'
 end
