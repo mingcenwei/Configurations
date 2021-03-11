@@ -548,8 +548,11 @@ function configureSshServer
 		end
 	end
 
-	$sudoMkdir -m 700 -p "$sshServerStowDir"'/ssh-server' || return 1
+	$sudoMkdir -m 755 -p "$sshServerStowDir"'/ssh-server' || return 1
 	$sudoRsync --recursive  "$serverLinkDir"/ "$sshServerStowDir"'/ssh-server' || return 1
+	if not is-platform --quiet 'android-termux'
+		sudo chmod 755 "$sshServerStowDir"'/ssh-server/ssh' || return 1
+	end
 	$sudoStow --verbose --restow --dir "$sshServerStowDir" \
 		--target "$sshServerConfigHome" 'ssh-server' || return 1
 	###
