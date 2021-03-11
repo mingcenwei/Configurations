@@ -1,78 +1,37 @@
 #!/usr/bin/env fish
 
-# See "Abbreviations for long hostnames"
+# See "Abbreviations for long hostnames" in the code
 
 function fish_prompt --description 'Write out the prompt'
-	set -l last_status $status
-	set -l normal (set_color normal)
-
-	# Hack; fish_config only copies the fish_prompt function (see #736)
-	if not set -q -g __fish_classic_git_functions_defined
-		set -g __fish_classic_git_functions_defined
-
-		function __fish_repaint_user --on-variable fish_color_user --description "Event handler, repaint when fish_color_user changes"
-			if status --is-interactive
-				commandline -f repaint 2>/dev/null
-			end
-		end
-
-		function __fish_repaint_host --on-variable fish_color_host --description "Event handler, repaint when fish_color_host changes"
-			if status --is-interactive
-				commandline -f repaint 2>/dev/null
-			end
-		end
-
-		function __fish_repaint_status --on-variable fish_color_status --description "Event handler; repaint when fish_color_status changes"
-			if status --is-interactive
-				commandline -f repaint 2>/dev/null
-			end
-		end
-
-		function __fish_repaint_bind_mode --on-variable fish_key_bindings --description "Event handler; repaint when fish_key_bindings changes"
-			if status --is-interactive
-				commandline -f repaint 2>/dev/null
-			end
-		end
-
-		# initialize our new variables
-		if not set -q __fish_classic_git_prompt_initialized
-			set -qU fish_color_user
-			or set -U fish_color_user -o yellow
-			set -qU fish_color_host
-			or set -U fish_color_host -o cyan
-			set -qU fish_color_status
-			or set -U fish_color_status red
-			set -U __fish_classic_git_prompt_initialized
-		end
-	end
-
-	set -l color_cwd
-	set -l prefix
-	set -l suffix
-	switch "$USER"
-		case root toor
-			if set -q fish_color_cwd_root
-				set color_cwd $fish_color_cwd_root
-			else
-				set color_cwd $fish_color_cwd
-			end
-			set suffix '#'
-		case '*'
-			set color_cwd $fish_color_cwd
-			set suffix '>'
-	end
-
-	set -l prompt_status
-	if test $last_status -ne 0
-		set prompt_status ' ' (set_color $fish_color_status) "[$last_status]" "$normal"
-	end
+	set --local lastPipeStatus $pipestatus
+	set --local normal (set_color normal)
 
 	### Abbreviations for long hostnames
-	set THE_HOSTNAME (prompt_hostname)
-	if test "$THE_HOSTNAME" = 'Mingcen-Weis-MacBook'
-		set THE_HOSTNAME '~MacBook'
+	set --local theHostname (prompt_hostname)
+	if test "$theHostname" = 'Mingcen-Weis-MacBook'
+		set theHostname '~MacBook'
 	end
 	###
 
-	echo -n -s (set_color $fish_color_user) "$USER" $normal @ (set_color $fish_color_host) "$THE_HOSTNAME" $normal ' ' (set_color $color_cwd) (prompt_pwd) $normal (__fish_vcs_prompt) $normal $prompt_status $suffix " "
+	# Color the prompt differently when we're root
+	set --local colorCwd $fish_color_cwd
+	set --local prefix
+	set --local suffix '>'
+	if contains -- $USER root toor
+		if set --query fish_color_cwd_root
+			set colorCwd $fish_color_cwd_root
+		end
+		set suffix '#'
+	end
+
+	# If we're running via SSH, change the host color.
+	set --local colorHost $fish_color_host
+	if set --query SSH_TTY
+		set colorHost $fish_color_host_remote
+	end
+
+	# Write pipestatus
+	set --local promptStatus (__fish_print_pipestatus " [" "]" "|" (set_color $fish_color_status) (set_color --bold $fish_color_status) $lastPipestatus)
+
+	echo -n -s (set_color $fish_color_user) "$USER" $normal @ (set_color $colorHost) "$theHostname" $normal ' ' (set_color $colorCwd) (prompt_pwd) $normal (fish_vcs_prompt) $normal $promptStatus $suffix " "
 end
