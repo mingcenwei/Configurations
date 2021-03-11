@@ -213,7 +213,12 @@ function getFormerSshServerConfigMatches
 		return
 	end
 
-	set --local lines (sudo cat "$sshServerConfigFile") || return 1
+	set --local maybeSudo
+	if not is-platform --quiet 'android-termux'
+		set maybeSudo 'sudo'
+	end
+	set --local sudoCat $maybeSudo 'cat'
+	set --local lines ($sudoCat "$sshServerConfigFile") || return 1
 	set --local isInMatch 'false'
 	for line in $lines
 		set --local fieldNamePort \
@@ -493,6 +498,8 @@ function configureSshServer
 		set maybeSudo 'sudo'
 	end
 	set --local sudoRm $maybeSudo 'rm'
+	set --local sudoMkdir $maybeSudo 'mkdir'
+	set --local sudoRsync $maybeSudo 'rsync'
 	set --local sudoStow $maybeSudo 'stow'
 	set --local sudoTee $maybeSudo 'tee'
 	set --local sudoSshKeygen $maybeSudo 'ssh-keygen'
@@ -541,8 +548,8 @@ function configureSshServer
 		end
 	end
 
-	sudo mkdir -m 700 -p "$sshServerStowDir"'/ssh-server' || return 1
-	sudo rsync --recursive  "$serverLinkDir"/ "$sshServerStowDir"'/ssh-server' || return 1
+	$sudoMkdir -m 700 -p "$sshServerStowDir"'/ssh-server' || return 1
+	$sudoRsync --recursive  "$serverLinkDir"/ "$sshServerStowDir"'/ssh-server' || return 1
 	$sudoStow --verbose --restow --dir "$sshServerStowDir" \
 		--target "$sshServerConfigHome" 'ssh-server' || return 1
 	###
