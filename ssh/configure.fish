@@ -542,7 +542,7 @@ function configureSshServer
 	###
 
 	### Add "ssh" server configurations
-	for configFile in "$sshServerConfigFile" "$sshHostRsaSecretKey" "$sshHostRsaPublicKey"
+	for configFile in "$sshServerConfigFile"
 		if test -f "$configFile" || test -L "$configFile"
 			$sudoRm "$configFile" || return 1
 		end
@@ -604,6 +604,11 @@ function configureSshServer
 	read-choice --variable newHostRsaKey \
 		--prompt 'Generate new ssh host RSA key? ' -- 'yes' 'no' || return 2
 	if test 'yes' = "$newHostRsaKey"
+		for key in "$sshHostRsaSecretKey" "$sshHostRsaPublicKey"
+			if test -f "$key" || test -L "$key"
+				$sudoRm "$key" || return 1
+			end
+		end
 		$sudoSshKeygen -t 'rsa' -b '4096' -N '' -f "$sshHostRsaSecretKey"
 		or return 1
 	end
