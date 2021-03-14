@@ -601,8 +601,12 @@ function configureSshServer
 	$sudoEditor "$sshServerConfigFile"
 
 	# Generate new ssh host RSA key
-	$sudoSshKeygen -t 'rsa' -b '4096' -N '' -f "$sshHostRsaSecretKey"
-	or return 1
+	read-choice --variable newHostRsaKey \
+		--prompt 'Generate new ssh host RSA key? ' -- 'yes' 'no' || return 2
+	if test 'yes' = "$newHostRsaKey"
+		$sudoSshKeygen -t 'rsa' -b '4096' -N '' -f "$sshHostRsaSecretKey"
+		or return 1
+	end
 
 	# Reload sshd
 	if not is-platform --quiet 'android-termux'
