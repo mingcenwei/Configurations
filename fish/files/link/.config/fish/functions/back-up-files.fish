@@ -10,6 +10,10 @@ function __sayAnonymousNamespace_back-up-files_help
 	echo '        -d, --backup-dir=<directory>  Specify backup directory'
 	echo '                                        (default: "$HOME"/.say-local/backups/)'
 	echo '        -c, --comment=<comment>       Add comment to backup name'
+	echo '        -H, --hard-links              Preserve hard links'
+	echo '        -A, --acls                    Preserve ACLs'
+	echo '        -X, --xattrs                  Preserve extended attributes'
+	echo '        -a, --preserve-all            Equal to `-HAX`'
 	echo '        -h, --help                    Display this help message'
 	echo '        --                            Only <files>... after this'
 end
@@ -23,14 +27,22 @@ function back-up-files --description 'Back up files'
 	###
 
 	# Parse options
-	set --local  optionSpecs \
+	set --local optionSpecs \
 		--name 'back-up-files' \
 		--exclusive 'h,d' \
 		--exclusive 'h,c' \
 		--exclusive 'h,x' \
+		--exclusive 'h,H' \
+		--exclusive 'h,A' \
+		--exclusive 'h,X' \
+		--exclusive 'h,a' \
 		(fish_opt --short 'd' --long 'backup-dir' --required-val) \
 		(fish_opt --short 'c' --long 'comment' --required-val) \
 		(fish_opt --short 'x' --long 'remove-source') \
+		(fish_opt --short 'H' --long 'hard-links') \
+		(fish_opt --short 'A' --long 'acls') \
+		(fish_opt --short 'X' --long 'xattrs') \
+		(fish_opt --short 'a' --long 'preserve-all') \
 		(fish_opt --short 'h' --long 'help')
 	argparse $optionSpecs -- $argv
 	or begin
@@ -55,6 +67,20 @@ function back-up-files --description 'Back up files'
 	test -n "$comment" && set comment '.'"$comment"
 	set --local removeSource "$_flag_x"
 
+	set --local preserve
+	if test -n "$_flag_H"
+		set --append preserve '--hard-links'
+	end
+	if test -n "$_flag_A"
+		set --append preserve '--acls'
+	end
+	if test -n "$_flag_X"
+		set --append preserve '--xattrs'
+	end
+	if test -n "$_flag_a"
+		set preserve '--hard-links' '--acls' '--xattrs'
+	end
+
 	set --local filesFullPaths
 	for file in $files
 		set --append filesFullPaths (realpath --strip -- "$file") || return 1
@@ -66,9 +92,10 @@ function back-up-files --description 'Back up files'
 		(mktemp -d "$backupDir"/"$timestamp""$comment"'.XXXXXXXXXX') || return 1
 
 	if test -z "$removeSource"
-		rsync --archive --relative -- $filesFullPaths "$backupRoot" || return 1
+		rsync --archive --sparse $preserve --relative -- \
+			$filesFullPaths "$backupRoot" || return 1
 	else
-		rsync --archive --relative --remove-source-files -- \
+		rsync --archive --sparse $preserve --relative --remove-source-files -- \
 			$filesFullPaths "$backupRoot" || return 1
 		for filesFullPath in $filesFullPaths
 			test -d "$filesFullPath"
