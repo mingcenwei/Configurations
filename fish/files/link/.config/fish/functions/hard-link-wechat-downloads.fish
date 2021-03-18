@@ -11,7 +11,7 @@ function hard-link-wechat-downloads \
 	end
 
 	set --local prefix '/data/media/0'
-	set --local from "$prefix"'/Android/data/com.tencent.MicroMsg/Download'
+	set --local from "$prefix"'/Android/data/com.tencent.mm/MicroMsg/Download'
 	set --local to "$prefix"'/Download/.WeChat.say-local'
 
 	if not sudo test -d "$from"
