@@ -20,6 +20,12 @@ abbr --add --global lni 'ln -i'
 # Add colors: https://wiki.archlinux.org/index.php/Color_output_in_console
 alias diff 'diff --color=auto'
 alias grep 'grep --color=auto'
+if check-dependencies --program --quiet 'egrep'
+	alias egrep 'egrep --color=auto'
+end
+if check-dependencies --program --quiet 'fgrep'
+	alias fgrep 'fgrep --color=auto'
+end
 if not is-platform --quiet 'android-termux'
 	alias ip 'ip -color=auto'
 else
