@@ -65,7 +65,7 @@ function check-dependencies --description  'Check dependencies'
 		end
 	else
 		for executable in $argv
-			if not type --path --quiet "$executable"
+			if not type --path --query "$executable"
 				test -z "$quiet" && echo-err \
 					(string escape "$executable")' is not found'
 				set statusToReturn 1
