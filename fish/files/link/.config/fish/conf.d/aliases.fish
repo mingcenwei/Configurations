@@ -64,6 +64,9 @@ if is-platform --quiet 'pacman'
 			'makepkg --asdeps --syncdeps --install && git clean -xd --interactive'
 	end
 end
+if check-dependencies --program --quiet "pikaur"
+	abbr --add --global pikaur2 'VISUAL= pikaur'
+end
 
 # Auto refresh `sudo` cached credentials
 if command sudo --help 2> '/dev/null' | fgrep --quiet -- '--validate'
