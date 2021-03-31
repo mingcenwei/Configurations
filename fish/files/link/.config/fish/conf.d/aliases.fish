@@ -72,9 +72,9 @@ end
 if check-dependencies --quiet 'smbd'
 and check-dependencies --quiet 'systemctl'
 and check-dependencies 'ufw'
-	abbr --add --global start-samba 'sudo systemctl start smb.service && sudo ufw allow \'CIFS\' comment \'samba\''
-	abbr --add --global restart-samba 'sudo systemctl restart smb.service && sudo ufw allow \'CIFS\' comment \'samba\''
-	abbr --add --global stop-samba 'sudo systemctl stop smb.service && sudo ufw delete allow \'CIFS\''
+	abbr --add --global start-samba 'sudo systemctl start smb.service && sudo ufw allow in 445/tcp comment \'samba\''
+	abbr --add --global restart-samba 'sudo systemctl restart smb.service && sudo ufw allow in 445/tcp comment \'samba\''
+	abbr --add --global stop-samba 'sudo systemctl stop smb.service && sudo ufw delete allow in 445/tcp'
 end
 
 # Auto refresh `sudo` cached credentials
