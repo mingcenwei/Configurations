@@ -68,6 +68,15 @@ if check-dependencies --program --quiet "pikaur"
 	abbr --add --global pikaur2 'VISUAL= pikaur'
 end
 
+# Start "samba"
+if check-dependencies --quiet 'smbd'
+and check-dependencies --quiet 'systemctl'
+and check-dependencies 'ufw'
+	abbr --add --global start-samba 'sudo systemctl start smb.service && sudo ufw allow \'CIFS\' comment \'samba\''
+	abbr --add --global restart-samba 'sudo systemctl restart smb.service && sudo ufw allow \'CIFS\' comment \'samba\''
+	abbr --add --global stop-samba 'sudo systemctl stop smb.service && sudo ufw delete allow \'CIFS\''
+end
+
 # Auto refresh `sudo` cached credentials
 if command sudo --help 2> '/dev/null' | fgrep --quiet -- '--validate'
 	function sudo --wraps='sudo' --description 'sudo'
