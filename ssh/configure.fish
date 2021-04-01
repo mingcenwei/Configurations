@@ -395,8 +395,7 @@ function configureFirewall
 		--local --array proxyPorts || return 2
 
 	if test -d '/etc/ufw'
-		sudo find /etc/ufw -type d -exec chmod 700 {} \; || return 1
-		sudo find /etc/ufw -type f -exec chmod 600 {} \; || return 1
+		sudo chmod -R u+rwX,go= '/etc/ufw' || return 1
 	end
 
 	sudo systemctl disable --now firewalld.service > '/dev/null' 2>&1

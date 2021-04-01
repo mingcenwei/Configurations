@@ -15,13 +15,13 @@ set --local functionDir "$thisDir"'/fish/files/link/.config/fish/functions'
 for file in "$functionDir"/*
 	source -- "$file" || exit
 end
-or exit 3
+or exit 1
 
 # For security
 for filesDir in "$thisDir"/*/'files'
-	find "$filesDir" -type d -exec chmod 700 '{}' ';'
-	find "$filesDir" -type f -exec chmod 600 '{}' ';'
+	chmod -R u+rwX,go= "$filesDir" || exit 1
 end
+or exit 1
 
 set --local configDirs \
 	'fish' \
