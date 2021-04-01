@@ -26,10 +26,18 @@ end
 if check-dependencies --program --quiet 'fgrep'
 	alias fgrep 'fgrep --color=auto'
 end
-if not is-platform --quiet 'android-termux'
-	alias ip 'ip -color=auto'
-else
-	alias ip 'ip -color'
+if check-dependencies --program --quiet 'ip'
+	if not is-platform --quiet 'android-termux'
+		alias ip 'ip -color=auto'
+	else
+		function ip --wraps='ip' --description 'Colorful wrapper of "ip"'
+			if isatty stdout
+				command ip -color $argv
+			else
+				command ip $argv
+			end
+		end
+	end
 end
 
 # Create and enter a temporary directory
