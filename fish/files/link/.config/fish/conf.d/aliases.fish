@@ -1,20 +1,42 @@
 #!/usr/bin/env fish
 
-# Interactive mode (prompting for confirmation)
-if not is-platform --quiet 'macos'
+# Safety measures
+if is-platform --quiet 'linux'
+	alias rm 'rm --preserve-root=all'
 	abbr --add --global rm 'rm -I'
+	abbr --add --global rmi 'rm -I'
+
+	alias chmod 'chmod --preserve-root'
+	alias chown 'chown --preserve-root'
+	alias chgrp 'chgrp --preserve-root'
 else
 	if check-dependencies --program 'grm'
+		alias grm 'grm --preserve-root=all'
 		abbr --add --global rm 'grm -I'
+		abbr --add --global rmi 'grm -I'
 	else
 		abbr --add --global rm 'rm -i'
+		abbr --add --global rmi 'rm -i'
+	end
+
+	if check-dependencies --program 'gchmod'
+		alias gchmod 'gchmod --preserve-root'
+		alias chmod 'gchmod'
+	end
+	if check-dependencies --program 'gchown'
+		alias gchown 'gchown --preserve-root'
+		alias chown 'gchown'
+	end
+	if check-dependencies --program 'gchgrp'
+		alias gchgrp 'gchgrp --preserve-root'
+		alias chgrp 'gchgrp'
 	end
 end
 abbr --add --global cp 'cp -i'
-abbr --add --global mv 'mv -i'
-abbr --add --global rmi 'rm -i'
 abbr --add --global cpi 'cp -i'
+abbr --add --global mv 'mv -i'
 abbr --add --global mvi 'mv -i'
+#abbr --add --global ln 'ln -i'
 abbr --add --global lni 'ln -i'
 
 # Add colors: https://wiki.archlinux.org/index.php/Color_output_in_console
