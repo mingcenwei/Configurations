@@ -125,10 +125,18 @@ end
 if check-dependencies --program 'parallel'
 	function parallel --wraps 'parallel' \
 	--description 'GNU Parallel for fish shell'
-		set --local tempHome (mktemp -d)
-		and ln -s (realpath "$HOME"'/.parallel') "$tempHome"'/.parallel'
-		and env HOME="$tempHome" (command --search parallel) $argv
-		and rm -r "$tempHome"
+		set --local parallel (command --search parallel)
+		and set --local tempHome (mktemp -d)
+		and begin
+			ln -s (realpath "$HOME"'/.parallel') "$tempHome"'/.parallel'
+			and env HOME="$tempHome" XDG_CONFIG_HOME= "$parallel" $argv
+			and rm -r "$tempHome"
+			or begin
+				set --local statusToReturn "$status"
+				echo-err --warning 'Temporary HOME directory: '"$tempHome"
+				return "$statusToReturn"
+			end
+		end
 	end
 end
 
