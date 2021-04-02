@@ -5,10 +5,9 @@
 
 function fish_prompt --description 'Write out the prompt'
 	set --local lastPipeStatus $pipestatus
-	set --local normal (set_color 'normal')
-
 	# Export for __fish_print_pipestatus.
 	set --local --export __fish_last_status $status
+	set --local normal (set_color 'normal')
 
 	### Abbreviations for long hostnames
 	set --local theHostname (prompt_hostname)
