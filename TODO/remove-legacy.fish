@@ -3,6 +3,7 @@
 set --erase --universal track_file_DIR_PATH
 set --erase --universal _Configurations__PATH
 set --erase --universal JAVA_HOME
+set --erase --universal fish_color_match
 
 set --local fisherUniversalVariables \
 	(set --names --universal | grep '_fisher_')
