@@ -19,4 +19,6 @@ for file in "$HOME"/.ssh/.my_ssh_agent_information \
 	test -e "$file"
 	and set --append filesToRemove "$file"
 end
-back-up-files --remove-source -- $filesToRemove
+if test -n "$filesToRemove"
+	back-up-files --remove-source -- $filesToRemove
+end
