@@ -128,12 +128,14 @@ if check-dependencies --program 'parallel'
 		set --local parallel (command --search parallel)
 		and set --local tempHome (mktemp -d)
 		and begin
-			ln -s (realpath "$HOME"'/.parallel') "$tempHome"'/.parallel'
+			if test -d "$HOME"'/.parallel'
+				ln -s "$HOME"'/.parallel' "$tempHome"'/.parallel'
+			end
 			and env HOME="$tempHome" XDG_CONFIG_HOME= "$parallel" $argv
 			and rm -r "$tempHome"
 			or begin
 				set --local statusToReturn "$status"
-				echo-err --warning 'Temporary HOME directory: '"$tempHome"
+				echo-err --warning 'Residual temporary HOME directory: '"$tempHome"
 				return "$statusToReturn"
 			end
 		end
