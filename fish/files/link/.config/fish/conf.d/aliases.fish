@@ -129,7 +129,7 @@ if check-dependencies --program 'parallel'
 		and set --local tempHome (mktemp -d)
 		and begin
 			if test -d "$HOME"'/.parallel'
-				ln -s "$HOME"'/.parallel' "$tempHome"'/.parallel'
+				ln -s "$HOME"'/.parallel/.' "$tempHome"'/.parallel'
 			end
 			and env HOME="$tempHome" XDG_CONFIG_HOME= "$parallel" $argv
 			and rm -r "$tempHome"

@@ -28,7 +28,7 @@ if is-platform --quiet 'android-termux'
 				back-up-files --remove-source -- "$HOME"/"$to"
 			end
 
-			ln -si "$from" "$HOME"/"$to"
+			ln -si --no-target-directory "$from" "$HOME"/"$to"
 		end
 
 		set --local pattern '^'(string escape --style=regex '/sdcard')
@@ -42,7 +42,7 @@ if is-platform --quiet 'android-termux'
 				set --local underlying '/data/media/0'
 				set --local fromUnderlying \
 					(string replace --regex -- "$pattern" "$underlying" "$from")
-				ln -si "$fromUnderlying" "$prefix"/"$to"
+				ln -si --no-target-directory "$fromUnderlying" "$prefix"/"$to"
 			end
 		end
 	end
@@ -62,6 +62,7 @@ if is-platform --quiet 'android-termux'
 	if not test -f "$HOME"'/bin/termux-file-editor'
 		mkdir -m 700 -p "$HOME"'/bin'
 		and check-dependencies --program 'vim'
-		and ln -si (command --search vim) "$HOME"'/bin/termux-file-editor'
+		and ln -si --no-target-directory (command --search vim) \
+			"$HOME"'/bin/termux-file-editor'
 	end
 end
