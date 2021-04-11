@@ -2,7 +2,7 @@
 
 # Safety measures
 if is-platform --quiet 'linux'
-	alias rm 'rm --preserve-root=all'
+	alias rm 'rm --preserve-root=all --one-file-system'
 	abbr --add --global rm 'rm -I'
 	abbr --add --global rmi 'rm -I'
 
@@ -11,7 +11,7 @@ if is-platform --quiet 'linux'
 	alias chgrp 'chgrp --preserve-root'
 else
 	if check-dependencies --program 'grm'
-		alias grm 'grm --preserve-root=all'
+		alias grm 'grm --preserve-root=all --one-file-system'
 		abbr --add --global rm 'grm -I'
 		abbr --add --global rmi 'grm -I'
 	else
