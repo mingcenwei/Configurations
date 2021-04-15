@@ -194,7 +194,7 @@ if check-dependencies --program --quiet 'npm'
 		function npx
 			echo-err --warning 'Please use "pnpx" (or "plain_npx")'
 		end
-		function pnpm --warps 'npm' --description 'npm replacement'
+		function pnpm --wraps 'npm' --description 'npm replacement'
 			command pnpm $argv
 		end
 	end
