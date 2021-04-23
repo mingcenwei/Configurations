@@ -170,16 +170,6 @@ if check-dependencies --program --quiet 'exa'
 	alias la 'exa --all --long --binary --group --links --time-style=long-iso --git'
 	alias laa 'exa --all --all --long --binary --group --links --time-style=long-iso --git'
 	alias tree 'exa --tree'
-
-	complete --command 'ls' \
-		--short-option 'T' \
-		--erase
-	complete --command 'll' \
-		--short-option 'T' \
-		--erase
-	complete --command 'la' \
-		--short-option 'T' \
-		--erase
 else if check-dependencies --program --quiet 'lsd'
 	alias ls 'lsd'
 	# TODO: remove legacy workarounds
