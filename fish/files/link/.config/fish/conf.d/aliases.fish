@@ -171,13 +171,13 @@ if check-dependencies --program --quiet 'exa'
 	alias laa 'exa --all --all --long --binary --group --links --time-style=long-iso --git'
 	alias tree 'exa --tree'
 
-	completion --command 'ls' \
+	complete --command 'ls' \
 		--short-option 'T' \
 		--erase
-	completion --command 'll' \
+	complete --command 'll' \
 		--short-option 'T' \
 		--erase
-	completion --command 'la' \
+	complete --command 'la' \
 		--short-option 'T' \
 		--erase
 else if check-dependencies --program --quiet 'lsd'
