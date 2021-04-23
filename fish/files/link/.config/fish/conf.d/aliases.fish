@@ -1,6 +1,6 @@
 #!/usr/bin/env fish
 
-# Safety measures
+# Filesystem safety measures
 if is-platform --quiet 'linux'
 	alias rm 'rm --preserve-root=all --one-file-system'
 	abbr --add --global rm 'rm -I'
@@ -38,6 +38,13 @@ abbr --add --global mv 'mv -i'
 abbr --add --global mvi 'mv -i'
 #abbr --add --global ln 'ln -i'
 abbr --add --global lni 'ln -i'
+
+# Database safety measures
+abbr --add --global mysql 'mysql -U'
+abbr --add --global mariadb 'mariadb -U'
+abbr --add --global mycli 'mycli --warn'
+abbr --add --global litecli 'litecli --warn'
+abbr --add --global pgcli 'pgcli --warn'
 
 # Add colors: https://wiki.archlinux.org/index.php/Color_output_in_console
 alias diff 'diff --color=auto'
