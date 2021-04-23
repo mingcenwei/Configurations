@@ -1,8 +1,8 @@
 #!/usr/bin/env fish
 
 function __sayAnonymousNamespace_back-up-files_help
-	echo 'Usage:  back-up-files [-x] [-d <directory>] [-c <comment>]'
-	echo '                      [--] <files>...'
+	echo 'Usage:  back-up-files [-x] [-HAX | -a] [-c <comment>]'
+	echo '                      [-d <directory>] [--] <files>...'
 	echo 'Back up files'
 	echo
 	echo 'Options:'
