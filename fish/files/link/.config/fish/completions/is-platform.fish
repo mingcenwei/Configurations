@@ -5,7 +5,7 @@ complete --command 'is-platform' \
 		'-s h help' \
 		'-s l list' \
 	) \
-	--exclusive
+	--no-files
 complete --command 'is-platform' \
 	--condition (string join -- ' ' 'not __fish_contains_opt' \
 		'-s h help' \

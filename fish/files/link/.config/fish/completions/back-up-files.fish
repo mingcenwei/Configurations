@@ -2,7 +2,7 @@
 
 complete --command 'back-up-files' \
 	--condition '__fish_contains_opt -s h help' \
-	--exclusive
+	--no-files
 complete --command 'back-up-files' \
 	--condition (string join -- ' ' 'not __fish_contains_opt' \
 		'-s h help' \

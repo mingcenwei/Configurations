@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
 
 complete --command 'set-proxies' \
-	--exclusive
+	--no-files
 complete --command 'set-proxies' \
 	--condition 'test 1 -eq (count (commandline --tokenize --cut-at-cursor))' \
 	--exclusive \

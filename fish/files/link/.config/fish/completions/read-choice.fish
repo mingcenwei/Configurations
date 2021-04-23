@@ -1,8 +1,10 @@
 #!/usr/bin/env fish
 
 complete --command 'read-choice' \
-	--condition '__fish_contains_opt -s h help' \
 	--exclusive
+complete --command 'read-choice' \
+	--condition '__fish_contains_opt -s h help' \
+	--no-files
 complete --command 'read-choice' \
 	--condition (string join -- ' ' 'not __fish_contains_opt' \
 		'-s h help' \

@@ -3,6 +3,9 @@
 complete --command 'check-dependencies' \
 	--exclusive
 complete --command 'check-dependencies' \
+	--condition '__fish_contains_opt -s h help' \
+	--no-files
+complete --command 'check-dependencies' \
 	--condition (string join -- ' ' 'not __fish_contains_opt' \
 		'-s h help' \
 		'-s f function' \

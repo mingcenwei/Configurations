@@ -2,7 +2,7 @@
 
 complete --command 'add-paths' \
 	--condition '__fish_contains_opt -s h help' \
-	--exclusive
+	--no-files
 complete --command 'add-paths' \
 	--condition (string join -- ' ' 'not __fish_contains_opt' \
 		'-s h help' \

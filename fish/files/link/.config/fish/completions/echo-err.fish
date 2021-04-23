@@ -2,7 +2,7 @@
 
 complete --command 'echo-err' \
 	--condition '__fish_contains_opt -s h help' \
-	--exclusive
+	--no-files
 complete --command 'echo-err' \
 	--condition (string join -- ' ' 'not __fish_contains_opt' \
 		'-s h help' \
