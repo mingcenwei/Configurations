@@ -6,26 +6,26 @@ function set-proxies --description 'Set HTTP/SOCKS proxies'
 	set --local noProxy "localhost,127.0.0.1,.cn"
 
 	set httpProxy (string lower -- (string trim -- "$httpProxy"))
-	if test -z "$httpProxy"
+	if string match --quiet --regex -- '^\s*$' "$httpProxy"
 		echo 'Please enter HTTP proxy (or `none`/`current`)'
 		read httpProxy || return 2
 	end
 	set httpProxy (string lower -- (string trim -- "$httpProxy"))
 
 	set socksProxy (string lower -- (string trim -- "$socksProxy"))
-	if test -z "$socksProxy"
+	if string match --quiet --regex -- '^\s*$' "$socksProxy"
 		echo 'Please enter SOCKS proxy (or `none`/`current`)'
 		read socksProxy || return 2
 	end
 	set socksProxy (string lower -- (string trim -- "$socksProxy"))
 
 	switch "$httpProxy"
+		case 'current'
 		case 'none'
 			for proxy in http_proxy https_proxy ftp_proxy rsync_proxy
 				set --erase --global "$proxy"
 				set --erase --global (string upper "$proxy")
 			end
-		case 'current'
 		case '*'
 			if not string match --regex --quiet -- \
 			'^[\\w\\-]+\\:\\/\\/' "$httpProxy"
@@ -37,12 +37,12 @@ function set-proxies --description 'Set HTTP/SOCKS proxies'
 			end
 	end
 	switch "$socksProxy"
+		case 'current'
 		case 'none'
 			for proxy in all_proxy
 				set --erase --global "$proxy"
 				set --erase --global (string upper "$proxy")
 			end
-		case 'current'
 		case '*'
 			if not string match --regex --quiet -- \
 			'^[\\w\\-]+\\:\\/\\/' "$socksProxy"
