@@ -9,7 +9,7 @@ complete --command 'add-paths' \
 		'-s v variable' \
 	) \
 	--exclusive \
-	--arguments '-v' \
+	--arguments '--variable' \
 	--description 'Path variable'
 complete --command 'add-paths' \
 	--condition (string join -- ' ' 'not __fish_contains_opt' \

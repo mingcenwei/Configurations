@@ -7,6 +7,18 @@ complete --command 'check-dependencies' \
 	--no-files
 complete --command 'check-dependencies' \
 	--condition (string join -- ' ' 'not __fish_contains_opt' \
+		'-s f function' \
+		'-s p program' \
+	) \
+	--arguments (string join -- ' ' \
+		'(' \
+		"printf '%s\t%s\n'" \
+		"'--function' 'Check fish function existence'" \
+		"'--program' 'Check program existence'" \
+		')' \
+	)
+complete --command 'check-dependencies' \
+	--condition (string join -- ' ' 'not __fish_contains_opt' \
 		'-s h help' \
 		'-s f function' \
 		'-s p program' \

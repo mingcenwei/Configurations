@@ -11,7 +11,7 @@ complete --command 'read-choice' \
 		'-s v variable' \
 	) \
 	--exclusive \
-	--arguments '-v' \
+	--arguments '--variable' \
 	--description 'Variable to store the choice'
 complete --command 'read-choice' \
 	--condition (string join -- ' ' 'not __fish_contains_opt' \
