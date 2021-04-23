@@ -30,7 +30,7 @@
 if check-dependencies 'ssh-agent'
 	# Check whether there is an ssh-agent running. If not, create one
 	if test -z "$SSH_AGENT_PID"
-	or not pgrep -u (id -un) 'ssh-agent' | grep -q '^'"$SSH_AGENT_PID"'$'
+	or not pgrep -u (id -u) 'ssh-agent' | grep -q '^'"$SSH_AGENT_PID"'$'
 		# Set the maximum lifetime of identities added to the agent to 3600 seconds
 		ssh-agent -c -t 3600 | \
 			sed -e 's/^setenv/set --export --universal/' | \

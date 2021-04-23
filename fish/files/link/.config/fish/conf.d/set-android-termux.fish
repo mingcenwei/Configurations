@@ -6,7 +6,7 @@ if is-platform --quiet 'android-termux'
 		if not test -d "$path"
 			if test -e "$path"
 			or test -L "$path"
-				back-up-files --remove-source -- "$path"
+				back-up-files --remove-source -- "$path" || return
 			end
 
 			mkdir -m 700 -p -- "$path"
@@ -25,7 +25,7 @@ if is-platform --quiet 'android-termux'
 		if not test -d "$HOME"/"$to"
 			if test -e "$HOME"/"$to"
 			or test -L "$HOME"/"$to"
-				back-up-files --remove-source -- "$HOME"/"$to"
+				back-up-files --remove-source -- "$HOME"/"$to" || return
 			end
 
 			ln -si --no-target-directory "$from" "$HOME"/"$to"

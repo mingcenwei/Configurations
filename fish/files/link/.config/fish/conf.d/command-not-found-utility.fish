@@ -3,7 +3,7 @@
 if is-platform --quiet 'homebrew'
 	set --local homebrewCommandNotFoundHandler \
 		(brew --prefix)'/Homebrew/Library/Taps/homebrew/homebrew-command-not-found/handler.fish'
-	if test -f "$homebrewCommandNotFoundHandler"
+	and if test -f "$homebrewCommandNotFoundHandler"
 		source "$homebrewCommandNotFoundHandler"
 	else if status is-login && status is-interactive
 		echo-err --warning 'Please run `brew tap homebrew/command-not-found`'
