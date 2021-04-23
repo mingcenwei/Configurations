@@ -1,11 +1,12 @@
 #!/usr/bin/env fish
 
 function __sayAnonymousNamespace_back-up-files_help
-	echo 'Usage:  back-up-files [-x] [-HAX | -a] [-c <comment>]'
+	echo 'Usage:  back-up-files [-s] [-x] [-HAX | -a] [-c <comment>]'
 	echo '                      [-d <directory>] [--] <files>...'
 	echo 'Back up files'
 	echo
 	echo 'Options:'
+	echo '        -s, --sudo                    Use `sudo`'
 	echo '        -x, --remove-source           Remove original files'
 	echo '        -d, --backup-dir=<directory>  Specify backup directory'
 	echo '                                        (default: "$HOME"/.say-local/backups/)'
@@ -31,6 +32,7 @@ function back-up-files --description 'Back up files'
 		--name 'back-up-files' \
 		--exclusive 'h,d' \
 		--exclusive 'h,c' \
+		--exclusive 'h,s' \
 		--exclusive 'h,x' \
 		--exclusive 'h,H' \
 		--exclusive 'h,A' \
@@ -38,6 +40,7 @@ function back-up-files --description 'Back up files'
 		--exclusive 'h,a' \
 		(fish_opt --short 'd' --long 'backup-dir' --required-val) \
 		(fish_opt --short 'c' --long 'comment' --required-val) \
+		(fish_opt --short 's' --long 'sudo') \
 		(fish_opt --short 'x' --long 'remove-source') \
 		(fish_opt --short 'H' --long 'hard-links') \
 		(fish_opt --short 'A' --long 'acls') \
@@ -65,6 +68,7 @@ function back-up-files --description 'Back up files'
 	set --local comment \
 		(string escape --style 'url' -- (string trim -- "$_flag_c"))
 	test -n "$comment" && set comment '.'"$comment"
+	set --local useSudo "$_flag_s"
 	set --local removeSource "$_flag_x"
 
 	set --local preserve
@@ -81,25 +85,38 @@ function back-up-files --description 'Back up files'
 		set preserve '--hard-links' '--acls' '--xattrs'
 	end
 
+	set --local cRealpath 'realpath'
+	set --local cTest 'test'
+	set --local cMkdir 'mkdir'
+	set --local cMktemp 'mktemp'
+	set --local cRsync 'rsync'
+	set --local cFind 'find'
+	if test -n "$useSudo"
+		for var in cRealpath cTest cMkdir cMktemp cRsync cFind
+			set --append "$var" 'sudo'
+		end
+	end
+
 	set --local filesFullPaths
 	for file in $files
-		set --append filesFullPaths (realpath --strip -- "$file") || return 1
+		set --append filesFullPaths ($cRealpath --strip -- "$file") || return 1
 	end
 	set --local timestamp (date +"%Y-%m-%d_%H-%M-%S")
-	test -d "$backupDir" || mkdir -m 700 -p -- "$backupDir" || return 1
-	set backupDir (realpath -- "$backupDir") || return 1
+	$cTest -d "$backupDir" || $cMkdir -m 700 -p -- "$backupDir" || return 1
+	set backupDir ($cRealpath -- "$backupDir") || return 1
 	set --local backupRoot \
-		(mktemp -d "$backupDir"/"$timestamp""$comment"'.XXXXXXXXXX') || return 1
+		($cMktemp -d "$backupDir"/"$timestamp""$comment"'.XXXXXXXXXX')
+	or return 1
 
 	if test -z "$removeSource"
-		rsync --archive --sparse $preserve --relative -- \
+		$cRsync --archive --sparse $preserve --relative -- \
 			$filesFullPaths "$backupRoot" || return 1
 	else
-		rsync --archive --sparse $preserve --relative --remove-source-files -- \
-			$filesFullPaths "$backupRoot" || return 1
+		$cRsync --archive --sparse $preserve --relative \
+			--remove-source-files -- $filesFullPaths "$backupRoot" || return 1
 		for filesFullPath in $filesFullPaths
-			test -d "$filesFullPath"
-			and find "$filesFullPath" -type d -empty -delete
+			$cTest -d "$filesFullPath"
+			and $cFind "$filesFullPath" -type d -empty -delete
 		end
 	end
 end
