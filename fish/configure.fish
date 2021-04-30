@@ -16,7 +16,7 @@ set --local onceDir "$thisDir"'/files/once'
 set --local functionDir "$linkDir"'/.config/fish/functions'
 
 # Load required functions
-for file in "$functionDir"/*
+for file in "$functionDir"/*'.fish'
 	source -- "$file" || exit
 end
 or exit 3

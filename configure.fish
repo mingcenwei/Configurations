@@ -12,7 +12,7 @@ set --local thisDir (dirname -- "$thisFile") || exit 1
 set --local functionDir "$thisDir"'/fish/files/link/.config/fish/functions'
 
 # Load required functions
-for file in "$functionDir"/*
+for file in "$functionDir"/*'.fish'
 	source -- "$file" || exit
 end
 or exit 1
