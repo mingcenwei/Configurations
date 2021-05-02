@@ -51,3 +51,6 @@ if check-dependencies --program --quiet 'java'
 		set --export --global JAVA_HOME ('/usr/libexec/java_home')
 	end
 end
+
+# For nvm
+set --export --global NVM_DIR "$HOME"'/.nvm'
