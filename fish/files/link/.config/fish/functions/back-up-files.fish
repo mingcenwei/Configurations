@@ -116,8 +116,9 @@ function back-up-files --description 'Back up files'
 		$cRsync --archive --sparse $preserve --relative \
 			--remove-source-files -- $filesFullPaths "$backupRoot" || return 1
 		for filesFullPath in $filesFullPaths
-			$cTest -d "$filesFullPath"
-			and $cFind "$filesFullPath" -type d -empty -delete
+			if $cTest -d "$filesFullPath"
+				$cFind "$filesFullPath" -type d -empty -delete
+			end
 		end
 	end
 end
