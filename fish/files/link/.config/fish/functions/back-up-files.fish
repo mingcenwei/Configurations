@@ -20,6 +20,7 @@ function __sayAnonymousNamespace_back-up-files_help
 end
 
 function back-up-files --description 'Back up files'
+	check-dependencies --program 'find' || return 3
 	check-dependencies --program 'realpath' || return 3
 	check-dependencies --program 'rsync' || return 3
 
