@@ -1,5 +1,7 @@
 #!/usr/bin/env fish
 
+touch "$HOME"'/.config/fish/fish_variables'
+
 ### Configure the theme of "fish"
 set --universal fish_color_autosuggestion '555555' 'brblack'
 set --universal fish_color_cancel '--reverse'
