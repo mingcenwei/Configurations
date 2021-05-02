@@ -94,7 +94,7 @@ function back-up-files --description 'Back up files'
 	set --local cFind 'find'
 	if test -n "$useSudo"
 		for var in cRealpath cTest cMkdir cMktemp cRsync cFind
-			set --append "$var" 'sudo'
+			set --prepend "$var" 'sudo'
 		end
 	end
 
