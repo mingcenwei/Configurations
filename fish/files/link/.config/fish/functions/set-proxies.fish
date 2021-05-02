@@ -1,9 +1,20 @@
 #!/usr/bin/env fish
 
 function set-proxies --description 'Set HTTP/SOCKS proxies'
+	# Parse options
+	set --local  optionSpecs \
+		--name 'set-proxies' \
+		(fish_opt --short 'U' --long 'universal')
+	argparse $optionSpecs -- $argv || return 2
+
+	set --local scope '--global'
+	if test -n "$_flag_U"
+		set scope '--universal'
+	end
+
 	set --local httpProxy "$argv[1]"
 	set --local socksProxy "$argv[2]"
-	set --local noProxy "localhost,127.0.0.1,.cn"
+	set --local noProxy "$argv[3]"
 
 	set httpProxy (string lower -- (string trim -- "$httpProxy"))
 	if string match --quiet --regex -- '^\s*$' "$httpProxy"
@@ -19,43 +30,57 @@ function set-proxies --description 'Set HTTP/SOCKS proxies'
 	end
 	set socksProxy (string lower -- (string trim -- "$socksProxy"))
 
+	set noProxy (string lower -- (string trim -- "$noProxy"))
+	if string match --quiet --regex -- '^\s*$' "$noProxy"
+		set noProxy "localhost,127.0.0.1,.cn"
+	end
+
 	switch "$httpProxy"
 		case 'current'
 		case 'none'
-			for proxy in http_proxy https_proxy ftp_proxy rsync_proxy
-				set --erase --global "$proxy"
-				set --erase --global (string upper "$proxy")
+			for proxy in 'http_proxy' 'https_proxy' 'ftp_proxy' 'rsync_proxy'
+				set --erase "$scope" "$proxy"
+				set --erase "$scope" (string upper "$proxy")
 			end
 		case '*'
 			if not string match --regex --quiet -- \
 			'^[\\w\\-]+\\:\\/\\/' "$httpProxy"
 				set httpProxy 'http://'"$httpProxy"
 			end
-			for proxy in http_proxy https_proxy ftp_proxy rsync_proxy
-				set --export --global "$proxy" "$httpProxy"
-				set --export --global (string upper "$proxy") "$httpProxy"
+			for proxy in 'http_proxy' 'https_proxy' 'ftp_proxy' 'rsync_proxy'
+				set --export "$scope" "$proxy" "$httpProxy"
+				set --export "$scope" (string upper "$proxy") "$httpProxy"
 			end
 	end
 	switch "$socksProxy"
 		case 'current'
 		case 'none'
-			for proxy in all_proxy
-				set --erase --global "$proxy"
-				set --erase --global (string upper "$proxy")
+			for proxy in 'all_proxy'
+				set --erase "$scope" "$proxy"
+				set --erase "$scope" (string upper "$proxy")
 			end
 		case '*'
 			if not string match --regex --quiet -- \
 			'^[\\w\\-]+\\:\\/\\/' "$socksProxy"
 				set socksProxy 'socks5://'"$socksProxy"
 			end
-			for proxy in all_proxy
-				set --export --global "$proxy" "$socksProxy"
-				set --export --global (string upper "$proxy") "$socksProxy"
+			for proxy in 'all_proxy'
+				set --export "$scope" "$proxy" "$socksProxy"
+				set --export "$scope" (string upper "$proxy") "$socksProxy"
 			end
 	end
-	for proxy in no_proxy
-		set --export --global "$proxy" "$noProxy"
-		set --export --global (string upper "$proxy") "$noProxy"
+	switch "$noProxy"
+		case 'current'
+		case 'none'
+			for proxy in 'no_proxy'
+				set --erase "$scope" "$proxy"
+				set --erase "$scope" (string upper "$proxy")
+			end
+		case '*'
+			for proxy in 'no_proxy'
+				set --export "$scope" "$proxy" "$socksProxy"
+				set --export "$scope" (string upper "$proxy") "$socksProxy"
+			end
 	end
 	return 0
 end
