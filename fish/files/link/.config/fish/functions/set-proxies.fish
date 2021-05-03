@@ -78,8 +78,8 @@ function set-proxies --description 'Set HTTP/SOCKS proxies'
 			end
 		case '*'
 			for proxy in 'no_proxy'
-				set --export "$scope" "$proxy" "$socksProxy"
-				set --export "$scope" (string upper "$proxy") "$socksProxy"
+				set --export "$scope" "$proxy" "$noProxy"
+				set --export "$scope" (string upper "$proxy") "$noProxy"
 			end
 	end
 	return 0
