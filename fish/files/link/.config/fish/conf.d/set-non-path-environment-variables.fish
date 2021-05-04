@@ -20,7 +20,7 @@ set --export --global LESS_TERMCAP_ue (set_color 'normal')
 
 ### Set default text editors
 if not check-dependencies --program --quiet 'vim'
-	if status is-login && status is-interactive
+	if status is-interactive
 		echo-err --warning '"vim" is not installed! $EDITOR will not be set'
 	end
 else
@@ -29,7 +29,7 @@ else
 end
 
 if not check-dependencies --program --quiet 'code'
-	if status is-login && status is-interactive
+	if status is-interactive
 		echo-err --warning '"Visual Studio Code" is not installed! $VISUAL will not be set'
 	end
 else

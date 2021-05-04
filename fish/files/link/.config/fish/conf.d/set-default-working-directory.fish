@@ -1,6 +1,6 @@
 #!/usr/bin/env fish
 
-# For login and interactive shells
+# For login interactive shells
 if status is-login && status is-interactive
 and test (pwd) = "$HOME"
 	### Set default working directory

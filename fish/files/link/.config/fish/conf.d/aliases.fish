@@ -183,14 +183,14 @@ else if check-dependencies --program --quiet 'lsd'
 		alias laa 'lsd --all --long'
 	end
 	alias tree 'lsd --tree'
-else if status is-login && status is-interactive
+else if status is-interactive
 	echo-err --warning 'Please install "exa"/"lsd"'
 end
 
 # Use pnpm instead of npm
 if check-dependencies --program --quiet 'npm'
 	if not check-dependencies --program --quiet 'pnpm'
-		if status is-login && status is-interactive
+		if status is-interactive
 			echo-err --warning 'Please install "pnpm" to replace "npm"'
 		end
 	else
@@ -246,7 +246,7 @@ if is-platform --quiet 'macos'
 			'-fno-omit-frame-pointer' \
 			'-fno-optimize-sibling-calls' \
 		)
-	else if status is-login && status is-interactive
+	else if status is-interactive
 		echo-err --warning 'Please install "clang++"'
 	end
 else
@@ -267,7 +267,7 @@ else
 			'-fPIE' \
 			'-Wl,-pie' \
 		)
-	else if status is-login && status is-interactive
+	else if status is-interactive
 		echo-err --warning 'Please install "g++"'
 	end
 end
