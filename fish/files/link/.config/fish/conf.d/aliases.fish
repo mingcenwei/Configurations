@@ -115,7 +115,8 @@ and check-dependencies 'ufw'
 end
 
 # Auto refresh `sudo` cached credentials
-if command sudo --help 2> '/dev/null' | fgrep --quiet -- '--validate'
+if check-depedencies --quiet 'sudo'
+and command sudo --help 2> '/dev/null' | fgrep --quiet -- '--validate'
 	function sudo --wraps='sudo' --description 'sudo'
 		command sudo --validate
 		and command sudo $argv
