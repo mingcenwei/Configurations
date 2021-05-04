@@ -10,8 +10,9 @@ if is-platform --quiet 'homebrew'
 	end
 else if is-platform --quiet 'pacman'
 	if not check-dependencies --program --quiet 'pkgfile'
-	and status is-login && status is-interactive
-		echo-err --warning \
-			'Please install "pkgfile" and run `sudo pkgfile --update`'
+		if status is-login && status is-interactive
+			echo-err --warning \
+				'Please install "pkgfile" and run `sudo pkgfile --update`'
+		end
 	end
 end

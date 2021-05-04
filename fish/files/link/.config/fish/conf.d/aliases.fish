@@ -190,8 +190,9 @@ end
 # Use pnpm instead of npm
 if check-dependencies --program --quiet 'npm'
 	if not check-dependencies --program --quiet 'pnpm'
-	and status is-login && status is-interactive
-		echo-err --warning 'Please install "pnpm" to replace "npm"'
+		if status is-login && status is-interactive
+			echo-err --warning 'Please install "pnpm" to replace "npm"'
+		end
 	else
 		alias plain_npm 'command npm'
 		alias plain_npx 'command npx'

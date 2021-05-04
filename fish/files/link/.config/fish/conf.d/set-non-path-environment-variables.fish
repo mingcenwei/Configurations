@@ -20,16 +20,18 @@ set --export --global LESS_TERMCAP_ue (set_color 'normal')
 
 ### Set default text editors
 if not check-dependencies --program --quiet 'vim'
-and status is-login && status is-interactive
-	echo-err --warning '"vim" is not installed! $EDITOR will not be set'
+	if status is-login && status is-interactive
+		echo-err --warning '"vim" is not installed! $EDITOR will not be set'
+	end
 else
 	set --export --universal EDITOR (command --search vim)
 	set --export --universal SUDO_EDITOR (command --search vim)
 end
 
 if not check-dependencies --program --quiet 'code'
-and status is-login && status is-interactive
-	echo-err --warning '"Visual Studio Code" is not installed! $VISUAL will not be set'
+	if status is-login && status is-interactive
+		echo-err --warning '"Visual Studio Code" is not installed! $VISUAL will not be set'
+	end
 else
 	set --export --universal VISUAL (command --search code)
 end
