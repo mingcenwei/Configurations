@@ -124,6 +124,7 @@ function back-up-files --description 'Back up files'
 	else
 		$cRsync --archive --sparse $preserve --relative \
 			--remove-source-files -- $filesFullPaths "$backupRoot" || return 1
+		set --local returnStatus 0
 		for filesFullPath in $filesFullPaths
 			if $cTest -d "$filesFullPath"
 				if test "$hasGfind" = 'true'
@@ -131,8 +132,9 @@ function back-up-files --description 'Back up files'
 				else
 					$cFind "$filesFullPath" -depth -type d -empty -execdir \
 						rmdir -- '{}' ';'
-				end
+				end || set returnStatus 1
 			end
 		end
+		return "$returnStatus"
 	end
 end
