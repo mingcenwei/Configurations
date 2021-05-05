@@ -109,12 +109,21 @@ end
 # For "rsync"
 if check-dependencies --program 'rsync'
 	abbr --add --global rsync2 'rsync -hh --info=stats1,progress2'
-	abbr --add --global rsync2-archive \
-		'rsync -hh --info=stats1,progress2 -aHSAX'
-	abbr --add --global rsync2-partial \
-		'rsync -hh --info=stats1,progress2 --partial'
-	abbr --add --global rsync2-partial-archive \
-		'rsync -hh --info=stats1,progress2 --partial -aHSAX'
+	abbr --add --global rsync2-p 'rsync -hh --info=stats1,progress2 --partial'
+
+	if not is-platform --quiet 'android-termux'
+		abbr --add --global rsync2-a 'rsync -hh --info=stats1,progress2 -aHSAX'
+		abbr --add --global rsync2-pa \
+			'rsync -hh --info=stats1,progress2 --partial -aHSAX'
+		abbr --add --global rsync2-ap \
+			'rsync -hh --info=stats1,progress2 --partial -aHSAX'
+	else
+		abbr --add --global rsync2-a 'rsync -hh --info=stats1,progress2 -aHS'
+		abbr --add --global rsync2-pa \
+			'rsync -hh --info=stats1,progress2 --partial -aHS'
+		abbr --add --global rsync2-ap \
+			'rsync -hh --info=stats1,progress2 --partial -aHS'
+	end
 end
 
 # For "pacman"
@@ -123,11 +132,13 @@ if is-platform --quiet 'pacman'
 	and check-dependencies --program 'git'
 		abbr --add --global makepkg2 \
 			'makepkg --syncdeps --install && git clean -xd --interactive'
-		abbr --add --global makepkg2-asdeps \
+		abbr --add --global makepkg2-d \
 			'makepkg --asdeps --syncdeps --install && git clean -xd --interactive'
-		abbr --add --global makepkg3 \
+		abbr --add --global makepkg2-r \
 			'makepkg --syncdeps --rmdeps --install && git clean -xd --interactive'
-		abbr --add --global makepkg3-asdeps \
+		abbr --add --global makepkg2-dr \
+			'makepkg --asdeps --syncdeps --rmdeps --install && git clean -xd --interactive'
+		abbr --add --global makepkg2-rd \
 			'makepkg --asdeps --syncdeps --rmdeps --install && git clean -xd --interactive'
 	end
 
