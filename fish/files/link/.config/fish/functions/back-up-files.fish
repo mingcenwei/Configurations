@@ -92,6 +92,15 @@ function back-up-files --description 'Back up files'
 	set --local cMktemp 'mktemp'
 	set --local cRsync 'rsync'
 	set --local cFind 'find'
+
+	set --local hasGfind 'true'
+	if is-platform --quiet 'macos'
+		if check-dependencies --program 'gfind'
+			set cFind 'gfind'
+		else
+			set hasGfind 'false'
+		end
+	end
 	if test -n "$useSudo"
 		for var in cRealpath cTest cMkdir cMktemp cRsync cFind
 			set --prepend "$var" 'sudo'
@@ -117,7 +126,12 @@ function back-up-files --description 'Back up files'
 			--remove-source-files -- $filesFullPaths "$backupRoot" || return 1
 		for filesFullPath in $filesFullPaths
 			if $cTest -d "$filesFullPath"
-				$cFind "$filesFullPath" -type d -empty -delete
+				if test "$hasGfind" = 'true'
+					$cFind "$filesFullPath" -type d -empty -delete
+				else
+					$cFind "$filesFullPath" -depth -type d -empty -execdir \
+						rmdir -- '{}' ';'
+				end
 			end
 		end
 	end
