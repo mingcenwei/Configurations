@@ -53,5 +53,9 @@ for configDir in $configDirs
 	read-choice --variable runScript --default 1 -- 'yes' 'no' || exit 2
 	if test "$runScript" = 'yes'
 		fish -- "$configScript"
+		or begin
+			set --local statusCode "$status"
+			echo-err 'Exit with status code: '"$statusCode"
+		end
 	end
 end
