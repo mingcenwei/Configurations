@@ -95,30 +95,30 @@ if is-platform --quiet 'pacman'
 	if check-dependencies --program 'makepkg'
 	and check-dependencies --program 'git'
 		abbr --add --global makepkg2 \
-			'makepkg --syncdeps --rmdeps --install && git clean -xd --interactive'
-		abbr --add --global makepkg2-asdeps \
-			'makepkg --asdeps --syncdeps --rmdeps --install && git clean -xd --interactive'
-		abbr --add --global makepkg3 \
 			'makepkg --syncdeps --install && git clean -xd --interactive'
-		abbr --add --global makepkg3-asdeps \
+		abbr --add --global makepkg2-asdeps \
 			'makepkg --asdeps --syncdeps --install && git clean -xd --interactive'
+		abbr --add --global makepkg3 \
+			'makepkg --syncdeps --rmdeps --install && git clean -xd --interactive'
+		abbr --add --global makepkg3-asdeps \
+			'makepkg --asdeps --syncdeps --rmdeps --install && git clean -xd --interactive'
 	end
 end
-if check-dependencies --program --quiet "pikaur"
+if check-dependencies --program "pikaur"
 	abbr --add --global pikaur2 'VISUAL= pikaur'
 end
 
 # Start "samba"
-if check-dependencies --quiet 'smbd'
-and check-dependencies --quiet 'systemctl'
-and check-dependencies 'ufw'
+if check-dependencies --program --quiet 'smbd'
+and check-dependencies --program --quiet 'systemctl'
+and check-dependencies --program 'ufw'
 	abbr --add --global start-samba 'sudo systemctl start smb.service && sudo ufw allow in 445/tcp comment \'samba\''
 	abbr --add --global restart-samba 'sudo systemctl restart smb.service && sudo ufw allow in 445/tcp comment \'samba\''
 	abbr --add --global stop-samba 'sudo systemctl stop smb.service && sudo ufw delete allow in 445/tcp'
 end
 
 # Auto refresh `sudo` cached credentials
-if check-dependencies --quiet 'sudo'
+if check-dependencies --program --quiet 'sudo'
 and command sudo --help 2> '/dev/null' | fgrep --quiet -- '--validate'
 	function sudo --wraps='sudo' --description 'sudo'
 		command sudo --validate
@@ -214,7 +214,7 @@ end
 
 # Set compiler flags for C++
 if is-platform --quiet 'macos'
-	if check-dependencies --program --quiet 'clang++'
+	if check-dependencies --program 'clang++'
 		alias c++17 (string join -- ' ' \
 			'clang++' \
 			'-std=c++17' \
@@ -250,11 +250,9 @@ if is-platform --quiet 'macos'
 			'-fno-omit-frame-pointer' \
 			'-fno-optimize-sibling-calls' \
 		)
-	else if status is-interactive
-		echo-err --warning 'Please install "clang++"'
 	end
 else
-	if check-dependencies --program --quiet 'g++'
+	if check-dependencies --program 'g++'
 		alias c++17 (string join -- ' ' \
 			'g++' \
 			'-std=c++17' \
@@ -271,7 +269,5 @@ else
 			'-fPIE' \
 			'-Wl,-pie' \
 		)
-	else if status is-interactive
-		echo-err --warning 'Please install "g++"'
 	end
 end

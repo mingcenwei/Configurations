@@ -3,10 +3,10 @@
 # For security
 umask 077
 
-check-dependencies --function 'back-up-files' || exit 3
-check-dependencies --function 'echo-err' || exit 3
-check-dependencies --function 'is-platform' || exit 3
-check-dependencies --function 'read-choice' || exit 3
+check-dependencies --function --quiet='never' 'back-up-files' || exit 3
+check-dependencies --function --quiet='never' 'echo-err' || exit 3
+check-dependencies --function --quiet='never' 'is-platform' || exit 3
+check-dependencies --function --quiet='never' 'read-choice' || exit 3
 
 # Set variables
 set --global fishPath (command --search fish) || exit 3
@@ -142,7 +142,7 @@ end
 function configureSshClient
 	echo-err --info 'Configuring ssh client'
 
-	check-dependencies --program 'ssh' || return 3
+	check-dependencies --program --quiet='never' 'ssh' || return 3
 
 	getFormerSshClientConfigHosts
 	addSshClientConfigHosts || return
@@ -202,7 +202,7 @@ function configureSshClient
 	end
 	"$editor" "$sshClientConfigFile"
 
-	check-dependencies --program 'ssh-keygen'
+	check-dependencies --program --quiet='never' 'ssh-keygen'
 	echo-err --info 'You perhaps need to run: ssh-keygen -t \'rsa\' -b \'4096\''
 end
 
@@ -377,8 +377,8 @@ end
 # Configure firewall, using "ufw"
 # Parameters: ssh ports
 function configureFirewall
-	check-dependencies --program 'systemctl' || return 3
-	check-dependencies --program 'ufw' || return 3
+	check-dependencies --program --quiet='never' 'systemctl' || return 3
+	check-dependencies --program --quiet='never' 'ufw' || return 3
 	set --local sshPorts $argv
 	for sshPort in $sshPorts
 		test 1 -gt "$sshPort" && return 2
@@ -433,15 +433,16 @@ function configureSshServer
 		echo-err 'Not implemented for macOS'
 		return 3
 	else if not is-platform --quiet 'android-termux'
-	and not check-dependencies --program 'systemctl'
+	and not check-dependencies --program --quiet='never' 'systemctl'
 		return 3
 	end
 
-	check-dependencies --program 'sshd' || return 3
-	check-dependencies --program 'ssh-keygen' || return 3
+	check-dependencies --program --quiet='never' 'sshd' || return 3
+	check-dependencies --program --quiet='never' 'ssh-keygen' || return 3
 	if not is-platform --quiet 'android-termux'
 	and not sudo --shell \
-	check-dependencies --function 'back-up-files' > '/dev/null' 2>&1
+	check-dependencies --function --quiet='never' 'back-up-files' \
+	> '/dev/null' 2>&1
 		echo-err 'Please configure fish shell for root first!'
 		return 3
 	end

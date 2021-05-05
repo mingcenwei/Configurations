@@ -18,7 +18,7 @@ function __sayAnonymousNamespace_read-choice_help
 end
 
 function read-choice --description  'Read user choice'
-	check-dependencies --function 'echo-err' || return 3
+	check-dependencies --function --quiet='never' 'echo-err' || return 3
 
 	### Default settings
 	set --local defaultPromptInvalid 'Please enter one of '
@@ -52,14 +52,14 @@ function read-choice --description  'Read user choice'
 	end
 	if test (count $argv) -lt 2
 		echo-err 'Expected at least 2 args, got '(count $argv)
-		__sayAnonymousNamespace_check-dependencies_help
+		__sayAnonymousNamespace_read-choice_help
 		return 2
 	end
 
 	set --local variableName (string escape --style 'var' -- "$_flag_v")
 	if test -z "$variableName"
 		echo-err 'Variable name cannot be emtpy'
-		__sayAnonymousNamespace_check-dependencies_help
+		__sayAnonymousNamespace_read-choice_help
 		return 2
 	end
 	set --local defaultPosition
@@ -69,7 +69,7 @@ function read-choice --description  'Read user choice'
 		and test "$defaultPosition" -le (count $argv)
 		else
 			echo-err 'Invalid default choice: '(string escape "$defaultPosition")
-			__sayAnonymousNamespace_check-dependencies_help
+			__sayAnonymousNamespace_read-choice_help
 			return 2
 		end
 	end

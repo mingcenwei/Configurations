@@ -20,9 +20,9 @@ function __sayAnonymousNamespace_back-up-files_help
 end
 
 function back-up-files --description 'Back up files'
-	check-dependencies --program 'find' || return 3
-	check-dependencies --program 'realpath' || return 3
-	check-dependencies --program 'rsync' || return 3
+	check-dependencies --program --quiet='never' 'find' || return 3
+	check-dependencies --program --quiet='never' 'realpath' || return 3
+	check-dependencies --program --quiet='never' 'rsync' || return 3
 
 	### Default settings
 	set --local defaultBackupDir "$HOME"'/.say-local/backups'
@@ -95,7 +95,7 @@ function back-up-files --description 'Back up files'
 
 	set --local hasGfind 'true'
 	if is-platform --quiet 'macos'
-		if check-dependencies --program 'gfind'
+		if check-dependencies --program --quiet='never' 'gfind'
 			set cFind 'gfind'
 		else
 			set hasGfind 'false'

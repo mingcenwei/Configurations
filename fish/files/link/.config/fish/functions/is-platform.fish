@@ -13,7 +13,7 @@ function __sayAnonymousNamespace_is-platform_help
 end
 
 function is-platform --description 'Test whether we are on the given platform(s)'
-	check-dependencies --function 'echo-err' || return 3
+	check-dependencies --function --quiet='never' 'echo-err' || return 3
 
 	# The list of platforms
 	set --local platforms \
@@ -49,7 +49,7 @@ function is-platform --description 'Test whether we are on the given platform(s)
 		return
 	end
 	if not contains -- "$_flag_q" '' 'always' 'auto' 'never'
-		__sayAnonymousNamespace_check-dependencies_help
+		__sayAnonymousNamespace_is-platform_help
 		return 2
 	end
 	if test -n "$_flag_l"

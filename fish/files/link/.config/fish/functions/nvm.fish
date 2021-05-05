@@ -1,8 +1,8 @@
 #!/usr/bin/env fish
 
 function nvm --description 'Node version manager'
-	check-dependencies --function 'echo-err' || return 3
-	check-dependencies --function 'bass' || return 3
+	check-dependencies --function --quiet='never' 'echo-err' || return 3
+	check-dependencies --function --quiet='never' 'bass' || return 3
 
 	set --local nvmScript "$NVM_DIR"'/nvm.sh'
 

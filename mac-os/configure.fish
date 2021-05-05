@@ -3,19 +3,19 @@
 # For security
 umask 077
 
-check-dependencies --function 'back-up-files' || exit 3
-check-dependencies --function 'echo-err' || exit 3
-check-dependencies --function 'is-platform' || exit 3
-check-dependencies --function 'read-choice' || exit 3
+check-dependencies --function --quiet='never' 'back-up-files' || exit 3
+check-dependencies --functio --quiet='never'n 'echo-err' || exit 3
+check-dependencies --function --quiet='never' 'is-platform' || exit 3
+check-dependencies --function --quiet='never' 'read-choice' || exit 3
 
 # Exit if the operating system is not macOS
-if not is-platform 'macos'
+if not is-platform --quiet='never' 'macos'
 	exit 3
 end
 
 # Tell the user to install Karabiner-Elements if it's not installed
 if not test -e '/Applications/Karabiner-Elements.app'
-	check-dependencies --program 'Karabiner-Elements' || exit 3
+	check-dependencies --program --quiet='never' 'Karabiner-Elements' || exit 3
 end
 
 ### Set variables

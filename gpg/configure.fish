@@ -3,11 +3,11 @@
 # For security
 umask 077
 
-check-dependencies --program 'gpg' || exit 3
-check-dependencies --program 'gpg-agent' || exit 3
-check-dependencies --function 'back-up-files' || exit 3
-check-dependencies --function 'echo-err' || exit 3
-check-dependencies --function 'read-choice' || exit 3
+check-dependencies --program --quiet='never' 'gpg' || exit 3
+check-dependencies --program --quiet='never' 'gpg-agent' || exit 3
+check-dependencies --function --quiet='never' 'back-up-files' || exit 3
+check-dependencies --function --quiet='never' 'echo-err' || exit 3
+check-dependencies --function --quiet='never' 'read-choice' || exit 3
 
 # Set variables
 set --local gpgConfigDir "$HOME"'/.gnupg'
@@ -57,7 +57,7 @@ stow --verbose --restow --dir "$stowDir" --target "$HOME" 'gpg' || exit 1
 ###
 
 if is-platform --quiet 'kde'
-	if check-dependencies --program 'pinentry-qt'
+	if check-dependencies --program --quiet='never' 'pinentry-qt'
 		echo 'pinentry-program '(command --search pinentry-qt) \
 			>> "$gpgAgentConfigFile"
 	end

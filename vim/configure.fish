@@ -3,9 +3,9 @@
 # For security
 umask 077
 
-check-dependencies --program 'vim' || exit 3
-check-dependencies --function 'back-up-files' || exit 3
-check-dependencies --function 'read-choice' || exit 3
+check-dependencies --program --quiet='never' 'vim' || exit 3
+check-dependencies --function --quiet='never' 'back-up-files' || exit 3
+check-dependencies --function --quiet='never' 'read-choice' || exit 3
 
 # Set variables
 set --local vimConfigDir "$HOME"'/.vim'

@@ -2,7 +2,7 @@
 
 function hard-link-wechat-downloads \
 --description 'Hard link WeChat downloaded files on Android'
-	is-platform android-termux || return 2
+	is-platform --quiet='never' android-termux || return 2
 
 	if not set --local rootId (sudo id -u)
 	or test 0 -ne "$rootId"

@@ -13,7 +13,7 @@ function __sayAnonymousNamespace_add-paths_help
 end
 
 function add-paths --description 'Append/prepend paths to path variable'
-	check-dependencies --function 'echo-err' || return 3
+	check-dependencies --function --quiet='never' 'echo-err' || return 3
 
 	# Parse options
 	set --local  optionSpecs \
@@ -38,7 +38,7 @@ function add-paths --description 'Append/prepend paths to path variable'
 	set --local variableName (string escape --style 'var' -- "$_flag_v")
 	if test -z "$variableName"
 		echo-err 'Variable name cannot be emtpy'
-		__sayAnonymousNamespace_check-dependencies_help
+		__sayAnonymousNamespace_add-paths_help
 		return 2
 	end
 	set --local prepend "$_flag_p"

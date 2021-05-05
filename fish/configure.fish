@@ -21,8 +21,8 @@ for file in "$functionDir"/*'.fish'
 end
 or exit 3
 
-check-dependencies --program 'stow' || exit 3
-check-dependencies --program 'rsync' || exit 3
+check-dependencies --program --quiet='never' 'stow' || exit 3
+check-dependencies --program --quiet='never' 'rsync' || exit 3
 
 ### Change the default login shell to "fish" if possible
 test "$SHELL" = (command --search fish)

@@ -26,8 +26,7 @@
 #		and source "$sshAgentInfo" > '/dev/null'
 #	end
 #end
-
-if check-dependencies 'ssh-agent'
+if check-dependencies --program 'ssh-agent'
 	# Check whether there is an ssh-agent running. If not, create one
 	if test -z "$SSH_AGENT_PID"
 	or not pgrep -u (id -u) 'ssh-agent' | grep -q '^'"$SSH_AGENT_PID"'$'

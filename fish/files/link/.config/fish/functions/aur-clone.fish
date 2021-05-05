@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
 
 function aur-clone --description 'Git-clone AUR repos'
-	check-dependencies --program 'git' || return 3
+	check-dependencies --program --quiet='never' 'git' || return 3
 
 	set --local packages $argv
 

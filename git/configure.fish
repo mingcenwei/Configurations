@@ -3,10 +3,10 @@
 # For security
 umask 077
 
-check-dependencies --program 'git' || exit 3
-check-dependencies --function 'back-up-files' || exit 3
-check-dependencies --function 'echo-err' || exit 3
-check-dependencies --function 'read-choice' || exit 3
+check-dependencies --program --quiet='never' 'git' || exit 3
+check-dependencies --function --quiet='never' 'back-up-files' || exit 3
+check-dependencies --function --quiet='never' 'echo-err' || exit 3
+check-dependencies --function --quiet='never' 'read-choice' || exit 3
 
 ### Set variables
 set --local gitConfigDir "$HOME"'/.config/git'
@@ -94,7 +94,7 @@ end
 # Rebase by default
 git config --global 'pull.rebase' true
 git config --global 'core.excludesFile' "$gitConfigDir"'/ignore'
-check-dependencies --program 'gpg'
+check-dependencies --program --quiet='never' 'gpg'
 and git config --global 'gpg.program' (command --search gpg)
 ###
 
@@ -103,10 +103,10 @@ and git config --global 'gpg.program' (command --search gpg)
 if is-platform --quiet 'macos'
 	git config --global 'credential.helper' 'osxkeychain'
 else if is-platform --quiet 'kde'
-	check-dependencies --program 'ksshaskpass'
+	check-dependencies --program --quiet='never' 'ksshaskpass'
 	and git config --global 'core.askpass' (command --search ksshaskpass)
 else if is-platform --quiet 'android-termux'
-	check-dependencies --program 'pass'
+	check-dependencies --program --quiet='never' 'pass'
 	and git config --global 'credential.helper' \
 		'!f() { test "$1" = get && echo "url=$(pass show GitHub)"; }; f'
 	and pass > '/dev/null'
