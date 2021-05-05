@@ -43,14 +43,26 @@ abbr --add --global mvi 'mv -i'
 abbr --add --global lni 'ln -i'
 
 # Database safety measures
-abbr --add --global mysql 'mysql -U'
-abbr --add --global mariadb 'mariadb -U'
-abbr --add --global mycli 'mycli --warn'
-abbr --add --global litecli 'litecli --warn'
-abbr --add --global pgcli 'pgcli --warn'
+if check-dependencies --program --quiet 'mysql'
+	abbr --add --global mysql 'mysql -U'
+end
+if check-dependencies --program --quiet 'mariadb'
+	abbr --add --global mariadb 'mariadb -U'
+end
+if check-dependencies --program --quiet 'mycli'
+	abbr --add --global mycli 'mycli --warn'
+end
+if check-dependencies --program --quiet 'litecli'
+	abbr --add --global litecli 'litecli --warn'
+end
+if check-dependencies --program --quiet 'pgcli'
+	abbr --add --global pgcli 'pgcli --warn'
+end
 
 # Add colors: https://wiki.archlinux.org/index.php/Color_output_in_console
-alias diff 'diff --color=auto'
+if check-dependencies --program 'diff'
+	alias diff 'diff --color=auto'
+end
 alias grep 'grep --color=auto'
 if check-dependencies --program --quiet 'egrep'
 	alias egrep 'egrep --color=auto'
@@ -85,10 +97,14 @@ if check-dependencies --program --quiet 'journalctl'
 end
 
 # Add user agent and referer automatically
-abbr --add --global curl2 (string escape -- \
-	curl --location --user-agent 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2725.0 Safari/537.36' --referer 'https://www.google.com/' --retry 5)
-abbr --add --global wget2 (string escape -- \
-	wget --user-agent 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2725.0 Safari/537.36' --referer 'https://www.google.com/' --tries 5)
+if check-dependencies --program 'curl'
+	abbr --add --global curl2 (string escape -- \
+		curl --location --user-agent 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2725.0 Safari/537.36' --referer 'https://www.google.com/' --retry 5)
+end
+if check-dependencies --program 'wget'
+	abbr --add --global wget2 (string escape -- \
+		wget --user-agent 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2725.0 Safari/537.36' --referer 'https://www.google.com/' --tries 5)
+end
 
 # For "pacman"
 if is-platform --quiet 'pacman'
@@ -103,9 +119,10 @@ if is-platform --quiet 'pacman'
 		abbr --add --global makepkg3-asdeps \
 			'makepkg --asdeps --syncdeps --rmdeps --install && git clean -xd --interactive'
 	end
-end
-if check-dependencies --program "pikaur"
-	abbr --add --global pikaur2 'VISUAL= pikaur'
+
+	if check-dependencies --program "pikaur"
+		abbr --add --global pikaur2 'VISUAL= pikaur'
+	end
 end
 
 # Start "samba"
