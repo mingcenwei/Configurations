@@ -50,7 +50,7 @@ function check-dependencies --description  'Check dependencies'
 	set --local  checkFunction "$_flag_f"
 	set --local  checkProgram "$_flag_p"
 	set --local  quiet
-	if not set --query "$_flag_q" || test "$_flag_q" = 'auto'
+	if not set --query _flag_q || test "$_flag_q" = 'auto'
 		if not status is-interactive
 			set quiet '--quiet'
 		end

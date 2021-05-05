@@ -67,7 +67,7 @@ function is-platform --description 'Test whether we are on the given platform(s)
 	set --local givenPlatforms $argv
 	set --local list "$_flag_l"
 	set --local  quiet
-	if not set --query "$_flag_q" || test "$_flag_q" = 'auto'
+	if not set --query _flag_q || test "$_flag_q" = 'auto'
 		if not status is-interactive
 			set quiet '--quiet'
 		end
