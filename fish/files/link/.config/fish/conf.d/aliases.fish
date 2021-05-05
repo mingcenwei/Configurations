@@ -106,6 +106,17 @@ if check-dependencies --program 'wget'
 		wget --user-agent 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2725.0 Safari/537.36' --referer 'https://www.google.com/' --tries 5)
 end
 
+# For "rsync"
+if check-dependencies --program 'rsync'
+	abbr --add --global rsync2 'rsync -hh --info=stats1,progress2'
+	abbr --add --global rsync2-archive \
+		'rsync -hh --info=stats1,progress2 -aHSAX'
+	abbr --add --global rsync2-partial \
+		'rsync -hh --info=stats1,progress2 --partial'
+	abbr --add --global rsync2-partial-archive \
+		'rsync -hh --info=stats1,progress2 --partial -aHSAX'
+end
+
 # For "pacman"
 if is-platform --quiet 'pacman'
 	if check-dependencies --program 'makepkg'
