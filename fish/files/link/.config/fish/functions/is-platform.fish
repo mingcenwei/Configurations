@@ -6,7 +6,8 @@ function __sayAnonymousNamespace_is-platform_help
 	echo
 	echo 'Options:'
 	echo '        -l, --list   List all the platforms available'
-	echo '        -q, --quiet  Don\'t output anything'
+	echo '        -q, --quiet[={always|auto|never}]'
+	echo '                     Whether to suppress output ("always" if omitted)'
 	echo '        -h, --help   Display this help message'
 	echo '        --           Only <platforms>... after this'
 end
@@ -36,7 +37,7 @@ function is-platform --description 'Test whether we are on the given platform(s)
 		--name 'is-platform' \
 		--exclusive 'h,l,q' \
 		(fish_opt --short 'l' --long 'list') \
-		(fish_opt --short 'q' --long 'quiet') \
+		(fish_opt --short 'q' --long 'quiet' --optional-val) \
 		(fish_opt --short 'h' --long 'help')
 	argparse $optionSpecs -- $argv
 	or begin
@@ -46,6 +47,10 @@ function is-platform --description 'Test whether we are on the given platform(s)
 	if test -n "$_flag_h"
 		__sayAnonymousNamespace_is-platform_help
 		return
+	end
+	if not contains -- "$_flag_q" '' 'always' 'auto' 'never'
+		__sayAnonymousNamespace_check-dependencies_help
+		return 2
 	end
 	if test -n "$_flag_l"
 		if test (count $argv) -gt 0
@@ -61,7 +66,14 @@ function is-platform --description 'Test whether we are on the given platform(s)
 
 	set --local givenPlatforms $argv
 	set --local list "$_flag_l"
-	set --local quiet "$_flag_q"
+	set --local  quiet
+	if not set --query "$_flag_q" || test "$_flag_q" = 'auto'
+		if not status is-interactive
+			set quiet '--quiet'
+		end
+	else if test "$_flag_q" = '' || test "$_flag_q" = 'always'
+		set quiet '--quiet'
+	end
 
 	if test -n "$list"
 		for platform in $platforms

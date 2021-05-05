@@ -7,7 +7,8 @@ function __sayAnonymousNamespace_check-dependencies_help
 	echo 'Options:'
 	echo '        -f, --function  Check fish function existence'
 	echo '        -p, --program   Check program existence'
-	echo '        -q, --quiet     Don\'t output anything'
+	echo '        -q, --quiet[={always|auto|never}]'
+	echo '                        Whether to suppress output ("always" if omitted)'
 	echo '        -h, --help      Display this help message'
 	echo '        --              Only <dependencies>... after this'
 end
@@ -25,7 +26,7 @@ function check-dependencies --description  'Check dependencies'
 		--exclusive 'h,q' \
 		(fish_opt --short 'f' --long 'function') \
 		(fish_opt --short 'p' --long 'program') \
-		(fish_opt --short 'q' --long 'quiet') \
+		(fish_opt --short 'q' --long 'quiet' --optional-val) \
 		(fish_opt --short 'h' --long 'help')
 	argparse $optionSpecs -- $argv
 	or begin
@@ -36,6 +37,10 @@ function check-dependencies --description  'Check dependencies'
 		__sayAnonymousNamespace_check-dependencies_help
 		return
 	end
+	if not contains -- "$_flag_q" '' 'always' 'auto' 'never'
+		__sayAnonymousNamespace_check-dependencies_help
+		return 2
+	end
 	if test (count $argv) -lt 1
 		echo-err 'Expected at least 1 args, got '(count $argv)
 		__sayAnonymousNamespace_check-dependencies_help
@@ -44,7 +49,14 @@ function check-dependencies --description  'Check dependencies'
 
 	set --local  checkFunction "$_flag_f"
 	set --local  checkProgram "$_flag_p"
-	set --local  quiet "$_flag_q"
+	set --local  quiet
+	if not set --query "$_flag_q" || test "$_flag_q" = 'auto'
+		if not status is-interactive
+			set quiet '--quiet'
+		end
+	else if test "$_flag_q" = '' || test "$_flag_q" = 'always'
+		set quiet '--quiet'
+	end
 
 	set --local statusToReturn 0
 	if test -n "$checkFunction"

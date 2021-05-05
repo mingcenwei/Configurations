@@ -31,7 +31,16 @@ complete --command 'is-platform' \
 	) \
 	--short-option 'q' \
 	--long-option 'quiet' \
-	--description 'Don\'t output anything'
+	--arguments (string join -- ' ' \
+		'(' \
+		"printf '%s\t%s\n'" \
+		"'always' 'Always suppress output'" \
+		"'auto' 'Suppress output when non-interactive'" \
+		"'never' 'Never suppress output'" \
+		')' \
+	) \
+	--keep-order \
+	--description 'Whether to suppress output'
 complete --command 'is-platform' \
 	--condition (string join -- ' ' 'not __fish_contains_opt' \
 		'-s h help' \
