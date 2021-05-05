@@ -31,6 +31,9 @@ else
 		alias gchgrp 'gchgrp --preserve-root'
 		alias chgrp 'gchgrp'
 	end
+	if check-dependencies --program 'gfind'
+		alias find 'gfind'
+	end
 end
 abbr --add --global cp 'cp -i'
 abbr --add --global cpi 'cp -i'
