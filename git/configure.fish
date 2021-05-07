@@ -31,7 +31,7 @@ set --local privateFields 'user.name' 'user.email' 'user.signingkey'
 set --local userPrivateFieldKeys
 set --local userPrivateFieldValues
 for field in $privateFields
-	if set --local value (git config --global -- "$field")
+	if set --local value (git config --global -- "$field" 2> '/dev/null')
 		set --append userPrivateFieldKeys "$field"
 		set --append userPrivateFieldValues  "$value"
 	end
