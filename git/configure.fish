@@ -79,6 +79,7 @@ for field in $privateFields
 	# Use previous configurations if available
 	if set --local index (contains --index -- "$field" $userPrivateFieldKeys)
 		git config --global "$field" "$userPrivateFieldValues[$index]"
+		echo-err --info "$field"'='"$userPrivateFieldValues[$index]"
 		continue
 	else if read --prompt-str "$field"' (enter none to skip): ' --local value
 		set value (string trim -- "$value")
