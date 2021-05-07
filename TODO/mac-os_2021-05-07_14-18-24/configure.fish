@@ -4,7 +4,7 @@
 umask 077
 
 check-dependencies --function --quiet='never' 'back-up-files' || exit 3
-check-dependencies --functio --quiet='never'n 'echo-err' || exit 3
+check-dependencies --function --quiet='never' 'echo-err' || exit 3
 check-dependencies --function --quiet='never' 'is-platform' || exit 3
 check-dependencies --function --quiet='never' 'read-choice' || exit 3
 
@@ -15,7 +15,12 @@ end
 
 # Tell the user to install Karabiner-Elements if it's not installed
 if not test -e '/Applications/Karabiner-Elements.app'
-	check-dependencies --program --quiet='never' 'Karabiner-Elements' || exit 3
+	check-dependencies --program --quiet='never' 'Karabiner-Elements'
+end
+
+# Tell the user to install Proxifier if it's not installed
+if not test -e '/Applications/Proxifier.app'
+	check-dependencies --program --quiet='never' 'Proxifier'
 end
 
 ### Set variables
@@ -53,10 +58,10 @@ or test -d "$servicesConfigDir" || test -L "$servicesConfigDir"
 end
 ###
 
-### Back up previous "LaunchAgents" configurations
-begin
+if test -e '/Applications/Proxifier.app'
+	### Back up previous "LaunchAgents" configurations for Proxifier
 	set --local launchAgentsToBackUp
-	for file in "$linkDir"'/Library/Services'/*
+	for file in "$linkDir"'/Library/LaunchAgents'/*
 		set --local launchAgent "$launchAgentsConfigDir"/(basename -- "$file")
 		if test -f "$launchAgent"
 		or test -L "$launchAgent"
@@ -79,25 +84,27 @@ begin
 end
 ###
 
-### Back up previous "Karabiner-Elements" configurations
-if test -d "$stowDir"'/mac-os/.config/karabiner'
-or test -d "$karabinerElementsConfigDir" || test -L "$karabinerElementsConfigDir"
-	# Do not make a symlink to karabiner.json.
-	# Karabiner-Elements does not reload the configuration file properly if you make a symlink to json file directly.
-	set --local backupCommand \
-		'back-up-files' '--comment' 'mac_os-karabiner_elements-config' '--remove-source' '--'
+if test -e '/Applications/Karabiner-Elements.app'
+	### Back up previous "Karabiner-Elements" configurations
+	if test -d "$stowDir"'/mac-os/.config/karabiner'
+	or test -d "$karabinerElementsConfigDir" || test -L "$karabinerElementsConfigDir"
+		# Do not make a symlink to karabiner.json.
+		# Karabiner-Elements does not reload the configuration file properly if you make a symlink to json file directly.
+		set --local backupCommand \
+			'back-up-files' '--comment' 'mac_os-karabiner_elements-config' '--remove-source' '--'
 
-	set --local backupConfigs
-	test -d "$stowDir"'/mac-os/.config/karabiner'
-	and set --append backupConfigs "$stowDir"'/mac-os/.config/karabiner'
-	test -d "$karabinerElementsConfigDir" || test -L "$karabinerElementsConfigDir"
-	and set --append backupConfigs "$karabinerElementsConfigDir"
+		set --local backupConfigs
+		test -d "$stowDir"'/mac-os/.config/karabiner'
+		and set --append backupConfigs "$stowDir"'/mac-os/.config/karabiner'
+		test -d "$karabinerElementsConfigDir" || test -L "$karabinerElementsConfigDir"
+		and set --append backupConfigs "$karabinerElementsConfigDir"
 
-	if test -n "$backupConfigs"
-		$backupCommand $backupConfigs || exit 1
+		if test -n "$backupConfigs"
+			$backupCommand $backupConfigs || exit 1
+		end
 	end
+	###
 end
-###
 
 ### Add "macOS" configurations
 for file in "$linkDir"'/Library/Services'/*
@@ -113,17 +120,21 @@ rsync --recursive  "$linkDir"/ "$stowDir"'/mac-os' || exit 1
 stow --verbose --restow --dir "$stowDir" --target "$HOME" 'mac-os' || exit 1
 ###
 
-### Reload LaunchAgents
-for file in "$linkDir"'/Library/Services'/*
-	set --local launchAgent "$launchAgentsConfigDir"/(basename -- "$file")
-	launchctl bootstrap 'gui'/(id -u) "$launchAgent"
-	or echo-err 'Failed bootstraping: '(string escape -- "$launchAgent")
+if test -e '/Applications/Proxifier.app'
+	### Reload LaunchAgents for Proxifier
+	for file in "$linkDir"'/Library/LaunchAgents'/*
+		set --local launchAgent "$launchAgentsConfigDir"/(basename -- "$file")
+		launchctl bootstrap 'gui'/(id -u) "$launchAgent"
+		or echo-err 'Failed bootstraping: '(string escape -- "$launchAgent")
+	end
+	###
 end
-###
 
-### Reload Karabiner-Elements
-# You have to restart karabiner_console_user_server process by the following command after you made a symlink in order to tell Karabiner-Elements that the parent directory is changed.
-launchctl kickstart -k \
-	'gui'/(id -u)/'org.pqrs.karabiner.karabiner_console_user_server'
-or echo-err 'Failed kickstarting: org.pqrs.karabiner.karabiner_console_user_server'
-###
+if test -e '/Applications/Karabiner-Elements.app'
+	### Reload Karabiner-Elements
+	# You have to restart karabiner_console_user_server process by the following command after you made a symlink in order to tell Karabiner-Elements that the parent directory is changed.
+	launchctl kickstart -k \
+		'gui'/(id -u)/'org.pqrs.karabiner.karabiner_console_user_server'
+	or echo-err 'Failed kickstarting: org.pqrs.karabiner.karabiner_console_user_server'
+	###
+end

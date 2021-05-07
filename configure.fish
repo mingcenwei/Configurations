@@ -28,8 +28,7 @@ set --local configDirs \
 	'vim' \
 	'gpg' \
 	'git' \
-	'ssh' \
-	'mac-os'
+	'ssh'
 
 for configScript in "$thisDir"/*/'configure.fish'
 	set --local configName (basename -- (dirname -- "$configScript"))
