@@ -31,10 +31,7 @@ set --local privateFields 'user.name' 'user.email' 'user.signingkey'
 set --local userPrivateFieldKeys
 set --local userPrivateFieldValues
 for field in $privateFields
-	set --local pattern \
-		'(?<=^'(string escape --style 'regex' -- "$field"'=')').*$'
-	if set --local value \
-	(string match --regex -- "$pattern" (git config --list))
+	if set --local value (git config --global -- "$field")
 		set --append userPrivateFieldKeys "$field"
 		set --append userPrivateFieldValues  "$value"
 	end
@@ -94,8 +91,9 @@ end
 # Rebase by default
 git config --global 'pull.rebase' true
 git config --global 'core.excludesFile' "$gitConfigDir"'/ignore'
-check-dependencies --program --quiet='never' 'gpg'
-and git config --global 'gpg.program' (command --search gpg)
+if check-dependencies --program --quiet='never' 'gpg'
+	git config --global 'gpg.program' (command --search gpg)
+end
 ###
 
 ### Platform dependent configurations
@@ -109,6 +107,11 @@ else if is-platform --quiet 'android-termux'
 	check-dependencies --program --quiet='never' 'pass'
 	and git config --global 'credential.helper' \
 		'!f() { test "$1" = get && echo "url=$(pass show GitHub)"; }; f'
-	and pass > '/dev/null'
+	and begin
+		pass > '/dev/null'
+		true
+	end
+else
+	echo-err --warning 'No git credential helper is set'
 end
 ###
