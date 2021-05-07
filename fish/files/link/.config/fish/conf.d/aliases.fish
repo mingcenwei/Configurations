@@ -106,6 +106,10 @@ if check-dependencies --program 'wget'
 		wget --user-agent 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2725.0 Safari/537.36' --referer 'https://www.google.com/' --tries 5)
 end
 
+# For "date"
+abbr --add --global date2 'date +\'%Y-%m-%d_%H-%M-%S\''
+abbr --add --global date2-u 'date -u +\'%Y-%m-%d_%H-%M-%S\''
+
 # For "rsync"
 if check-dependencies --program 'rsync'
 	abbr --add --global rsync2 'rsync -hh --info=stats1,progress2'
