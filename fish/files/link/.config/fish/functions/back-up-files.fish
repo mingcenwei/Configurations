@@ -109,7 +109,8 @@ function back-up-files --description 'Back up files'
 
 	set --local filesFullPaths
 	for file in $files
-		set --append filesFullPaths ($cRealpath --strip -- "$file") || return 1
+		set --append filesFullPaths ($cRealpath --no-symlinks -- "$file")
+		or return 1
 	end
 	set --local timestamp (date +"%Y-%m-%d_%H-%M-%S")
 	$cTest -d "$backupDir" || $cMkdir -m 700 -p -- "$backupDir" || return 1

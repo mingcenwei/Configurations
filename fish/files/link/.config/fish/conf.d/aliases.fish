@@ -12,8 +12,9 @@ if is-platform --quiet 'linux'
 else
 	if check-dependencies --program 'grm'
 		alias grm 'grm --preserve-root=all --one-file-system'
-		abbr --add --global rm 'grm -I'
-		abbr --add --global rmi 'grm -I'
+		alias rm 'grm'
+		abbr --add --global rm 'rm -I'
+		abbr --add --global rmi 'rm -I'
 	else
 		abbr --add --global rm 'rm -i'
 		abbr --add --global rmi 'rm -i'
