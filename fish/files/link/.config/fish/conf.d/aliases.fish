@@ -152,6 +152,11 @@ if is-platform --quiet 'pacman'
 	end
 end
 
+# For Homebrew
+if is-platform --quiet 'homebrew'
+	abbr --add --global brew2 'HOMEBREW_NO_AUTO_UPDATE=1 brew'
+end
+
 # Start "samba"
 if check-dependencies --program --quiet 'smbd'
 and check-dependencies --program --quiet 'systemctl'

@@ -40,6 +40,14 @@ end
 # In order to use GPG
 set --export --global GPG_TTY (tty)
 
+# For Homebrew
+if is-platform --quiet 'homebrew'
+	# Discouraged, see https://github.com/Homebrew/brew/issues/1670#issuecomment-267847105
+	#set --export --global HOMEBREW_NO_AUTO_UPDATE 1
+
+	set --export --global HOMEBREW_AUTO_UPDATE_SECS (math 3600 '*' 24)
+end
+
 # For ssh agent
 if is-platform --quiet 'kde'
 	if check-dependencies --program 'ksshaskpass'
