@@ -7,12 +7,10 @@ add-paths --append --variable PATH "$HOME"'/.local/bin'
 if is-platform --quiet 'macos'
 	set --local paths \
 		"$HOME"'/.local/bin' \
-		"$HOME"'/Library/Python/3.7/bin' \
 		"$HOME"'/Library/Android/sdk/platform-tools'
 
 	set --local filenames \
 		'Haskell-stack-bin' \
-		'Python3.7-bin' \
 		'Android-SDK-platform-tools'
 
 	# Make sure previous 2 settings are correct
@@ -21,18 +19,23 @@ if is-platform --quiet 'macos'
 	else
 		# Back up and create `/etc/paths.d/"$filenames[$iii]"`
 		for iii in (seq (count $paths))
+			set --local path "$paths[$iii]"
 			set --local filepath '/etc/paths.d/'"$filenames[$iii]"
 
-			add-paths --append --variable PATH "$paths[$iii]"
+			if test -d "$path"
+				add-paths --append --variable PATH "$path"
 
-			if not test -e "$filepath"
-			or test -d "$filepath"
-				if test -d "$filepath" || test -L "$filepath"
-					back-up-files --remove-source -- "$filepath"
-					or sudo back-up-files --remove-source -- "$filepath"
+				if not test -e "$filepath"
+				or test -d "$filepath"
+					if test -d "$filepath" || test -L "$filepath"
+						back-up-files --remove-source -- "$filepath"
+						or back-up-files --sudo --remove-source -- "$filepath"
+					end
+					and begin
+						echo "$path" | tee "$filepath" > '/dev/null' 2>&1
+						or echo "$path" | sudo tee "$filepath" > '/dev/null'
+					end
 				end
-				and echo "$paths[$iii]" | tee "$filepath" > '/dev/null'
-				or echo "$paths[$iii]" | sudo tee "$filepath" > '/dev/null'
 			end
 		end
 	end

@@ -155,10 +155,10 @@ function configureSshClient
 			'yes' 'no' || return 2
 
 		set --local backupCommand \
-			'back-up-files' '--comment' 'ssh_client-config' '--'
-		test "$removePreviousConfigurations" = 'yes'
-		and set backupCommand \
-			'back-up-files' '--comment' 'ssh_client-config' '--remove-source' '--'
+			'back-up-files' '--comment' 'ssh_client-config'
+		if test "$removePreviousConfigurations" = 'yes'
+			set --append backupCommand '--remove-source'
+		end
 
 		set --local backupConfigs
 		test -d "$sshClientStowDir"'/ssh-client'
@@ -167,7 +167,7 @@ function configureSshClient
 		and set --append backupConfigs "$sshClientConfigFile"
 
 		if test -n "$backupConfigs"
-			$backupCommand $backupConfigs || return 1
+			$backupCommand -- $backupConfigs || return 1
 		end
 	end
 	###
@@ -295,7 +295,7 @@ function addAuthorizedKeys --argument-names username authorizedKeysFile
 		# See https://unix.stackexchange.com/questions/247576/how-to-get-home-given-user
 		#set --local userHome (getent passwd "$username" | cut -d ':' -f 6)
 		set --local userHome \
-			(sudo su -s (command --search fish) -l "$username" -c 'echo "$HOME"')
+			(sudo su -s "$fishPath" -l "$username" -c 'echo "$HOME"')
 		or return 2
 		set --local sshDir "$userHome"'/.ssh'
 		set authorizedKeysFile "$sshDir"'/authorized_keys'
@@ -304,7 +304,7 @@ function addAuthorizedKeys --argument-names username authorizedKeysFile
 
 	# Ask the user whether to keep previous authorized keys
 	set --local backupCommand \
-		'sudo' 'back-up-files' '--comment' 'ssh-authorized_keys' \
+		'back-up-files' '--sudo' '--comment' 'ssh-authorized_keys' \
 		'--backup-dir' "$HOME"'/.say-local/backups'
 	if test -e "$authorizedKeysFile"
 		read-choice --variable keepPreviousAuthorizedKeys --default 1 \
@@ -323,8 +323,7 @@ function addAuthorizedKeys --argument-names username authorizedKeysFile
 		'mkdir -m 700 -p -- '(string escape -- "$sshDir")
 	sudo su -s "$fishPath" -l "$username" -c \
 		'touch -- '(string escape -- "$authorizedKeysFile")
-	sudo su -s "$fishPath" -l "$username" -c \
-		'chmod -- 600 '(string escape -- "$authorizedKeysFile")
+	sudo chmod -- 600 "$authorizedKeysFile"
 
 	# Add new ssh pubkeys for the user
 	echo 'Adding new ssh pubkeys for user: '"$username"
@@ -516,10 +515,13 @@ function configureSshServer
 			'yes' 'no' || return 2
 
 		set --local backupCommand \
-			'back-up-files' '--comment' 'ssh_server-config' '--'
-		test "$removePreviousConfigurations" = 'yes'
-		and set backupCommand \
-			'back-up-files' '--comment' 'ssh_server-config' '--remove-source' '--'
+			'back-up-files' '--comment' 'ssh_server-config'
+		if test "$removePreviousConfigurations" = 'yes'
+			set --append backupCommand '--remove-source'
+		end
+		if test -n "$maybeSudo"
+			set --append backupCommand '--sudo'
+		end
 
 		set --local backupConfigs
 		test -d "$sshServerStowDir"'/ssh-server'
@@ -532,11 +534,7 @@ function configureSshServer
 		and set --append backupConfigs "$sshHostRsaPublicKey"
 
 		if test -n "$backupConfigs"
-			set --local sudoBackupCommand $backupCommand
-			if test -n "$maybeSudo"
-				set --prepend sudoBackupCommand 'sudo' '--shell'
-			end
-			$sudoBackupCommand $backupConfigs || return 1
+			$backupCommand -- $backupConfigs || return 1
 		end
 	end
 	###

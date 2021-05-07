@@ -48,9 +48,9 @@ if is-platform --quiet 'kde'
 end
 
 # Set JAVA_HOME
-if check-dependencies --program --quiet 'java'
-	if is-platform --quiet 'macos'
-		set --export --global JAVA_HOME ('/usr/libexec/java_home')
+if is-platform --quiet 'macos'
+	if set --local javaHome ('/usr/libexec/java_home' 2> '/dev/null')
+		set --export --global JAVA_HOME "$javaHome"
 	end
 end
 
