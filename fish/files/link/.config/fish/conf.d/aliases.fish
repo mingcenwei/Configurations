@@ -66,11 +66,13 @@ if check-dependencies --program 'diff'
 end
 alias grep 'grep --color=auto'
 if check-dependencies --program --quiet 'egrep'
-	alias egrep 'egrep --color=auto'
+	alias egrep 'grep -E --color=auto'
 end
 if check-dependencies --program --quiet 'fgrep'
-	alias fgrep 'fgrep --color=auto'
+	alias fgrep 'grep -F --color=auto'
 end
+abbr --add --global egrep 'grep -E'
+abbr --add --global fgrep 'grep -F'
 if check-dependencies --program --quiet 'ip'
 	if not is-platform --quiet 'android-termux'
 		alias ip 'ip -color=auto'
@@ -168,7 +170,7 @@ end
 
 # Auto refresh `sudo` cached credentials
 if check-dependencies --program --quiet 'sudo'
-and command sudo --help 2> '/dev/null' | fgrep --quiet -- '--validate'
+and command sudo --help 2> '/dev/null' | grep -F --quiet -- '--validate'
 	function sudo --wraps='sudo' --description 'sudo'
 		command sudo --validate
 		and command sudo $argv
