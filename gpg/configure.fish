@@ -81,4 +81,4 @@ while true
 end
 ###
 
-killall 'gpg-agent' || true
+killall 'gpg-agent' 2> '/dev/null' || true
