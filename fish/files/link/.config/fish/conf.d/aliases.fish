@@ -62,7 +62,11 @@ end
 
 # Add colors: https://wiki.archlinux.org/index.php/Color_output_in_console
 if check-dependencies --program 'diff'
-	alias diff 'diff --color=auto'
+	if test 3 -gt (diff --version | head -n 1 | string match --regex '\\d+')
+		echo-err 'Please install newer "diff" (from "GNU diffutils")'
+	else
+		alias diff 'diff --color=auto'
+	end
 end
 alias grep 'grep --color=auto'
 if check-dependencies --program --quiet 'egrep'
