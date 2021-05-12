@@ -1,34 +1,24 @@
+" When started as "evim", evim.vim will already have done these settings, bail
+" out.
+if v:progname =~? "evim"
+	finish
+endif
+
+" Get the defaults that most users want.
+unlet! skip_defaults_vim
+source $VIMRUNTIME/defaults.vim
+
 " URL: http://vim.wikia.com/wiki/Example_vimrc
 " Authors: http://vim.wikia.com/wiki/Vim_on_Freenode
-" Description: A minimal, but feature rich, example .vimrc. If you are a
-"			  newbie, basing your first .vimrc on this file is a good choice.
-"			  If you're a more advanced user, building your own .vimrc based
-"			  on this file is still a good idea.
-"------------------------------------------------------------
-" Features {{{1
-"
-" These options and commands enable some very useful features in Vim, that
-" no user should have to live without.
 
 " Set 'nocompatible' to ward off unexpected things that your distro might
 " have made, as well as sanely reset options when re-sourcing .vimrc
 set nocompatible
 
-" Attempt to determine the type of a file based on its name and possibly its
-" contents. Use this to allow intelligent auto-indenting for each filetype,
-" and for plugins that are filetype specific.
-filetype indent plugin on
-
-"------------------------------------------------------------
-" Must have options {{{1
-"
-" These are highly recommended options.
-
 " Vim with default settings does not allow easy switching between multiple files
 " in the same editor window. Users can use multiple split windows or multiple
 " tab pages to edit multiple files, but it is still best to enable an option to
 " allow easier switching between files.
-"
 " One such option is the 'hidden' option, which allows you to re-use the same
 " window and switch from an unsaved buffer without saving it first. Also allows
 " you to keep an undo history for multiple files when re-using the same window
@@ -39,35 +29,30 @@ filetype indent plugin on
 " crashes.
 set hidden
 
-" Note that not everyone likes working this way (with the hidden option).
-" Alternatives include using tabs or split windows instead of re-using the same
-" window as mentioned above, and/or either of the following options:
-" set confirm
-" set autowriteall
+" Automatically save before commands like :next and :make
+"set autowrite
+" Not recommended
+"set autowriteall
 
 " Better command-line completion
 set wildmenu
 
-" Show partial commands in the last line of the screen
+" Show partial commands in the last line of the screen (status line)
 set showcmd
 
 " Highlight searches (use <C-L> to temporarily turn off highlighting; see the
 " mapping of <C-L> below)
 set hlsearch
 
+" Do incremental searching when it's possible to timeout.
+if has('reltime')
+	set incsearch
+endif
+
 " Modelines have historically been a source of security vulnerabilities. As
 " such, it may be a good idea to disable them and use the securemodelines
 " script, <http://www.vim.org/scripts/script.php?script_id=1876>.
 set nomodeline
-
-
-"------------------------------------------------------------
-" Usability options {{{1
-"
-" These are options that users frequently set in their .vimrc. Some of them
-" change Vim's behaviour in ways which deviate from the true Vi way, but
-" which are considered to add usability. Which, if any, of these options to
-" use is very much a personal preference, but they are harmless.
 
 " Use case insensitive search, except when using capital letters
 set ignorecase
@@ -75,6 +60,9 @@ set smartcase
 
 " Allow backspacing over autoindent, line breaks and start of insert action
 set backspace=indent,eol,start
+
+"set whichwrap+=<,>,h,l
+set whichwrap+=<,>,[,]
 
 " When opening a new line and no filetype-specific indenting is enabled, keep
 " the same indent as the line you're currently on. Useful for READMEs, etc.
@@ -120,11 +108,28 @@ set notimeout ttimeout ttimeoutlen=200
 " Use <F11> to toggle between 'paste' and 'nopaste'
 set pastetoggle=<F11>
 
+" Suffixes that get lower priority when doing tab completion for filenames.
+" These are files we are not likely to want to edit or read.
+set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.jpg,.png
+set suffixes-=.h
+set suffixes-=.obj
 
-"------------------------------------------------------------
-" Indentation options {{{1
-"
-" Indentation settings according to personal preference.
+" See https://medium.com/usevim/set-complete-e76b9f196f0f
+set complete-=i
+
+" Do not recognize octal numbers for Ctrl-A and Ctrl-X, most users find it
+" confusing.
+set nrformats-=octal
+
+set display+=lastline
+
+if v:version > 703
+	set formatoptions+=j " Delete comment character when joining commented lines
+endif
+
+if has('path_extra')
+	setglobal tags-=./tags tags-=./tags; tags^=./tags;
+endif
 
 " Indentation settings for using 4 spaces instead of tabs.
 " Do not change 'tabstop' from its default value of 8 with this setup.
@@ -136,30 +141,20 @@ set pastetoggle=<F11>
 " four characters wide.
 set shiftwidth=4
 set tabstop=4
-
-
-"------------------------------------------------------------
-" Mappings {{{1
-"
-" Useful mappings
+set smarttab
 
 " Map Y to act like D and C, i.e. to yank until EOL, rather than act as yy,
 " which is the default
-map Y y$
+nnoremap Y y$
 
 " Map <C-L> (redraw screen) to also turn off search highlighting until the
 " next search
-nnoremap <C-L> :noh<CR><C-L>
+nnoremap <C-L> :nohlsearch<CR><C-L>
 
 " This works in Insert mode and Command-Line mode: press CTRL-F to make the
-" before the cursor uppercase. Handy to type words in lowercase and then
+" wordbefore the cursor uppercase. Handy to type words in lowercase and then
 " make them uppercase.
-:map! <C-F> <Esc>gUiw`]a
-"------------------------------------------------------------
-
-"------------------------------------------------------------
-"------------------------------------------------------------
-"------------------------------------------------------------
+noremap! <C-F> <Esc>gUiw`]a
 
 " https://vi.stackexchange.com/questions/2162/why-doesnt-the-backspace-key-work-in-insert-mode
 " "You can also make backspace in normal mode delete characters by mapping it to the X command"
@@ -167,17 +162,8 @@ nnoremap <C-L> :noh<CR><C-L>
 nnoremap <BS> "_X
 xnoremap <BS> "_x
 
-"------------------------------------------------------------
-"------------------------------------------------------------
-"------------------------------------------------------------
-
 " https://vimconfig.com/
-
 set errorbells " Beep or flash screen on errors
-
-"------------------------------------------------------------
-"------------------------------------------------------------
-"------------------------------------------------------------
 
 " https://linuxhint.com/vimrc_tutorial/
 
@@ -188,73 +174,44 @@ set foldenable
 set foldlevelstart=10
 
 " It would be nice to have a shortcut for opening/closing folds, right? Let’s bind it to the spacebar.
-nnoremap <space> za
+nnoremap <Space> za
 
 " This next option tells Vim to fold based on indentation. For Python programmers, this is like a blessing.
 set foldmethod=indent
 
-"------------------------------------------------------------
-"------------------------------------------------------------
-"------------------------------------------------------------
-
 " https://github.com/amix/vimrc/blob/master/vimrcs/basic.vim
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Maintainer:
-"	   Amir Salihefendic — @amix3k
-"
-" Awesome_version:
-"	   Get this config, nice color schemes and lots of plugins!
-"
-"	   Install the awesome version from:
-"
-"		   https://github.com/amix/vimrc
-"
-" Sections:
-"	-> General
-"	-> VIM user interface
-"	-> Colors and Fonts
-"	-> Files and backups
-"	-> Text, tab and indent related
-"	-> Visual mode related
-"	-> Moving around, tabs and buffers
-"	-> Status line
-"	-> Editing mappings
-"	-> vimgrep searching and cope displaying
-"	-> Spell checking
-"	-> Misc
-"	-> Helper functions
-"
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => General
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Sets how many lines of history VIM has to remember
-set history=1000
+if &history < 1000
+	set history=1000
+endif
+
+if &tabpagemax < 50
+	set tabpagemax=50
+endif
+
+if !empty(&viminfo)
+	set viminfo^=!
+endif
+set sessionoptions-=options
 
 " Set to auto read when a file is changed from the outside
-" set autoread
+"set autoread
 
 " With a map leader it's possible to do extra key combinations
-" like <leader>w saves the current file
+" like <Leader>w saves the current file
 let mapleader = "-"
 nnoremap \ -
 
 " Fast saving
-" nmap <leader>w :w!<cr>
+" nnoremap <Leader>w :w!<CR>
 
 " :W sudo saves the file
 " (useful for handling the permission-denied error)
-" command W w !sudo tee % > /dev/null
+command W w !sudo tee % > /dev/null
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => VIM user interface
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Set 5 lines to the cursor - when moving vertically using j/k
-set so=5
+set scrolloff=5
 
 " Avoid garbled characters in Chinese language windows OS
 let $LANG='en'
@@ -270,13 +227,6 @@ else
 	set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
 endif
 
-" A buffer becomes hidden when it is abandoned
-set hid
-
-" Configure backspace so it acts as it should act
-" set backspace=eol,start,indent
-" set whichwrap+=<,>,h,l
-
 " Don't redraw while executing macros (good performance config)
 set lazyredraw
 
@@ -286,7 +236,7 @@ set magic
 " Show matching brackets when text indicator is over them
 set showmatch
 " How many tenths of a second to blink when matching brackets
-set mat=2
+set matchtime=2
 
 " No annoying sound on errors
 " set noerrorbells
@@ -299,19 +249,21 @@ set mat=2
 "	 autocmd GUIEnter * set vb t_vb=
 " endif
 
-
 " Add a bit extra margin to the left
 set foldcolumn=1
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Colors and Fonts
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enable syntax highlighting
-syntax enable
+if has("syntax") && !exists('g:syntax_on')
+	syntax enable
+	let c_comment_strings=1
+endif
+
+" If using a dark background within the editing area and syntax highlighting
+" turn on this option as well
+set background=dark
 
 " Enable 256 colors palette in Gnome Terminal
-if $COLORTERM == 'gnome-terminal'
+if $COLORTERM == "gnome-terminal" || $COLORTERM == "truecolor" || &term == "xterm-256color"
 	set t_Co=256
 endif
 
@@ -319,8 +271,6 @@ try
 	colorscheme desert
 catch
 endtry
-
-set background=dark
 
 " Set extra options when running in GUI mode
 if has("gui_running")
@@ -336,10 +286,6 @@ set encoding=utf-8
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Files, backups and undo
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Turn backup off, since most stuff is in SVN, git et.c anyway...
 " set nobackup
 " set nowb
@@ -347,108 +293,109 @@ set ffs=unix,dos,mac
 
 set backupcopy=yes
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Text, tab and indent related
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Linebreak on 500 characters
 " set lbr
 " set tw=500
 
-set smartindent "Smart indent
-set wrap "Wrap lines
+" Smart indent
+set smartindent
+" Wrap lines
+set wrap
 
-
-""""""""""""""""""""""""""""""
-" => Visual mode related
-""""""""""""""""""""""""""""""
 " Visual mode pressing * or # searches for the current selection
 " Super useful! From an idea by Michael Naumann
-vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
-vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
+vnoremap <Silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
+vnoremap <Silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Moving around, tabs, windows and buffers
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
-" map <space> /
-" map <c-space> ?
+" nnoremap <Space> /
+" nnoremap <C-space> ?
 
 " Disable highlight when <Leader>l is pressed
-map <silent> <Leader>l :noh<CR>
+nnoremap <Silent> <Leader>l :nohlsearch<CR>
 
 " Smart way to move between windows
-map <C-J> <C-W>j
-map <C-K> <C-W>k
-map <C-H> <C-W>h
-map <C-L> <C-W>l
+nnoremap <C-J> <C-W>j
+nnoremap <C-K> <C-W>k
+nnoremap <C-H> <C-W>h
+nnoremap <C-L> <C-W>l
 
 " Close the current buffer
-map <leader>bd :Bclose<cr>:tabclose<cr>gT
+nnoremap <Leader>bd :Bclose<CR>:tabclose<CR>gT
 
 " Close all the buffers
-map <leader>ba :bufdo bd<cr>
+nnoremap <Leader>ba :bufdo bd<CR>
 
-map <leader>j :bnext<cr>
-map <leader>k :bprevious<cr>
+nnoremap <Leader>j :bnext<CR>
+nnoremap <Leader>k :bprevious<CR>
 
 " Useful mappings for managing tabs
-map <leader>tn :tabnew<cr>
-map <leader>to :tabonly<cr>
-map <leader>tc :tabclose<cr>
-map <leader>tm :tabmove
-map <leader>t<leader> :tabnext
+nnoremap <Leader>tn :tabnew<CR>
+nnoremap <Leader>to :tabonly<CR>
+nnoremap <Leader>tc :tabclose<CR>
+nnoremap <Leader>tm :tabmove
+nnoremap <Leader>t<Leader> :tabnext
 
 " Let 'tl' toggle between this and the last accessed tab
 let g:lasttab = 1
-nmap <Leader>tl :exe "tabn ".g:lasttab<CR>
+nnoremap <Leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let g:lasttab = tabpagenr()
-
 
 " Opens a new tab with the current buffer's path
 " Super useful when editing files in the same directory
-map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
+nnoremap <Leader>te :tabedit <c-r>=expand("%:p:h")<CR>/
 
 " Switch CWD to the directory of the open buffer
-map <leader>cd :cd %:p:h<cr>:pwd<cr>
+nnoremap <Leader>cd :cd %:p:h<CR>:pwd<CR>
 
 " Specify the behavior when switching between buffers
 try
-  set switchbuf=useopen,usetab,newtab
-  set showtabline=2
+	set switchbuf=useopen,usetab,newtab
+	set showtabline=2
 catch
 endtry
 
-" Return to last edit position when opening files (You want this!)
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+" When editing a file, always jump to the last known cursor position.
+" Don't do it when the position is invalid, when inside an event handler
+" (happens when dropping a file on gvim) and for a commit message (it's
+" likely a different one than last time).
+autocmd BufReadPost *
+	\ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
+	\ |   exe "normal! g`\""
+	\ | endif
 
-
-""""""""""""""""""""""""""""""
-" => Status line
-""""""""""""""""""""""""""""""
 " Format the status line
 set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Editing mappings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remap VIM 0 to first non-blank character
-map 0 ^
+nnoremap 0 ^
+vnoremap 0 ^
+nnoremap ^ 0
+vnoremap ^ 0
 
 " Move a line of text using ALT+[jk] or Command+[jk] on mac
-nmap <M-j> mz:m+<cr>`z
-nmap <M-k> mz:m-2<cr>`z
-vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
-vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
+nnoremap <M-j> mz:m+<CR>`z
+nnoremap <M-k> mz:m-2<CR>`z
+vnoremap <M-j> :m'>+<CR>`<my`>mzgv`yo`z
+vnoremap <M-k> :m'<-2<CR>`>my`<mzgv`yo`z
 
-" if has("mac") || has("macunix")
-"   nmap <D-j> <M-j>
-"   nmap <D-k> <M-k>
-"   vmap <D-j> <M-j>
-"   vmap <D-k> <M-k>
-" endif
+"if has("mac") || has("macunix")
+"	nnoremap <D-j> <M-j>
+"	nnoremap <D-k> <M-k>
+"	vnoremap <D-j> <M-j>
+"	vnoremap <D-k> <M-k>
+"endif
+
+" CTRL-U in insert mode deletes a lot. Use CTRL-G u to first break undo,
+" so that you can undo CTRL-U after inserting a line break.
+" Revert with ":iunmap <C-U>".
+" See https://vim.fandom.com/wiki/Recover_from_accidental_Ctrl-U
+inoremap <C-U> <C-G>u<C-U>
+inoremap <C-W> <C-G>u<C-W>
+
+" Don't use Ex mode, use Q for formatting.
+" Revert with ":unmap Q".
+nnoremap Q gq
 
 " Delete trailing white space on save, useful for some filetypes ;)
 fun! CleanExtraSpaces()
@@ -461,56 +408,67 @@ endfun
 
 if has("autocmd")
 	autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+
+	" Make shift-insert work like in Xterm
+	autocmd GUIEnter * if !<SID>MapExists("<S-Insert>", "nvso") | execute "noremap <S-Insert> <MiddleMouse>" | endif
+	autocmd GUIEnter * if !<SID>MapExists("<S-Insert>", "ic") | execute "noremap! <S-Insert> <MiddleMouse>" | endif
+
+	" Attempt to determine the type of a file based on its name and possibly its
+	" contents. Use this to allow intelligent auto-indenting for each filetype,
+	" and for plugins that are filetype specific.
+	filetype indent plugin on
 endif
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Spell checking
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Pressing -ss will toggle and untoggle spell checking
-map <leader>ss :setlocal spell!<cr>
+nnoremap <Leader>ss :setlocal spell!<CR>
 
-" Shortcuts using <leader>
-map <leader>sn ]s
-map <leader>sp [s
-map <leader>sa zg
-map <leader>s? z=
+" Shortcuts using <Leader>
+nnoremap <Leader>sn ]s
+nnoremap <Leader>sp [s
+nnoremap <Leader>sa zg
+nnoremap <Leader>s? z=
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Show hidden characters
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" https://askubuntu.com/questions/74485/how-to-display-hidden-characters-in-vim
-" https://www.reddit.com/r/vim/comments/4hoa6e/what_do_you_use_for_your_listchars/
 set list
 set listchars=tab:━━➔,space:·,nbsp:␣,trail:•,eol:¶,precedes:❰,extends:❱
 "match WarningMsg '\s\+$'
 "set listchars=tab:━━➔,space:·,nbsp:␣,trail:\ ,eol:¶,precedes:❰,extends:❱
 match ErrorMsg '\s\+$'
-"set showbreak=↳\ 
+"set showbreak=↳\
 highlight NonText ctermfg=black
 highlight SpecialKey ctermfg=darkgray
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Misc
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remove the Windows ^M - when the encodings gets messed up
-noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
+nnoremap <Leader>m mmHmt:%s/<C-V><CR>//ge<CR>'tzt'm
 
 " Quickly open a buffer for scribble
-map <leader>q :e ~/buffer<cr>
+nnoremap <Leader>q :e ~/buffer<CR>
 
 " Quickly open a markdown buffer for scribble
-map <leader>x :e ~/buffer.md<cr>
+nnoremap <Leader>x :e ~/buffer.md<CR>
 
 " Toggle paste mode on and off
-map <leader>pp :setlocal paste!<cr>
+nnoremap <Leader>pp :setlocal paste!<CR>
 
+" Move temporary files to a secure location to protect against CVE-2017-1000382
+if exists('$XDG_CACHE_HOME')
+	let &g:directory=$XDG_CACHE_HOME
+else
+	let &g:directory=$HOME . '/.cache'
+endif
+let &g:undodir=&g:directory . '/vim/undo//'
+let &g:backupdir=&g:directory . '/vim/backup//'
+let &g:directory.='/vim/swap//'
+" Create directories if they doesn't exist
+if ! isdirectory(expand(&g:directory))
+	silent! call mkdir(expand(&g:directory), 'p', 0700)
+endif
+if ! isdirectory(expand(&g:backupdir))
+	silent! call mkdir(expand(&g:backupdir), 'p', 0700)
+endif
+if ! isdirectory(expand(&g:undodir))
+	silent! call mkdir(expand(&g:undodir), 'p', 0700)
+endif
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Helper functions
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Returns true if paste mode is enabled
 function! HasPaste()
 	if &paste
@@ -560,3 +518,14 @@ function! VisualSelection(direction, extra_filter) range
 	let @/ = l:pattern
 	let @" = l:saved_reg
 endfunction
+
+" Convenient command to see the difference between the current buffer and the
+" file it was loaded from, thus the changes you made.
+" Only define it when not defined already.
+" Revert with: ":delcommand DiffOrig".
+if !exists(":DiffOrig")
+  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
+		  \ | wincmd p | diffthis
+endif
+
+" vim:set filetype=vim shiftwidth=4:
