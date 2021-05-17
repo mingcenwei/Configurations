@@ -59,7 +59,7 @@ complete --command 'set-proxies' \
 		"'current' 'Keep current NO proxy'" \
 		"'none' 'Empty NO proxy'" \
 		"'erase' 'Erase NO proxy'" \
-		"'localhost,127.0.0.1,.cn' 'Default NO proxy'"
+		"'localhost,127.0.0.1,.cn' 'Default NO proxy'" \
 		')' \
 	) \
 	--keep-order
