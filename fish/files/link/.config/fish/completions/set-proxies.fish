@@ -21,7 +21,8 @@ complete --command 'set-proxies' \
 		'(' \
 		"printf '%s\t%s\n'" \
 		"'current' 'Keep current HTTP proxy'" \
-		"'none' 'Remove HTTP proxy'" \
+		"'none' 'Empty HTTP proxy'" \
+		"'erase' 'Erase HTTP proxy'" \
 		"'127.0.0.1:8889' 'Qv2ray Default HTTP proxy'" \
 		')' \
 	) \
@@ -38,7 +39,8 @@ complete --command 'set-proxies' \
 		'(' \
 		"printf '%s\t%s\n'" \
 		"'current' 'Keep current SOCKS proxy'" \
-		"'none' 'Remove SOCKS proxy'" \
+		"'none' 'Empty SOCKS proxy'" \
+		"'erase' 'Erase SOCKS proxy'" \
 		"'127.0.0.1:1089' 'Qv2ray Default SOCKS proxy'" \
 		')' \
 	) \
@@ -55,7 +57,9 @@ complete --command 'set-proxies' \
 		'(' \
 		"printf '%s\t%s\n'" \
 		"'current' 'Keep current NO proxy'" \
-		"'none' 'Remove NO proxy'" \
+		"'none' 'Empty NO proxy'" \
+		"'erase' 'Erase NO proxy'" \
+		"'localhost,127.0.0.1,.cn' 'Default NO proxy'"
 		')' \
 	) \
 	--keep-order

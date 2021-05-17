@@ -18,26 +18,31 @@ function set-proxies --description 'Set HTTP/SOCKS proxies'
 
 	set httpProxy (string lower -- (string trim -- "$httpProxy"))
 	if string match --quiet --regex -- '^\s*$' "$httpProxy"
-		echo 'Please enter HTTP proxy (or `none`/`current`)'
+		echo 'Please enter HTTP proxy (or `none`/`current`/`erase`)'
 		read httpProxy || return 2
 	end
 	set httpProxy (string lower -- (string trim -- "$httpProxy"))
 
 	set socksProxy (string lower -- (string trim -- "$socksProxy"))
 	if string match --quiet --regex -- '^\s*$' "$socksProxy"
-		echo 'Please enter SOCKS proxy (or `none`/`current`)'
+		echo 'Please enter SOCKS proxy (or `none`/`current`/`erase`)'
 		read socksProxy || return 2
 	end
 	set socksProxy (string lower -- (string trim -- "$socksProxy"))
 
 	set noProxy (string lower -- (string trim -- "$noProxy"))
 	if string match --quiet --regex -- '^\s*$' "$noProxy"
-		set noProxy "localhost,127.0.0.1,.cn"
+		set noProxy 'localhost,127.0.0.1,.cn'
 	end
 
 	switch "$httpProxy"
 		case 'current'
 		case 'none'
+			for proxy in 'http_proxy' 'https_proxy' 'ftp_proxy' 'rsync_proxy'
+				set --export "$scope" "$proxy" ''
+				set --export "$scope" (string upper "$proxy") ''
+			end
+		case 'erase'
 			for proxy in 'http_proxy' 'https_proxy' 'ftp_proxy' 'rsync_proxy'
 				set --erase "$scope" "$proxy"
 				set --erase "$scope" (string upper "$proxy")
@@ -56,6 +61,11 @@ function set-proxies --description 'Set HTTP/SOCKS proxies'
 		case 'current'
 		case 'none'
 			for proxy in 'all_proxy'
+				set --export "$scope" "$proxy" ''
+				set --export "$scope" (string upper "$proxy") ''
+			end
+		case 'erase'
+			for proxy in 'all_proxy'
 				set --erase "$scope" "$proxy"
 				set --erase "$scope" (string upper "$proxy")
 			end
@@ -72,6 +82,11 @@ function set-proxies --description 'Set HTTP/SOCKS proxies'
 	switch "$noProxy"
 		case 'current'
 		case 'none'
+			for proxy in 'no_proxy'
+				set --export "$scope" "$proxy" ''
+				set --export "$scope" (string upper "$proxy") ''
+			end
+		case 'erase'
 			for proxy in 'no_proxy'
 				set --erase "$scope" "$proxy"
 				set --erase "$scope" (string upper "$proxy")
