@@ -50,14 +50,14 @@ function add-paths --description 'Append/prepend paths to path variable'
 	if test -z "$prepend"
 		for path in $paths
 			if not contains -- "$path" $tempVariable
-				set --path tempVariable $tempVariable "$path"
+				set --path --append tempVariable $path
 			end
 		end
 	else
 		set --local reversedPaths $paths[-1..1]
 		for path in $reversedPaths
 			if not contains -- "$path" $tempVariable
-				set --path tempVariable "$path" $tempVariable
+				set --path --prepend tempVariable $path
 			end
 		end
 	end
