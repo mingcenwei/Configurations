@@ -12,6 +12,19 @@ function __sayAnonymousNamespace_add-paths_help
 	echo '        --                              Only <paths>... after this'
 end
 
+function __sayAnonymousNamespace_add-paths_validatePath --argument-names path
+	if not test -e "$path"
+		if test -L "$path"
+			echo-err --warning 'Broken symbolic link: '(string escape -- "$path")
+		else
+			echo-err --warning 'Path not exist: '(string escape -- "$path")
+		end
+	else if not test -d "$path"
+		echo-err --warning 'Not a directory: '(string escape -- "$path")
+	end
+	return 0
+end
+
 function add-paths --description 'Append/prepend paths to path variable'
 	check-dependencies --function --quiet='never' 'echo-err' || return 3
 
@@ -49,14 +62,16 @@ function add-paths --description 'Append/prepend paths to path variable'
 	end
 	if test -z "$prepend"
 		for path in $paths
-			if not contains -- "$path" $tempVariable
+			__sayAnonymousNamespace_add-paths_validatePath "$path"
+			and if not contains -- "$path" $tempVariable
 				set --path --append tempVariable $path
 			end
 		end
 	else
 		set --local reversedPaths $paths[-1..1]
 		for path in $reversedPaths
-			if not contains -- "$path" $tempVariable
+			__sayAnonymousNamespace_add-paths_validatePath "$path"
+			and if not contains -- "$path" $tempVariable
 				set --path --prepend tempVariable $path
 			end
 		end
