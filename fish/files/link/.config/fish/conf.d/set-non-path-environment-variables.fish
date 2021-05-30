@@ -64,3 +64,9 @@ end
 
 # For nvm
 set --export --global NVM_DIR "$HOME"'/.nvm'
+
+# For ruby
+if check-dependencies --program --quiet 'ruby'
+	set --export --global GEM_HOME (ruby -e 'puts Gem.user_dir')
+	add-paths --append --variable PATH "$GEM_HOME"'/bin'
+end
