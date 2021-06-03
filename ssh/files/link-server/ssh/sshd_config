@@ -97,7 +97,7 @@ UsePAM yes
 #X11Forwarding no
 #X11DisplayOffset 10
 #X11UseLocalhost yes
-## XAuthLocation added by XQuartz (http://xquartz.macosforge.org)
+## XAuthLocation added by XQuartz (https://xquartz.macosforge.org)
 ##XAuthLocation /opt/X11/bin/xauth
 #PermitTTY yes
 PrintMotd yes
