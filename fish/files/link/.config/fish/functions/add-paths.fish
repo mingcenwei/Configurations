@@ -13,14 +13,16 @@ function __sayAnonymousNamespace_add-paths_help
 end
 
 function __sayAnonymousNamespace_add-paths_validatePath --argument-names path
-	if not test -e "$path"
-		if test -L "$path"
-			echo-err --warning 'Broken symbolic link: '(string escape -- "$path")
-		else
-			echo-err --warning 'Path not exist: '(string escape -- "$path")
+	if status is-interactive
+		if not test -e "$path"
+			if test -L "$path"
+				echo-err --warning 'Broken symbolic link: '(string escape -- "$path")
+			else
+				echo-err --warning 'Path not exist: '(string escape -- "$path")
+			end
+		else if not test -d "$path"
+			echo-err --warning 'Not a directory: '(string escape -- "$path")
 		end
-	else if not test -d "$path"
-		echo-err --warning 'Not a directory: '(string escape -- "$path")
 	end
 	return 0
 end
