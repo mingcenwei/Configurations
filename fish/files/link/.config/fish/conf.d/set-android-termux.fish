@@ -32,7 +32,7 @@ if is-platform --quiet 'android-termux'
 		end
 
 		set --local pattern '^'(string escape --style=regex '/sdcard')
-		if string match --quiet --regex "$pattern" "$from"
+		if string match --quiet --regex -- "$pattern" "$from"
 			set --local prefix "$HOME"'/UnderlyingFileSystem'
 			if not test -L "$prefix"/"$to"
 				if test -e "$prefix"/"$to"

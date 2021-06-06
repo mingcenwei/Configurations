@@ -40,12 +40,12 @@ function set-proxies --description 'Set HTTP/SOCKS proxies'
 		case 'none'
 			for proxy in 'http_proxy' 'https_proxy' 'ftp_proxy' 'rsync_proxy'
 				set --export "$scope" "$proxy" ''
-				set --export "$scope" (string upper "$proxy") ''
+				set --export "$scope" (string upper -- "$proxy") ''
 			end
 		case 'erase'
 			for proxy in 'http_proxy' 'https_proxy' 'ftp_proxy' 'rsync_proxy'
 				set --erase "$scope" "$proxy"
-				set --erase "$scope" (string upper "$proxy")
+				set --erase "$scope" (string upper -- "$proxy")
 			end
 		case '*'
 			if not string match --regex --quiet -- \
@@ -54,7 +54,7 @@ function set-proxies --description 'Set HTTP/SOCKS proxies'
 			end
 			for proxy in 'http_proxy' 'https_proxy' 'ftp_proxy' 'rsync_proxy'
 				set --export "$scope" "$proxy" "$httpProxy"
-				set --export "$scope" (string upper "$proxy") "$httpProxy"
+				set --export "$scope" (string upper -- "$proxy") "$httpProxy"
 			end
 	end
 	switch "$socksProxy"
@@ -62,12 +62,12 @@ function set-proxies --description 'Set HTTP/SOCKS proxies'
 		case 'none'
 			for proxy in 'all_proxy'
 				set --export "$scope" "$proxy" ''
-				set --export "$scope" (string upper "$proxy") ''
+				set --export "$scope" (string upper -- "$proxy") ''
 			end
 		case 'erase'
 			for proxy in 'all_proxy'
 				set --erase "$scope" "$proxy"
-				set --erase "$scope" (string upper "$proxy")
+				set --erase "$scope" (string upper -- "$proxy")
 			end
 		case '*'
 			if not string match --regex --quiet -- \
@@ -76,7 +76,7 @@ function set-proxies --description 'Set HTTP/SOCKS proxies'
 			end
 			for proxy in 'all_proxy'
 				set --export "$scope" "$proxy" "$socksProxy"
-				set --export "$scope" (string upper "$proxy") "$socksProxy"
+				set --export "$scope" (string upper -- "$proxy") "$socksProxy"
 			end
 	end
 	switch "$noProxy"
@@ -84,17 +84,17 @@ function set-proxies --description 'Set HTTP/SOCKS proxies'
 		case 'none'
 			for proxy in 'no_proxy'
 				set --export "$scope" "$proxy" ''
-				set --export "$scope" (string upper "$proxy") ''
+				set --export "$scope" (string upper -- "$proxy") ''
 			end
 		case 'erase'
 			for proxy in 'no_proxy'
 				set --erase "$scope" "$proxy"
-				set --erase "$scope" (string upper "$proxy")
+				set --erase "$scope" (string upper -- "$proxy")
 			end
 		case '*'
 			for proxy in 'no_proxy'
 				set --export "$scope" "$proxy" "$noProxy"
-				set --export "$scope" (string upper "$proxy") "$noProxy"
+				set --export "$scope" (string upper -- "$proxy") "$noProxy"
 			end
 	end
 	return 0

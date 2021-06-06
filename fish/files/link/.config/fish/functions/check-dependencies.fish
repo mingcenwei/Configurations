@@ -63,7 +63,7 @@ function check-dependencies --description  'Check dependencies'
 		for func in $argv
 			if not functions --query "$func"
 				test -z "$quiet" && echo-err \
-					(string escape "$func")' function is not loaded!'
+					(string escape -- "$func")' function is not loaded!'
 				set statusToReturn 1
 			end
 		end
@@ -71,7 +71,7 @@ function check-dependencies --description  'Check dependencies'
 		for program in $argv
 			if not command --search --quiet "$program"
 				test -z "$quiet" && echo-err \
-					(string escape "$program")' is not installed! Please install the program'
+					(string escape -- "$program")' is not installed! Please install the program'
 				set statusToReturn 1
 			end
 		end
@@ -79,7 +79,7 @@ function check-dependencies --description  'Check dependencies'
 		for executable in $argv
 			if not type --query "$executable"
 				test -z "$quiet" && echo-err \
-					(string escape "$executable")' is not found'
+					(string escape -- "$executable")' is not found'
 				set statusToReturn 1
 			end
 		end
