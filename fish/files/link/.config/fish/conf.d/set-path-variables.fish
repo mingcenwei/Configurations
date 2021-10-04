@@ -3,7 +3,7 @@
 # Add common paths
 add-paths --append --variable PATH "$HOME"'/.local/bin'
 
-# Set macOS path variables
+# Set path variables
 if is-platform --quiet 'macos'
 	set --local paths \
 		"$HOME"'/.local/bin' \
@@ -39,14 +39,21 @@ if is-platform --quiet 'macos'
 			end
 		end
 	end
+else if is-platform --quiet 'android-termux'
+	add-paths --append --variable PATH "$PREFIX"'/local/bin'
 end
 
-# Set Android Termux path variables
+# Set man path variables
 if is-platform --quiet 'android-termux'
-	add-paths --append --variable PATH "$PREFIX"'/local/bin'
 	add-paths --append --variable MANPATH \
 		"$PREFIX"'/local/share/man' \
 		"$PREFIX"'/share/man'
+else if is-platform --quiet 'linux'
+	add-paths --append --variable MANPATH \
+		'/usr/share/fish/man' \
+		'/usr/share/man' \
+		'/usr/local/share/man' \
+		'/usr/local/man'
 end
 
 # Set snap `/snap/bin` in $PATH
