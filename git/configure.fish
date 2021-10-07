@@ -109,7 +109,7 @@ else if is-platform --quiet 'android-termux'
 	and git config --global 'credential.helper' \
 		'!f() { test "$1" = get && echo "url=$(pass show GitHub)"; }; f'
 	and begin
-		pass > '/dev/null'
+		pass ls > '/dev/null'
 		true
 	end
 else
