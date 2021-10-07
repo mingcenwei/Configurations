@@ -341,6 +341,12 @@ let g:lasttab = 1
 nnoremap <Leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let g:lasttab = tabpagenr()
 
+if has("mac") || has("macunix")
+	au BufNewFile,BufRead /private/**/gopass** setlocal noswapfile nobackup noundofile
+else
+	au BufNewFile,BufRead /dev/shm/gopass.* setlocal noswapfile nobackup noundofile
+endif
+
 " Opens a new tab with the current buffer's path
 " Super useful when editing files in the same directory
 nnoremap <Leader>te :tabedit <c-r>=expand("%:p:h")<CR>/
