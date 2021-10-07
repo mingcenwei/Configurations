@@ -137,6 +137,29 @@ if check-dependencies --program 'rsync'
 	end
 end
 
+# For "rclone"
+if check-dependencies --program 'rclone'
+	abbr --add --global 'rclone2' 'rclone -ivP'
+
+	if check-dependencies --program 'pass'
+		function rclone --wraps='rclone' --description 'rclone'
+			command rclone --password-command='pass show rclone_config' --ask-password=false $argv
+		end
+		begin
+			pass ls > '/dev/null'
+			true
+		end
+	else
+		function rclone --wraps='rclone' --description 'rclone'
+			if test -z "$RCLONE_CONFIG_PASS"
+				echo 'Enter configuration password: '
+				read --export --global --silent --prompt-str='password:' RCLONE_CONFIG_PASS
+			end
+			command rclone --ask-password=false $argv
+		end
+	end
+end
+
 # For "pacman"
 if is-platform --quiet 'pacman'
 	if check-dependencies --program 'makepkg'
