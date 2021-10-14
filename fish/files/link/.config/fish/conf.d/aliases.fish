@@ -153,9 +153,9 @@ if check-dependencies --program 'rclone'
 		function rclone --wraps='rclone' --description 'rclone'
 			if test -z "$RCLONE_CONFIG_PASS"
 				echo 'Enter configuration password: '
-				read --export --global --silent --prompt-str='password:' RCLONE_CONFIG_PASS
+				read --global --silent --prompt-str='password: ' RCLONE_CONFIG_PASS
 			end
-			command rclone --ask-password=false $argv
+			RCLONE_CONFIG_PASS="$RCLONE_CONFIG_PASS" command rclone --ask-password=false $argv
 		end
 	end
 end
