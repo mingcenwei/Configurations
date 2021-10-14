@@ -203,7 +203,7 @@ function configureSshClient
 	"$editor" "$sshClientConfigFile"
 
 	check-dependencies --program --quiet='never' 'ssh-keygen'
-	echo-err --info 'You perhaps need to run: ssh-keygen -t \'rsa\' -b \'4096\''
+	echo-err --info 'You perhaps need to run: ssh-keygen -t \'ed25519\' -a \'200\' ; ssh-keygen -t \'rsa\' -b \'4096\' -a \'200\''
 end
 
 set --global formerSshServerConfigMatchCount 0
@@ -504,10 +504,14 @@ function configureSshServer
 	set --local sudoSshKeygen $maybeSudo 'ssh-keygen'
 
 	### Back up previous "ssh" server configurations
+	set --local sshHostEd25519SecretKey "$sshServerConfigDir"'/ssh_host_ed25519_key'
+	set --local sshHostEd25519PublicKey "$sshHostEd25519SecretKey"'.pub'
 	set --local sshHostRsaSecretKey "$sshServerConfigDir"'/ssh_host_rsa_key'
 	set --local sshHostRsaPublicKey "$sshHostRsaSecretKey"'.pub'
 	if test -d "$sshServerStowDir"'/ssh-server'
 	or test -f "$sshServerConfigFile" || test -L "$sshServerConfigFile"
+	or test -f "$sshHostEd25519SecretKey" || test -L "$sshHostEd25519SecretKey"
+	or test -f "$sshHostEd25519PublicKey" || test -L "$sshHostEd25519PublicKey"
 	or test -f "$sshHostRsaSecretKey" || test -L "$sshHostRsaSecretKey"
 	or test -f "$sshHostRsaPublicKey" || test -L "$sshHostRsaPublicKey"
 		read-choice --variable removePreviousConfigurations --default 2 \
@@ -528,6 +532,10 @@ function configureSshServer
 		and set --append backupConfigs "$sshServerStowDir"'/ssh-server'
 		test -f "$sshServerConfigFile" || test -L "$sshServerConfigFile"
 		and set --append backupConfigs "$sshServerConfigFile"
+		test -f "$sshHostEd25519SecretKey" || test -L "$sshHostEd25519SecretKey"
+		and set --append backupConfigs "$sshHostEd25519SecretKey"
+		test -f "$sshHostEd25519PublicKey" || test -L "$sshHostEd25519PublicKey"
+		and set --append backupConfigs "$sshHostEd25519PublicKey"
 		test -f "$sshHostRsaSecretKey" || test -L "$sshHostRsaSecretKey"
 		and set --append backupConfigs "$sshHostRsaSecretKey"
 		test -f "$sshHostRsaPublicKey" || test -L "$sshHostRsaPublicKey"
@@ -557,7 +565,8 @@ function configureSshServer
 
 	if is-platform --quiet 'android-termux'
 		sed --in-place --follow-symlinks \
-			's|HostKey /etc/ssh/ssh_host_rsa_key|HostKey '"$PREFIX"'/etc/ssh/ssh_host_rsa_key|' \
+			--expression 's|HostKey /etc/ssh/ssh_host_ed25519_key|HostKey '"$PREFIX"'/etc/ssh/ssh_host_ed25519_key|' \
+			--expression 's|HostKey /etc/ssh/ssh_host_rsa_key|HostKey '"$PREFIX"'/etc/ssh/ssh_host_rsa_key|' \
 			"$sshServerConfigFile"
 		or return 1
 	end
@@ -598,7 +607,18 @@ function configureSshServer
 	set --local sudoEditor $maybeSudo "$editor"
 	$sudoEditor "$sshServerConfigFile"
 
-	# Generate new ssh host RSA key
+	# Generate new ssh host Ed25519 and RSA keys
+	read-choice --variable newHostEd25519Key \
+		--prompt 'Generate new ssh host Ed25519 key? ' -- 'yes' 'no' || return 2
+	if test 'yes' = "$newHostEd25519Key"
+		for key in "$sshHostEd25519SecretKey" "$sshHostEd25519PublicKey"
+			if test -f "$key" || test -L "$key"
+				$sudoRm "$key" || return 1
+			end
+		end
+		$sudoSshKeygen -t 'ed25519' -a '200' -N '' -f "$sshHostEd25519SecretKey"
+		or return 1
+	end
 	read-choice --variable newHostRsaKey \
 		--prompt 'Generate new ssh host RSA key? ' -- 'yes' 'no' || return 2
 	if test 'yes' = "$newHostRsaKey"
@@ -607,7 +627,7 @@ function configureSshServer
 				$sudoRm "$key" || return 1
 			end
 		end
-		$sudoSshKeygen -t 'rsa' -b '4096' -N '' -f "$sshHostRsaSecretKey"
+		$sudoSshKeygen -t 'rsa' -b '4096' -a '200' -N '' -f "$sshHostRsaSecretKey"
 		or return 1
 	end
 
