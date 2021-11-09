@@ -181,7 +181,9 @@ if is-platform --quiet 'pacman'
 	end
 
 	if check-dependencies --program "pikaur"
-		abbr --add --global pikaur2 'VISUAL= pikaur'
+		function pikaur --wraps='pikaur' --description 'pikaur'
+			VISUAL= command pikaur $argv
+		end
 	end
 end
 
