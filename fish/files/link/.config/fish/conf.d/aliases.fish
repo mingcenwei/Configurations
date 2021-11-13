@@ -121,6 +121,15 @@ end
 abbr --add --global date2 'date +\'%Y-%m-%d_%H-%M-%S\''
 abbr --add --global date2-u 'date -u +\'%Y-%m-%d_%H-%M-%S\''
 
+# For "pgrep"
+if check-dependencies --program 'pgrep'
+	abbr --add --global pgrep2 'pgrep -fia'
+end
+# For "pkill"
+if check-dependencies --program 'pkill'
+	abbr --add --global pkill2 'pkill -fi'
+end
+
 # For "rsync"
 if check-dependencies --program 'rsync'
 	abbr --add --global rsync2 'rsync -hh --info=stats1,progress2'
