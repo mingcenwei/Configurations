@@ -130,6 +130,11 @@ if check-dependencies --program 'pkill'
 	abbr --add --global pkill2 'pkill -fi'
 end
 
+# For "fzf"
+if check-dependencies --program 'fzf'
+	fzf_key_bindings
+end
+
 # For "rsync"
 if check-dependencies --program 'rsync'
 	abbr --add --global rsync2 'rsync -hh --info=stats1,progress2'
