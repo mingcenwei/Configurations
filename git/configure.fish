@@ -116,3 +116,8 @@ else
 	echo-err --warning 'No git credential helper is set'
 end
 ###
+
+### Aliases
+git config --global 'alias.exec' '!exec '
+git config --global 'alias.root' 'rev-parse --show-toplevel'
+###

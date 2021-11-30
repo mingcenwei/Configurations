@@ -135,6 +135,11 @@ if check-dependencies --program 'fzf'
 	fzf_key_bindings
 end
 
+# For "git"
+if check-dependencies --program 'git'
+	abbr --add --global git-root 'git rev-parse --show-toplevel'
+end
+
 # For "rsync"
 if check-dependencies --program 'rsync'
 	abbr --add --global rsync2 'rsync -hh --info=stats1,progress2'
