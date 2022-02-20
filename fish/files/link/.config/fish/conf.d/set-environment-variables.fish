@@ -27,8 +27,12 @@ end
 # Prepended to "$PATH"
 begin
 	# For snap
-	if is-platform --quiet 'snap'
-		fish_add_path --global '/snap/bin'
+	fish_add_path --global '/snap/bin'
+
+	# For pyenv
+	begin
+		set --export --global PYENV_ROOT "$HOME"'/.pyenv'
+		fish_add_path --global "$PYENV_ROOT"'/bin'
 	end
 end
 
@@ -76,7 +80,7 @@ end
 set --export --global GPG_TTY (tty)
 
 # For Homebrew
-if is-platform --quiet 'homebrew'
+begin
 	# Discouraged, see https://github.com/Homebrew/brew/issues/1670#issuecomment-267847105
 	#set --export --global HOMEBREW_NO_AUTO_UPDATE 1
 
