@@ -166,11 +166,8 @@ if check-dependencies --program 'rclone'
 
 	if check-dependencies --program 'pass'
 		function rclone --wraps='rclone' --description 'rclone'
+			pass ls > '/dev/null'; true
 			command rclone --password-command='pass show rclone_config' --ask-password=false $argv
-		end
-		begin
-			pass ls > '/dev/null'
-			true
 		end
 	else
 		function rclone --wraps='rclone' --description 'rclone'
