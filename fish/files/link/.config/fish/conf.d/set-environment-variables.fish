@@ -33,6 +33,10 @@ begin
 	begin
 		set --export --global PYENV_ROOT "$HOME"'/.pyenv'
 		fish_add_path --global "$PYENV_ROOT"'/bin'
+		if check-dependencies --program --quiet 'pyenv'
+			status is-login && pyenv init --path | source
+			status is-interactive && pyenv init - | source
+		end
 	end
 end
 
