@@ -54,21 +54,17 @@ end
 
 # Set default text editors
 begin
-	if not check-dependencies --program --quiet 'vim'
-		if status is-interactive
-			echo-err --warning '"vim" is not installed! $EDITOR will not be set'
-		end
-	else
+	if check-dependencies --program --quiet 'vim'
 		set --export --global EDITOR (command --search vim)
 		set --export --global SUDO_EDITOR (command --search vim)
+	else if status is-interactive
+		echo-err --warning '"vim" is not installed! $EDITOR will not be set'
 	end
 
-	if not check-dependencies --program --quiet 'code'
-		if status is-interactive
-			echo-err --warning '"Visual Studio Code" is not installed! $VISUAL will not be set'
-		end
-	else
+	if check-dependencies --program --quiet 'code'
 		set --export --global VISUAL (command --search code)
+	else if status is-interactive
+		echo-err --warning '"Visual Studio Code" is not installed! $VISUAL will not be set'
 	end
 end
 
@@ -76,6 +72,8 @@ end
 begin
 	if check-dependencies --program --quiet 'firefox-developer-edition'
 		set --export --global BROWSER (command --search firefox-developer-edition)
+	else if status is-interactive
+		echo-err --warning '"Firefox Developer Edition" is not installed! $BROWSER will not be set'
 	end
 end
 
