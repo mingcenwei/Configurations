@@ -72,6 +72,13 @@ begin
 	end
 end
 
+# Set default browser
+begin
+	if check-dependencies --program --quiet 'firefox-developer-edition'
+		set --export --global BROWSER (command --search firefox-developer-edition)
+	end
+end
+
 # For "less"
 begin
 	set --export --global PAGER 'less'
