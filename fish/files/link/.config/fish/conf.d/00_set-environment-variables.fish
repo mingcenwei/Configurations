@@ -17,6 +17,11 @@ begin
 		fish_add_path --global --append --path "$HOME"'/bin' "$PREFIX"'/local/bin'
 	end
 
+	# For Cargo
+	if check-dependencies --program --quiet 'cargo'
+		fish_add_path --global --append --path "$HOME"'/.cargo/bin'
+	end
+
 	# For ruby
 	if check-dependencies --program --quiet 'ruby'
 		set --export --global GEM_HOME (ruby -e 'puts Gem.user_dir')
