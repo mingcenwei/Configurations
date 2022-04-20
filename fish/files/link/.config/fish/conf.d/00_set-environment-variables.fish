@@ -121,7 +121,7 @@ set --export --global NVM_DIR "$HOME"'/.nvm'
 # For conda
 if is-platform --quiet 'pacman'
 	if test -f '/opt/miniconda3/bin/conda'
-		function init-conda --description='Initialize conda'
+		function init-conda --description='Initialize conda' --inherit-variable 'argv'
 			eval '/opt/miniconda3/bin/conda' 'shell.fish' 'hook' $argv | source
 		end
 	end
