@@ -57,7 +57,7 @@ if check-dependencies --program --quiet 'litecli'
 	abbr --add --global litecli 'litecli --warn'
 end
 if check-dependencies --program --quiet 'pgcli'
-	abbr --add --global pgcli 'pgcli --warn'
+	abbr --add --global pgcli 'pgcli --warn all'
 end
 
 # Add colors: https://wiki.archlinux.org/index.php/Color_output_in_console
