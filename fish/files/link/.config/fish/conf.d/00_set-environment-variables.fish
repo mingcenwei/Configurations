@@ -118,6 +118,12 @@ end
 # For nvm
 set --export --global NVM_DIR "$HOME"'/.nvm'
 
+# For gopass & pass
+begin
+	set --export --global GOPASS_UMASK 077
+	set --export --global PASSWORD_STORE_UMASK 077
+end
+
 # For conda
 if is-platform --quiet 'pacman'
 	if test -f '/opt/miniconda3/bin/conda'
