@@ -288,16 +288,9 @@ if check-dependencies --program --quiet 'exa'
 	alias tree 'exa --tree'
 else if check-dependencies --program --quiet 'lsd'
 	alias ls 'lsd'
-	# TODO: remove legacy workarounds
-	if lsd --long --date '+%Y-%m-%d %H:%M' "$HOME" > '/dev/null' 2>&1
-		alias ll 'lsd --long --date \'+%Y-%m-%d %H:%M\''
-		alias la 'lsd --almost-all --long --date \'+%Y-%m-%d %H:%M\''
-		alias laa 'lsd --all --long --date \'+%Y-%m-%d %H:%M\''
-	else
-		alias ll 'lsd --long'
-		alias la 'lsd --almost-all --long'
-		alias laa 'lsd --all --long'
-	end
+	alias ll 'lsd --long --date \'+%Y-%m-%d %H:%M\''
+	alias la 'lsd --almost-all --long --date \'+%Y-%m-%d %H:%M\''
+	alias laa 'lsd --all --long --date \'+%Y-%m-%d %H:%M\''
 	alias tree 'lsd --tree'
 else if status is-interactive
 	echo-err --warning 'Please install "exa"/"lsd"'
