@@ -296,6 +296,12 @@ else if status is-interactive
 	echo-err --warning 'Please install "exa"/"lsd"'
 end
 
+# List files (unsafe)
+abbr --add --global 'newest-n' 'command ls -1 --sort=\'time\' | head -n'
+abbr --add --global 'oldest-n' 'command ls -1 -r --sort=\'time\' | head -n'
+abbr --add --global 'first-n' 'command ls -1 | head -n'
+abbr --add --global 'last-n' 'command ls -1 -r | head -n'
+
 # Use pnpm instead of npm
 if check-dependencies --program --quiet 'npm'
 	if not check-dependencies --program --quiet 'pnpm'
