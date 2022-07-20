@@ -164,19 +164,19 @@ end
 if check-dependencies --program 'rclone'
 	abbr --add --global 'rclone2' 'rclone -ivP'
 
-	if check-dependencies --program 'pass'
-		function rclone --wraps='rclone' --description 'rclone'
-			pass ls > '/dev/null'; true
-			command rclone --password-command='pass show rclone_config' --ask-password=false $argv
+	set --local secretName 'automatic/rclone_config'
+	if check-dependencies --program --quiet 'gopass'
+		function rclone --wraps='rclone' --description 'rclone' --inherit-variable 'secretName'
+			command rclone --password-command="gopass show $secretName" $argv
 		end
+		gopass list > '/dev/null' ; true
+	else if check-dependencies --program --quiet 'pass'
+		function rclone --wraps='rclone' --description 'rclone' --inherit-variable 'secretName'
+			command rclone --password-command="pass show $secretName" $argv
+		end
+		pass list > '/dev/null' ; true
 	else
-		function rclone --wraps='rclone' --description 'rclone'
-			if test -z "$RCLONE_CONFIG_PASS"
-				echo 'Enter configuration password: '
-				read --global --silent --prompt-str='password: ' RCLONE_CONFIG_PASS
-			end
-			RCLONE_CONFIG_PASS="$RCLONE_CONFIG_PASS" command rclone --ask-password=false $argv
-		end
+		echo-err '"gopass/pass" are not installed! rclone password command will not be set'
 	end
 end
 

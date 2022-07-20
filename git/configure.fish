@@ -105,12 +105,15 @@ else if is-platform --quiet 'kde'
 	check-dependencies --program --quiet='never' 'ksshaskpass'
 	and git config --global 'core.askpass' (command --search ksshaskpass)
 else if is-platform --quiet 'android-termux'
-	check-dependencies --program --quiet='never' 'pass'
-	and git config --global 'credential.helper' \
-		'!f() { test "$1" = get && echo "url=$(pass show GitHub)"; }; f'
-	and begin
-		pass ls > '/dev/null'
-		true
+	set --local secretName 'automatic/GitHub'
+	if check-dependencies --program --quiet 'gopass'
+		git config --global 'credential.helper' '!f() { test "$1" = get && echo "url=$(gopass show '"$secretName"')"; }; f'
+		gopass list > '/dev/null' ; true
+	else if check-dependencies --program --quiet 'pass'
+		git config --global 'credential.helper' '!f() { test "$1" = get && echo "url=$(pass show '"$secretName"')"; }; f'
+		pass list > '/dev/null' ; true
+	else
+		echo-err '"gopass/pass" are not installed! No git credential helper will be set'
 	end
 else
 	echo-err --warning 'No git credential helper is set'
