@@ -40,8 +40,16 @@ function fish_greeting
 		set packageUpdateCommands 'sudo apt update && sudo apt upgrade'
 		set packageCleanCommands 'sudo apt autoremove; sudo apt autoclean'
 	else if is-platform --quiet 'pacman'
-		set packageUpdateCommands 'sudo pacman -Syu'
-		set packageCleanCommands 'sudo pacman -Scc'
+		if is-platform 'pikaur'
+			set packageUpdateCommands 'pikaur -Syu'
+		else
+			set packageUpdateCommands 'sudo pacman -Syu'
+		end
+		if is-platform 'paccache'
+			set packageUpdateCommands 'paccache --remove'
+		else
+			set packageUpdateCommands 'sudo pacman -Scc'
+		end
 	end
 
 	# Package updating and cleaning commands
