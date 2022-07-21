@@ -95,6 +95,15 @@ git config --global 'core.excludesFile' "$gitConfigDir"'/ignore'
 if check-dependencies --program --quiet='never' 'gpg'
 	git config --global 'gpg.program' (command --search gpg)
 end
+# Use SSH instead of HTTPS by default
+begin
+	#git config --global 'url.ssh://git@github.com/.pushInsteadOf' 'https://github.com/'
+	git config --global 'url.ssh://git@github.com/.insteadOf' 'https://github.com/'
+	#git config --global 'url.ssh://git@gitlab.com/.pushInsteadOf' 'https://gitlab.com/'
+	git config --global 'url.ssh://git@gitlab.com/.insteadOf' 'https://gitlab.com/'
+	#git config --global 'url.ssh://git@bitbucket.org/.pushInsteadOf' 'https://bitbucket.org/'
+	git config --global 'url.ssh://git@bitbucket.org/.insteadOf' 'https://bitbucket.org/'
+end
 ###
 
 ### Platform dependent configurations
