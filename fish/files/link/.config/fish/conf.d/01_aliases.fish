@@ -164,7 +164,7 @@ end
 if check-dependencies --program 'rclone'
 	abbr --add --global 'rclone2' 'rclone -ivP'
 
-	set --local secretName 'automatic/rclone_config'
+	set --local secretName 'rclone/config'
 	if check-dependencies --program --quiet 'gopass'
 		function rclone --wraps='rclone' --description 'rclone' --inherit-variable 'secretName'
 			command rclone --password-command="gopass show $secretName" $argv
