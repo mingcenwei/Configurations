@@ -98,29 +98,30 @@ end
 ###
 
 ### Platform dependent configurations
-# Caching GitHub password in git
-if check-dependencies --program --quiet 'git-credential-gopass'
-and check-dependencies --program --quiet='never' 'gopass'
-	git config --global 'credential.helper' 'gopass'
-else if is-platform --quiet 'macos'
-	git config --global 'credential.helper' 'osxkeychain'
-else if is-platform --quiet 'kde'
-and check-dependencies --program --quiet='never' 'ksshaskpass'
-	git config --global 'core.askpass' (command --search ksshaskpass)
-else if is-platform --quiet 'android-termux'
-	set --local secretName 'git/github.com'
-	if check-dependencies --program --quiet 'gopass'
-		git config --global 'credential.helper' '!f() { test "$1" = get && echo "url=$(gopass show '"$secretName"')"; }; f'
-		gopass list > '/dev/null' ; true
-	else if check-dependencies --program --quiet 'pass'
-		git config --global 'credential.helper' '!f() { test "$1" = get && echo "url=$(pass show '"$secretName"')"; }; f'
-		pass list > '/dev/null' ; true
-	else
-		echo-err '"gopass/pass" are not installed! No git credential helper will be set'
-	end
-else
-	echo-err --warning 'No git credential helper will be set'
-end
+# Use SSH instead of git credential helper
+## Caching GitHub password in git
+#if check-dependencies --program --quiet 'git-credential-gopass'
+#and check-dependencies --program --quiet='never' 'gopass'
+#	git config --global 'credential.helper' 'gopass'
+#else if is-platform --quiet 'macos'
+#	git config --global 'credential.helper' 'osxkeychain'
+#else if is-platform --quiet 'kde'
+#and check-dependencies --program --quiet='never' 'ksshaskpass'
+#	git config --global 'core.askpass' (command --search ksshaskpass)
+#else if is-platform --quiet 'android-termux'
+#	set --local secretName 'git/github.com'
+#	if check-dependencies --program --quiet 'gopass'
+#		git config --global 'credential.helper' '!f() { test "$1" = get && echo "url=$(gopass show '"$secretName"')"; }; f'
+#		gopass list > '/dev/null' ; true
+#	else if check-dependencies --program --quiet 'pass'
+#		git config --global 'credential.helper' '!f() { test "$1" = get && echo "url=$(pass show '"$secretName"')"; }; f'
+#		pass list > '/dev/null' ; true
+#	else
+#		echo-err '"gopass/pass" are not installed! No git credential helper will be set'
+#	end
+#else
+#	echo-err --warning 'No git credential helper will be set'
+#end
 ###
 
 ### Aliases
