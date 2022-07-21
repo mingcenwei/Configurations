@@ -46,9 +46,9 @@ function fish_greeting
 			set packageUpdateCommands 'sudo pacman -Syu'
 		end
 		if check-dependencies --program 'paccache'
-			set packageUpdateCommands 'paccache --remove'
+			set packageCleanCommands 'paccache --remove'
 		else
-			set packageUpdateCommands 'sudo pacman -Scc'
+			set packageCleanCommands 'sudo pacman -Scc'
 		end
 	end
 
