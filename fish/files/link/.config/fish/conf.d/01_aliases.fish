@@ -166,13 +166,9 @@ if check-dependencies --program 'rclone'
 
 	set --local secretName 'rclone/config'
 	if check-dependencies --program --quiet 'gopass'
-		function rclone --wraps='rclone' --description 'rclone' --inherit-variable 'secretName'
-			command rclone --password-command="gopass show $secretName" $argv
-		end
+		alias rclone "rclone --password-command=\"gopass show $secretName\""
 	else if check-dependencies --program --quiet 'pass'
-		function rclone --wraps='rclone' --description 'rclone' --inherit-variable 'secretName'
-			command rclone --password-command="pass show $secretName" $argv
-		end
+		alias rclone "rclone --password-command=\"pass show $secretName\""
 	else
 		echo-err '"gopass/pass" are not installed! rclone password command will not be set'
 	end
