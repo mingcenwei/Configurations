@@ -124,6 +124,18 @@ begin
 	set --export --global PASSWORD_STORE_UMASK 077
 end
 
+# For "rclone"
+begin
+	set --local secretName 'rclone/config'
+	if check-dependencies --program --quiet 'gopass'
+		set --export --global RCLONE_PASSWORD_COMMAND "gopass show $secretName"
+	else if check-dependencies --program --quiet 'pass'
+		set --export --global RCLONE_PASSWORD_COMMAND "pass show $secretName"
+	else
+		echo-err '"gopass/pass" are not installed! rclone password command will not be set'
+	end
+end
+
 # For conda
 if is-platform --quiet 'pacman'
 	if test -f '/opt/miniconda3/bin/conda'

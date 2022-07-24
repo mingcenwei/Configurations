@@ -163,15 +163,6 @@ end
 # For "rclone"
 if check-dependencies --program 'rclone'
 	abbr --add --global 'rclone2' 'rclone -ivP'
-
-	set --local secretName 'rclone/config'
-	if check-dependencies --program --quiet 'gopass'
-		alias rclone "rclone --password-command=\"gopass show $secretName\""
-	else if check-dependencies --program --quiet 'pass'
-		alias rclone "rclone --password-command=\"pass show $secretName\""
-	else
-		echo-err '"gopass/pass" are not installed! rclone password command will not be set'
-	end
 end
 
 # For "pacman"
