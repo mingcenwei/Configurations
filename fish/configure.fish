@@ -62,7 +62,8 @@ end
 
 ### Add "fish" configurations
 mkdir -m 700 -p "$stowDir"'/fish' || exit 1
-rsync --recursive "$linkDir"/ "$stowDir"'/fish' || exit 1
+rsync --recursive --exclude '/.config/fish/conf.d/99_custom_*.fish' "$linkDir"/ "$stowDir"'/fish' || exit 1
+rsync --recursive --include '/.config/fish/conf.d/99_custom_*.fish' --ignore-existing "$linkDir"/ "$stowDir"'/fish' || exit 1
 stow --verbose --restow --dir "$stowDir" --target "$HOME" 'fish' || exit 1
 ###
 
