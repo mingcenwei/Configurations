@@ -67,6 +67,7 @@ if check-dependencies --program 'diff'
 	else
 		alias diff 'diff --color=auto'
 	end
+	abbr add --global diff-dirs 'diff --recursive --brief --no-dereference'
 end
 alias grep 'grep --color=auto'
 if check-dependencies --program --quiet 'egrep'
@@ -157,6 +158,22 @@ if check-dependencies --program 'rsync'
 			'rsync -hh --info=stats1,progress2 --partial -aHS'
 		abbr --add --global rsync2-ap \
 			'rsync -hh --info=stats1,progress2 --partial -aHS'
+	end
+
+	abbr --add --global diff-rsync-r 'rsync --dry-run -v --delete -rlD'
+	abbr --add --global diff-rsync-rc 'rsync --dry-run -v --delete -rlD --checksum'
+	abbr --add --global diff-rsync-cr 'rsync --dry-run -v --delete -rlD --checksum'
+	abbr --add --global diff-rsync-a 'rsync --dry-run -v --delete -a'
+	abbr --add --global diff-rsync-ac 'rsync --dry-run -v --delete -a --checksum'
+	abbr --add --global diff-rsync-ca 'rsync --dry-run -v --delete -a --checksum'
+	if not is-platform --quiet 'android-termux'
+		abbr --add --global diff-rsync-A 'rsync --dry-run -v --delete -aHAX'
+		abbr --add --global diff-rsync-Ac 'rsync --dry-run -v --delete -aHAX --checksum'
+		abbr --add --global diff-rsync-cA 'rsync --dry-run -v --delete -aHAX --checksum'
+	else
+		abbr --add --global diff-rsync-A 'rsync --dry-run -v --delete -aH'
+		abbr --add --global diff-rsync-Ac 'rsync --dry-run -v --delete -aH --checksum'
+		abbr --add --global diff-rsync-cA 'rsync --dry-run -v --delete -aH --checksum'
 	end
 end
 
