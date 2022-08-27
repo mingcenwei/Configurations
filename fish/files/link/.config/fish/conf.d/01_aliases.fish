@@ -67,7 +67,7 @@ if check-dependencies --program 'diff'
 	else
 		alias diff 'diff --color=auto'
 	end
-	abbr add --global diff-dirs 'diff --recursive --brief --no-dereference'
+	abbr --add --global diff-dirs 'diff --recursive --brief --no-dereference'
 end
 alias grep 'grep --color=auto'
 if check-dependencies --program --quiet 'egrep'
