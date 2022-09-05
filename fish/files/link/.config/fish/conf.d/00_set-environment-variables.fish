@@ -32,7 +32,9 @@ end
 # Prepended to "$PATH"
 begin
 	# For snap
-	fish_add_path --global '/snap/bin'
+	if is-platform --quiet 'snap'
+		fish_add_path --global '/snap/bin'
+	end
 
 	# For pyenv
 	begin
