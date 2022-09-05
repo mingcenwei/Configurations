@@ -27,6 +27,12 @@ begin
 		set --export --global GEM_HOME (ruby -e 'puts Gem.user_dir')
 		fish_add_path --global --append --path "$GEM_HOME"'/bin'
 	end
+
+	# For pnpm
+	if check-dependencies --program --quiet 'pnpm'
+		set --export --global PNPM_HOME "$XDG_DATA_HOME"'/pnpm'
+		fish_add_path --global --append --path "$PNPM_HOME"
+	end
 end
 
 # Prepended to "$PATH"
