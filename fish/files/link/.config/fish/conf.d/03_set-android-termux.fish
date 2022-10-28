@@ -51,7 +51,6 @@ if is-platform --quiet 'android-termux'
 	__sayAnonymousNamespace_try-link '/sdcard/Download' 'Download'
 	__sayAnonymousNamespace_try-link '/sdcard/DCIM' 'DCIM'
 	__sayAnonymousNamespace_try-link '/sdcard/Pictures' 'Pictures'
-	__sayAnonymousNamespace_try-link '/sdcard/Telegram' 'Telegram'
 	__sayAnonymousNamespace_try-link '/sdcard/Android/data/com.tencent.mobileqq/Tencent/QQfile_recv' 'QQ'
 	__sayAnonymousNamespace_try-link '/sdcard/Android/data/com.tencent.mm/MicroMsg/Download' 'WeChat'
 
