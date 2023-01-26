@@ -4,9 +4,9 @@ function set-proxies --description 'Set HTTP/SOCKS proxies'
 	# Parse options
 	set --local  optionSpecs \
 		--name 'set-proxies' \
+		--exclusive 's,U' \
 		(fish_opt --short 'U' --long 'universal') \
-		(fish_opt --short 's' --long 'show') \
-		--exclusive 's,U'
+		(fish_opt --short 's' --long 'show')
 	argparse $optionSpecs -- $argv || return 2
 
 	if test -n "$_flag_s"
@@ -17,9 +17,9 @@ function set-proxies --description 'Set HTTP/SOCKS proxies'
 		end
 
 		if test (count $argv) -eq 0
-			exit 0
+			return 0
 		else
-			exit 2
+			return 2
 		end
 	end
 
