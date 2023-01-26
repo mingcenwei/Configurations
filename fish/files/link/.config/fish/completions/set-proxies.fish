@@ -73,7 +73,33 @@ complete --command 'set-proxies' \
 		"'current' 'Keep current NO proxy'" \
 		"'none' 'Empty NO proxy'" \
 		"'erase' 'Erase NO proxy'" \
-		"'localhost,127.0.0.1,.cn,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.0/8' 'Default NO proxy'" \
+		"'$(string join -- ',' \
+			'localhost' \
+			'127.0.0.1' \
+			'.local' \
+			'.cn' \
+			'10.0.0.0/8' \
+			'172.16.0.0/12' \
+			'192.168.0.0/16' \
+			'127.0.0.0/8' \
+		)' 'Default NO proxy (abridged)'" \
+		"'$(string join -- ',' \
+			'localhost' \
+			'127.0.0.1' \
+			'.local' \
+			'.cn' \
+			'10.0.0.0/8' \
+			'172.16.0.0/12' \
+			'192.168.0.0/16' \
+			'127.0.0.0/8' \
+			'0.0.0.0/8' \
+			'169.254.0.0/16' \
+			'192.0.2.0/24' \
+			'192.88.99.0/24' \
+			'198.18.0.0/15' \
+			'224.0.0.0/4' \
+			'240.0.0.0/4' \
+		)' 'Default NO proxy (full)'" \
 		')' \
 	) \
 	--keep-order

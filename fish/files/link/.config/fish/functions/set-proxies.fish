@@ -48,7 +48,33 @@ function set-proxies --description 'Set HTTP/SOCKS proxies'
 
 	set noProxy (string lower -- (string trim -- "$noProxy"))
 	if string match --quiet --regex -- '^\s*$' "$noProxy"
-		set noProxy 'localhost,127.0.0.1,.cn,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.0/8'
+		#set noProxy (string join -- ',' \
+		#	'localhost' \
+		#	'127.0.0.1' \
+		#	'.local' \
+		#	'.cn' \
+		#	'10.0.0.0/8' \
+		#	'172.16.0.0/12' \
+		#	'192.168.0.0/16' \
+		#	'127.0.0.0/8' \
+		#)
+		set noProxy (string join -- ',' \
+			'localhost' \
+			'127.0.0.1' \
+			'.local' \
+			'.cn' \
+			'10.0.0.0/8' \
+			'172.16.0.0/12' \
+			'192.168.0.0/16' \
+			'127.0.0.0/8' \
+			'0.0.0.0/8' \
+			'169.254.0.0/16' \
+			'192.0.2.0/24' \
+			'192.88.99.0/24' \
+			'198.18.0.0/15' \
+			'224.0.0.0/4' \
+			'240.0.0.0/4' \
+		)
 	end
 
 	switch "$httpProxy"
