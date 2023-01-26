@@ -4,8 +4,24 @@ function set-proxies --description 'Set HTTP/SOCKS proxies'
 	# Parse options
 	set --local  optionSpecs \
 		--name 'set-proxies' \
-		(fish_opt --short 'U' --long 'universal')
+		(fish_opt --short 'U' --long 'universal') \
+		(fish_opt --short 's' --long 'show') \
+		--exclusive 's,U'
 	argparse $optionSpecs -- $argv || return 2
+
+	if test -n "$_flag_s"
+		set --show HTTP_PROXY ALL_PROXY NO_PROXY
+		echo
+		for proxy in HTTP_PROXY ALL_PROXY NO_PROXY
+			printf '%10s: %s\\n' "$proxy" (printenv "$proxy")
+		end
+
+		if test (count $argv) -eq 0
+			exit 0
+		else
+			exit 2
+		end
+	end
 
 	set --local scope '--global'
 	if test -n "$_flag_U"

@@ -5,10 +5,19 @@ complete --command 'set-proxies' \
 complete --command 'set-proxies' \
 	--condition (string join -- ' ' 'not __fish_contains_opt' \
 		'-s U universal' \
+		'-s s show' \
 	) \
 	--short-option 'U' \
 	--long-option 'universal' \
 	--description 'Set universal env vars'
+complete --command 'set-proxies' \
+	--condition (string join -- ' ' 'not __fish_contains_opt' \
+		'-s U universal' \
+		'-s s show' \
+	) \
+	--short-option 's' \
+	--long-option 'show' \
+	--description 'Show current env vars'
 complete --command 'set-proxies' \
 	--condition (string join -- ' ' 'test 1 -eq (' \
 		'count (' \
