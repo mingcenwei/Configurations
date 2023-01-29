@@ -19,6 +19,9 @@ complete --command 'set-proxies' \
 	--long-option 'show' \
 	--description 'Show current env vars'
 complete --command 'set-proxies' \
+	--condition (string join -- ' ' 'not __fish_contains_opt' \
+		'-s s show' \
+	) \
 	--condition (string join -- ' ' 'test 1 -eq (' \
 		'count (' \
 		'commandline --tokenize --cut-at-cursor |' \
@@ -39,6 +42,9 @@ complete --command 'set-proxies' \
 	) \
 	--keep-order
 complete --command 'set-proxies' \
+	--condition (string join -- ' ' 'not __fish_contains_opt' \
+		'-s s show' \
+	) \
 	--condition (string join -- ' ' 'test 2 -eq (' \
 		'count (' \
 		'commandline --tokenize --cut-at-cursor |' \
@@ -60,6 +66,9 @@ complete --command 'set-proxies' \
 	) \
 	--keep-order
 complete --command 'set-proxies' \
+	--condition (string join -- ' ' 'not __fish_contains_opt' \
+		'-s s show' \
+	) \
 	--condition (string join -- ' ' 'test 3 -eq (' \
 		'count (' \
 		'commandline --tokenize --cut-at-cursor |' \
