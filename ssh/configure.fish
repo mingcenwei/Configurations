@@ -333,7 +333,7 @@ function addAuthorizedKeys --argument-names username authorizedKeysFile
 	end
 	and while test -n "$pubkey"
 		set --local command \
-			'printf -- '(string escape -- \
+			'printf '(string escape -- \
 				"$pubkey")'\'\\n\' >> '(string escape -- "$authorizedKeysFile")
 		sudo su -s "$fishPath" -l "$username" -c "$command"
 		and read --prompt-str 'Pubkey (enter none to end): ' pubkey
