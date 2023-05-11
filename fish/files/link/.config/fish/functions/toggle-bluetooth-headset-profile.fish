@@ -40,10 +40,18 @@ function toggle-bluetooth-headset-profile --description 'Switch between A2DP and
 	end
 	set --local profile_active (pactl --format='json' -- list cards 2>'/dev/null' | jq --raw-output ".[] | select(.name == \"$device\") | .active_profile")
 	if test "$profile_active" != "$profile_hspOrHfp"
-		pactl set-card-profile "$device" "$profile_hspOrHfp"
-		echo-err --info -- '🎤 Mode: HSP/HFP'
+		if pactl set-card-profile "$device" "$profile_hspOrHfp"
+			echo-err --info -- '🎤 Mode: HSP/HFP'
+		else
+			echo-err -- 'Failed to switch to 🎤 HSP/HFP mode'
+			return 1
+		end
 	else
-		pactl set-card-profile "$device" "$profile_a2dp"
-		echo-err --info -- '🎧 Mode: A2DP'
+		if pactl set-card-profile "$device" "$profile_a2dp"
+			echo-err --info -- '🎧 Mode: A2DP'
+		else
+			echo-err -- 'Failed to switch to 🎧 A2DP mode'
+			return 1
+		end
 	end
 end
