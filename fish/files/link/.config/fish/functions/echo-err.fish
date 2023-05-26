@@ -94,3 +94,7 @@ function echo-err --description  'Echo error messages'
 
 	return "$previousStatus"
 end
+
+if test 0 -ne (count $argv)
+	echo-err $argv
+end

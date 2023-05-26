@@ -32,3 +32,7 @@ function sc-show-description --description 'Show systemd unit descriptions' \
 		printf '%s\t%s\n' "$nameColor""$unit""$normal" "$description"
 	end
 end
+
+if test 0 -ne (count $argv)
+	sc-show-description $argv
+end

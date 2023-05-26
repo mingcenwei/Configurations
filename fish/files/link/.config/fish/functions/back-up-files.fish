@@ -139,3 +139,7 @@ function back-up-files --description 'Back up files'
 		return "$returnStatus"
 	end
 end
+
+if test 0 -ne (count $argv)
+	back-up-files $argv
+end

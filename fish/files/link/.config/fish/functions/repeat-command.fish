@@ -47,3 +47,7 @@ function repeat-command --description 'Repeatedly run command'
 			end
 	end
 end
+
+if test 0 -ne (count $argv)
+	repeat-command $argv
+end

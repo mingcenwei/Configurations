@@ -141,3 +141,7 @@ function set-proxies --description 'Set HTTP/SOCKS proxies'
 	end
 	return 0
 end
+
+if test 0 -ne (count $argv)
+	set-proxies $argv
+end

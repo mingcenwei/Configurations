@@ -86,3 +86,7 @@ function check-dependencies --description  'Check dependencies'
 	end
 	return "$statusToReturn"
 end
+
+if test 0 -ne (count $argv)
+	check-dependencies $argv
+end

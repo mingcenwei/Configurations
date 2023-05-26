@@ -55,3 +55,7 @@ function toggle-bluetooth-headset-profile --description 'Switch between A2DP and
 		end
 	end
 end
+
+if test 0 -ne (count $argv)
+	toggle-bluetooth-headset-profile $argv
+end

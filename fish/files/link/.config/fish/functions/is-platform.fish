@@ -139,3 +139,7 @@ function is-platform --description 'Test whether we are on the given platform(s)
 		return "$statusToReturn"
 	end
 end
+
+if test 0 -ne (count $argv)
+	is-platform $argv
+end

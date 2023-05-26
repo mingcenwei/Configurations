@@ -118,3 +118,7 @@ function read-choice --description  'Read user choice'
 	set --global "$variableName" "$tempVariable"
 	return 0
 end
+
+if test 0 -ne (count $argv)
+	read-choice $argv
+end

@@ -18,3 +18,7 @@ function aur-clone --description 'Git-clone AUR repos'
 		git clone -- "$package" || return 2
 	end
 end
+
+if test 0 -ne (count $argv)
+	aur-clone $argv
+end

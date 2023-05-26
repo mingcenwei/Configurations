@@ -81,3 +81,7 @@ function add-paths --description 'Append/prepend paths to path variable'
 	set --path --export --global "$variableName" $tempVariable
 	return 0
 end
+
+if test 0 -ne (count $argv)
+	add-paths $argv
+end
