@@ -36,6 +36,7 @@ complete --command 'set-proxies' \
 		"'none' 'Empty HTTP proxy'" \
 		"'erase' 'Erase HTTP proxy'" \
 		"'127.0.0.1:8889' 'Qv2ray default HTTP proxy'" \
+		"'127.0.0.1:2081' 'NekoRay default HTTP proxy'" \
 		"'127.0.0.1:7890' 'Clash default HTTP proxy'" \
 		"'127.0.0.1:9049' 'Tor custom HTTP proxy'" \
 		')' \
@@ -59,6 +60,7 @@ complete --command 'set-proxies' \
 		"'none' 'Empty SOCKS proxy'" \
 		"'erase' 'Erase SOCKS proxy'" \
 		"'127.0.0.1:1089' 'Qv2ray default SOCKS proxy'" \
+		"'127.0.0.1:2080' 'NekoRay default SOCKS proxy'" \
 		"'127.0.0.1:7890' 'Clash default SOCKS proxy'" \
 		"'127.0.0.1:9050' 'Tor default SOCKS proxy'" \
 		"'socks5h://127.0.0.1:9050' 'Tor default SOCKS proxy for curl'" \
