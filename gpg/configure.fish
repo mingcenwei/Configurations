@@ -5,6 +5,7 @@ umask 077
 
 check-dependencies --program --quiet='never' 'gpg' || exit 3
 check-dependencies --program --quiet='never' 'gpg-agent' || exit 3
+check-dependencies --program --quiet='never' 'find' || exit 3
 check-dependencies --function --quiet='never' 'back-up-files' || exit 3
 check-dependencies --function --quiet='never' 'echo-err' || exit 3
 check-dependencies --function --quiet='never' 'read-choice' || exit 3
@@ -56,12 +57,17 @@ rsync --recursive  "$linkDir"/ "$stowDir"'/gpg' || exit 1
 stow --verbose --restow --dir "$stowDir" --target "$HOME" 'gpg' || exit 1
 ###
 
+# Use `pinentry-qt` for pinentry on KDE
 if is-platform --quiet 'kde'
 	if check-dependencies --program --quiet='never' 'pinentry-qt'
 		echo 'pinentry-program '(command --search pinentry-qt) \
 			>> "$gpgAgentConfigFile"
 	end
 end
+
+# Ensure secure permissions
+find -H "$gpgConfigDir" -type f -exec chmod -- 600 '{}' +
+find -H "$gpgConfigDir" -type d -exec chmod -- 700 '{}' +
 
 ### Generate key pairs
 if test (gpg --list-secret-keys --keyid-format LONG | wc -l) -eq 0
