@@ -96,6 +96,8 @@ begin
 	set --export --global LESS_TERMCAP_se (set_color 'normal')
 	set --export --global LESS_TERMCAP_us (set_color --underline --bold 'brblue')
 	set --export --global LESS_TERMCAP_ue (set_color 'normal')
+	# Fix groff/grotty/SGR related bugs
+	set --export --global GROFF_NO_SGR 1
 end
 
 # Fore GPG
