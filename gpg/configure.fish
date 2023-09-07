@@ -83,7 +83,7 @@ while true
 	and test "$generateKeyPair" = 'yes'
 	or break
 
-	gpg --full-generate-key
+	gpg --full-generate-key --expert
 end
 ###
 
