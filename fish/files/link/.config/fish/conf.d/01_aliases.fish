@@ -293,11 +293,25 @@ else if status is-interactive
 	echo-err --warning 'Please install "exa"/"lsd"'
 end
 
-# List files (unsafe)
-abbr --add 'newest-n' 'command ls -1 --sort=\'time\' | head -n'
-abbr --add 'oldest-n' 'command ls -1 -r --sort=\'time\' | head -n'
-abbr --add 'first-n' 'command ls -1 | head -n'
-abbr --add 'last-n' 'command ls -1 -r | head -n'
+# List files (unsafe - not null delimited)
+function __sayAnonymousNamespace_list-files_helper
+	set --local args (string match --regex --groups-only -- '^(newest|oldest|first|last)\\-(\\d+)$' "$argv")
+	set --local mode "$args[1]"
+	set --local number "$args[2]"
+	switch "$mode"
+	case 'newest'
+		echo -- "command ls -1 --sort='time' | head -n $number | tac"
+	case 'oldest'
+		echo -- "command ls -1 -r --sort='time' | head -n $number"
+	case 'first'
+		echo -- "command ls -1 --sort='version' | head -n $number"
+	case 'last'
+		echo -- "command ls -1 -r --sort='version' | head -n $number | tac"
+	case '*'
+		return 1
+	end
+end
+abbr --add 'list-files' --position 'anywhere' --regex '(?:newest|oldest|first|last)\\-\\d+' --function '__sayAnonymousNamespace_list-files_helper'
 
 # Use pnpm instead of npm
 if check-dependencies --program --quiet 'npm'
