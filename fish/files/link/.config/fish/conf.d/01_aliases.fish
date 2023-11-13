@@ -93,7 +93,7 @@ if check-dependencies --program --quiet 'ip'
 end
 
 # Create and enter a temporary directory
-abbr --add --global cdtemp 'cd (mktemp -d)'
+abbr --add --global cdtemp 'cd (mktemp -d) ; pwd'
 
 if check-dependencies --program --quiet 'systemctl'
 	abbr --add --global sc 'systemctl'
