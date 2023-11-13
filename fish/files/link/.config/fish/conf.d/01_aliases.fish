@@ -132,7 +132,7 @@ if check-dependencies --program 'pkill'
 end
 
 # For "fzf"
-if check-dependencies --program 'fzf'
+if check-dependencies --program 'fzf' && status is-interactive
 	fzf_key_bindings
 end
 
