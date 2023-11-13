@@ -131,11 +131,6 @@ if check-dependencies --program 'pkill'
 	abbr --add --global pkill2 'pkill -fi'
 end
 
-# For "fzf"
-if check-dependencies --program 'fzf' && status is-interactive
-	fzf_key_bindings
-end
-
 # For "git"
 if check-dependencies --program 'git'
 	abbr --add --global git-root 'git rev-parse --show-toplevel'
