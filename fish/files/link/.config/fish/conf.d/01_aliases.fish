@@ -3,8 +3,8 @@
 # Filesystem safety measures
 if is-platform --quiet 'linux'
 	alias rm 'rm --preserve-root=all --one-file-system'
-	abbr --add --global rm 'rm -I'
-	abbr --add --global rmi 'rm -I'
+	abbr --add rm 'rm -I'
+	abbr --add rmi 'rm -I'
 
 	alias chmod 'chmod --preserve-root'
 	alias chown 'chown --preserve-root'
@@ -13,11 +13,11 @@ else
 	if check-dependencies --program 'grm'
 		alias grm 'grm --preserve-root=all --one-file-system'
 		alias rm 'grm'
-		abbr --add --global rm 'rm -I'
-		abbr --add --global rmi 'rm -I'
+		abbr --add rm 'rm -I'
+		abbr --add rmi 'rm -I'
 	else
-		abbr --add --global rm 'rm -i'
-		abbr --add --global rmi 'rm -i'
+		abbr --add rm 'rm -i'
+		abbr --add rmi 'rm -i'
 	end
 
 	if check-dependencies --program 'gchmod'
@@ -36,28 +36,28 @@ else
 		alias find 'gfind'
 	end
 end
-abbr --add --global cp 'cp -i'
-abbr --add --global cpi 'cp -i'
-abbr --add --global mv 'mv -i'
-abbr --add --global mvi 'mv -i'
-#abbr --add --global ln 'ln -i'
-abbr --add --global lni 'ln -i'
+abbr --add cp 'cp -i'
+abbr --add cpi 'cp -i'
+abbr --add mv 'mv -i'
+abbr --add mvi 'mv -i'
+#abbr --add ln 'ln -i'
+abbr --add lni 'ln -i'
 
 # Database safety measures
 if check-dependencies --program --quiet 'mysql'
-	abbr --add --global mysql 'mysql -U'
+	abbr --add mysql 'mysql -U'
 end
 if check-dependencies --program --quiet 'mariadb'
-	abbr --add --global mariadb 'mariadb -U'
+	abbr --add mariadb 'mariadb -U'
 end
 if check-dependencies --program --quiet 'mycli'
-	abbr --add --global mycli 'mycli --warn'
+	abbr --add mycli 'mycli --warn'
 end
 if check-dependencies --program --quiet 'litecli'
-	abbr --add --global litecli 'litecli --warn'
+	abbr --add litecli 'litecli --warn'
 end
 if check-dependencies --program --quiet 'pgcli'
-	abbr --add --global pgcli 'pgcli --warn all'
+	abbr --add pgcli 'pgcli --warn all'
 end
 
 # Add colors: https://wiki.archlinux.org/index.php/Color_output_in_console
@@ -67,7 +67,7 @@ if check-dependencies --program 'diff'
 	else
 		alias diff 'diff --color=auto'
 	end
-	abbr --add --global diff-dirs 'diff --recursive --brief --no-dereference'
+	abbr --add diff-dirs 'diff --recursive --brief --no-dereference'
 end
 alias grep 'grep --color=auto'
 if check-dependencies --program --quiet 'egrep'
@@ -76,8 +76,8 @@ end
 if check-dependencies --program --quiet 'fgrep'
 	alias fgrep 'grep -F --color=auto'
 end
-abbr --add --global egrep 'grep -E'
-abbr --add --global fgrep 'grep -F'
+abbr --add egrep 'grep -E'
+abbr --add fgrep 'grep -F'
 if check-dependencies --program --quiet 'ip'
 	if not is-platform --quiet 'android-termux'
 		alias ip 'ip -color=auto'
@@ -93,103 +93,103 @@ if check-dependencies --program --quiet 'ip'
 end
 
 # Create and enter a temporary directory
-abbr --add --global cdtemp 'cd (mktemp -d) ; pwd'
+abbr --add cdtemp 'cd (mktemp -d) ; pwd'
 
 if check-dependencies --program --quiet 'systemctl'
-	abbr --add --global sc 'systemctl'
-	abbr --add --global scr 'sudo systemctl'
-	abbr --add --global scu 'systemctl --user'
+	abbr --add sc 'systemctl'
+	abbr --add scr 'sudo systemctl'
+	abbr --add scu 'systemctl --user'
 end
 if check-dependencies --program --quiet 'journalctl'
-	abbr --add --global jcu 'journalctl --pager-end --catalog --unit'
+	abbr --add jcu 'journalctl --pager-end --catalog --unit'
 end
 
 # Add user agent and referer automatically
 if check-dependencies --program 'curl'
-	abbr --add --global curl2 (string escape -- \
+	abbr --add curl2 (string escape -- \
 		curl --location --compressed --user-agent 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2725.0 Safari/537.36' --referer 'https://www.google.com/' --retry 5)
 end
 if check-dependencies --program 'wget'
-	abbr --add --global wget2 (string escape -- \
+	abbr --add wget2 (string escape -- \
 		wget --compression 'auto' --user-agent 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2725.0 Safari/537.36' --referer 'https://www.google.com/' --tries 5)
 end
 if check-dependencies --program 'youtube-dl'
-	abbr --add --global youtube-dl2 (string escape -- \
+	abbr --add youtube-dl2 (string escape -- \
 		youtube-dl --user-agent 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2725.0 Safari/537.36' --referer 'https://www.google.com/' --retries 5)
 end
 
 # For "date"
-abbr --add --global date2 'date +\'%Y-%m-%d_%H-%M-%S\''
-abbr --add --global date2-u 'date -u +\'%Y-%m-%d_%H-%M-%S\''
+abbr --add date2 'date +\'%Y-%m-%d_%H-%M-%S\''
+abbr --add date2-u 'date -u +\'%Y-%m-%d_%H-%M-%S\''
 
 # For "pgrep"
 if check-dependencies --program 'pgrep'
-	abbr --add --global pgrep2 'pgrep -fia'
+	abbr --add pgrep2 'pgrep -fia'
 end
 # For "pkill"
 if check-dependencies --program 'pkill'
-	abbr --add --global pkill2 'pkill -fi'
+	abbr --add pkill2 'pkill -fi'
 end
 
 # For "git"
 if check-dependencies --program 'git'
-	abbr --add --global git-root 'git rev-parse --show-toplevel'
+	abbr --add git-root 'git rev-parse --show-toplevel'
 end
 
 # For "rsync"
 if check-dependencies --program 'rsync'
-	abbr --add --global rsync2 'rsync -hh --info=stats1,progress2'
-	abbr --add --global rsync2-p 'rsync -hh --info=stats1,progress2 --partial'
+	abbr --add rsync2 'rsync -hh --info=stats1,progress2'
+	abbr --add rsync2-p 'rsync -hh --info=stats1,progress2 --partial'
 
 	if not is-platform --quiet 'android-termux'
-		abbr --add --global rsync2-a 'rsync -hh --info=stats1,progress2 -aHSAX'
-		abbr --add --global rsync2-pa \
+		abbr --add rsync2-a 'rsync -hh --info=stats1,progress2 -aHSAX'
+		abbr --add rsync2-pa \
 			'rsync -hh --info=stats1,progress2 --partial -aHSAX'
-		abbr --add --global rsync2-ap \
+		abbr --add rsync2-ap \
 			'rsync -hh --info=stats1,progress2 --partial -aHSAX'
 	else
-		abbr --add --global rsync2-a 'rsync -hh --info=stats1,progress2 -aHS'
-		abbr --add --global rsync2-pa \
+		abbr --add rsync2-a 'rsync -hh --info=stats1,progress2 -aHS'
+		abbr --add rsync2-pa \
 			'rsync -hh --info=stats1,progress2 --partial -aHS'
-		abbr --add --global rsync2-ap \
+		abbr --add rsync2-ap \
 			'rsync -hh --info=stats1,progress2 --partial -aHS'
 	end
 
-	abbr --add --global diff-rsync-r 'rsync --dry-run -v --delete -rlD'
-	abbr --add --global diff-rsync-rc 'rsync --dry-run -v --delete -rlD --checksum'
-	abbr --add --global diff-rsync-cr 'rsync --dry-run -v --delete -rlD --checksum'
-	abbr --add --global diff-rsync-a 'rsync --dry-run -v --delete -a'
-	abbr --add --global diff-rsync-ac 'rsync --dry-run -v --delete -a --checksum'
-	abbr --add --global diff-rsync-ca 'rsync --dry-run -v --delete -a --checksum'
+	abbr --add diff-rsync-r 'rsync --dry-run -v --delete -rlD'
+	abbr --add diff-rsync-rc 'rsync --dry-run -v --delete -rlD --checksum'
+	abbr --add diff-rsync-cr 'rsync --dry-run -v --delete -rlD --checksum'
+	abbr --add diff-rsync-a 'rsync --dry-run -v --delete -a'
+	abbr --add diff-rsync-ac 'rsync --dry-run -v --delete -a --checksum'
+	abbr --add diff-rsync-ca 'rsync --dry-run -v --delete -a --checksum'
 	if not is-platform --quiet 'android-termux'
-		abbr --add --global diff-rsync-A 'rsync --dry-run -v --delete -aHAX'
-		abbr --add --global diff-rsync-Ac 'rsync --dry-run -v --delete -aHAX --checksum'
-		abbr --add --global diff-rsync-cA 'rsync --dry-run -v --delete -aHAX --checksum'
+		abbr --add diff-rsync-A 'rsync --dry-run -v --delete -aHAX'
+		abbr --add diff-rsync-Ac 'rsync --dry-run -v --delete -aHAX --checksum'
+		abbr --add diff-rsync-cA 'rsync --dry-run -v --delete -aHAX --checksum'
 	else
-		abbr --add --global diff-rsync-A 'rsync --dry-run -v --delete -aH'
-		abbr --add --global diff-rsync-Ac 'rsync --dry-run -v --delete -aH --checksum'
-		abbr --add --global diff-rsync-cA 'rsync --dry-run -v --delete -aH --checksum'
+		abbr --add diff-rsync-A 'rsync --dry-run -v --delete -aH'
+		abbr --add diff-rsync-Ac 'rsync --dry-run -v --delete -aH --checksum'
+		abbr --add diff-rsync-cA 'rsync --dry-run -v --delete -aH --checksum'
 	end
 end
 
 # For "rclone"
 if check-dependencies --program 'rclone'
-	abbr --add --global 'rclone2' 'rclone -ivP'
+	abbr --add 'rclone2' 'rclone -ivP'
 end
 
 # For "pacman"
 if is-platform --quiet 'pacman'
 	if check-dependencies --program 'makepkg'
 	and check-dependencies --program 'git'
-		abbr --add --global makepkg2 \
+		abbr --add makepkg2 \
 			'makepkg --syncdeps --install && git clean -xd --interactive'
-		abbr --add --global makepkg2-d \
+		abbr --add makepkg2-d \
 			'makepkg --asdeps --syncdeps --install && git clean -xd --interactive'
-		abbr --add --global makepkg2-r \
+		abbr --add makepkg2-r \
 			'makepkg --syncdeps --rmdeps --install && git clean -xd --interactive'
-		abbr --add --global makepkg2-dr \
+		abbr --add makepkg2-dr \
 			'makepkg --asdeps --syncdeps --rmdeps --install && git clean -xd --interactive'
-		abbr --add --global makepkg2-rd \
+		abbr --add makepkg2-rd \
 			'makepkg --asdeps --syncdeps --rmdeps --install && git clean -xd --interactive'
 	end
 
@@ -214,16 +214,16 @@ end
 
 # For Homebrew
 if is-platform --quiet 'homebrew'
-	abbr --add --global brew2 'HOMEBREW_NO_AUTO_UPDATE=1 brew'
+	abbr --add brew2 'HOMEBREW_NO_AUTO_UPDATE=1 brew'
 end
 
 # Start "samba"
 if check-dependencies --program --quiet 'smbd'
 and check-dependencies --program --quiet 'systemctl'
 and check-dependencies --program 'ufw'
-	abbr --add --global start-samba 'sudo systemctl start smb.service && sudo ufw allow in 445/tcp comment \'samba\''
-	abbr --add --global restart-samba 'sudo systemctl restart smb.service && sudo ufw allow in 445/tcp comment \'samba\''
-	abbr --add --global stop-samba 'sudo systemctl stop smb.service && sudo ufw delete allow in 445/tcp'
+	abbr --add start-samba 'sudo systemctl start smb.service && sudo ufw allow in 445/tcp comment \'samba\''
+	abbr --add restart-samba 'sudo systemctl restart smb.service && sudo ufw allow in 445/tcp comment \'samba\''
+	abbr --add stop-samba 'sudo systemctl stop smb.service && sudo ufw delete allow in 445/tcp'
 end
 
 # Auto refresh `sudo` cached credentials
@@ -294,10 +294,10 @@ else if status is-interactive
 end
 
 # List files (unsafe)
-abbr --add --global 'newest-n' 'command ls -1 --sort=\'time\' | head -n'
-abbr --add --global 'oldest-n' 'command ls -1 -r --sort=\'time\' | head -n'
-abbr --add --global 'first-n' 'command ls -1 | head -n'
-abbr --add --global 'last-n' 'command ls -1 -r | head -n'
+abbr --add 'newest-n' 'command ls -1 --sort=\'time\' | head -n'
+abbr --add 'oldest-n' 'command ls -1 -r --sort=\'time\' | head -n'
+abbr --add 'first-n' 'command ls -1 | head -n'
+abbr --add 'last-n' 'command ls -1 -r | head -n'
 
 # Use pnpm instead of npm
 if check-dependencies --program --quiet 'npm'

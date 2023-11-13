@@ -2,4 +2,4 @@
 
 # Examples
 #alias rm 'rm --preserve-root=all --one-file-system'
-#abbr --add --global rm 'rm -I'
+#abbr --add rm 'rm -I'
