@@ -117,6 +117,10 @@ if check-dependencies --program 'youtube-dl'
 	abbr --add youtube-dl2 (string escape -- \
 		youtube-dl --user-agent 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2725.0 Safari/537.36' --referer 'https://www.google.com/' --retries 5)
 end
+if check-dependencies --program 'yt-dlp'
+	abbr --add yt-dlp2 (string escape -- \
+		yt-dlp --user-agent 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2725.0 Safari/537.36' --referer 'https://www.google.com/' --retries 5)
+end
 
 # For "date"
 abbr --add date2 'date +\'%Y-%m-%d_%H-%M-%S\''
