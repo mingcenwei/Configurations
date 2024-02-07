@@ -120,13 +120,16 @@ if check-dependencies --program 'wget'
 	abbr --add wget2 (string escape -- \
 		wget --compression 'auto' --user-agent 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2725.0 Safari/537.36' --referer 'https://www.google.com/' --tries 5)
 end
-if check-dependencies --program 'youtube-dl'
+if check-dependencies --program --quiet 'youtube-dl'
 	abbr --add youtube-dl2 (string escape -- \
 		youtube-dl --user-agent 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2725.0 Safari/537.36' --referer 'https://www.google.com/' --retries 5)
 end
-if check-dependencies --program 'yt-dlp'
+if check-dependencies --program --quiet 'yt-dlp'
 	abbr --add yt-dlp2 (string escape -- \
 		yt-dlp --user-agent 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2725.0 Safari/537.36' --referer 'https://www.google.com/' --retries 5)
+else if not check-dependencies --program --quiet 'youtube-dl'
+and status is-interactive
+	echo-err --warning 'Please install "yt-dlp"/"youtube-dl"'
 end
 
 # For "date"
@@ -325,7 +328,7 @@ end
 abbr --add 'list-files' --position 'anywhere' --regex '(?:newest|oldest|first|last)\\-\\d+' --function '__sayAnonymousNamespace_list-files_helper'
 
 # Use pnpm instead of npm
-if check-dependencies --program --quiet 'npm'
+if check-dependencies --program 'npm'
 	if not check-dependencies --program --quiet 'pnpm'
 		if status is-interactive
 			echo-err --warning 'Please install "pnpm" to replace "npm"'
