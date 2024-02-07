@@ -60,6 +60,13 @@ if check-dependencies --program --quiet 'pgcli'
 	abbr --add pgcli 'pgcli --warn all'
 end
 
+# `sudo` for docker
+if check-dependencies --program --quiet 'docker'
+	if is-platform --quiet 'linux'
+		abbr --add docker 'sudo docker'
+	end
+end
+
 # Add colors: https://wiki.archlinux.org/index.php/Color_output_in_console
 if check-dependencies --program 'diff'
 	if test 3 -gt (diff --version | head -n 1 | string match --regex '\\d+')
