@@ -65,6 +65,7 @@ begin
 	if check-dependencies --program --quiet 'vim'
 		set --export --global EDITOR (command --search vim)
 		set --export --global SUDO_EDITOR (command --search vim)
+		set --export --global GIT_EDITOR (command --search vim)
 	else if status is-interactive
 		echo-err --warning '"vim" is not installed! $EDITOR will not be set'
 	end

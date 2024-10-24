@@ -209,7 +209,7 @@ if is-platform --quiet 'pacman'
 
 	if check-dependencies --program "pikaur"
 		function pikaur --wraps='pikaur' --description 'pikaur'
-			env --unset='VISUAL' pikaur $argv
+			env VISUAL="$EDITOR" pikaur $argv
 		end
 	end
 end
@@ -217,12 +217,12 @@ end
 # For "moreutils"
 if check-dependencies --program "vidir"
 	function vidir --wraps='vidir' --description 'vidir'
-		env --unset='VISUAL' vidir $argv
+		env VISUAL="$EDITOR" vidir $argv
 	end
 end
 if check-dependencies --program "vipe"
 	function vipe --wraps='vipe' --description 'vipe'
-		env --unset='VISUAL' vipe $argv
+		env VISUAL="$EDITOR" vipe $argv
 	end
 end
 
