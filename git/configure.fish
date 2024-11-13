@@ -89,22 +89,10 @@ end
 ###
 
 ### Platform independent configurations
-# Rebase by default
-git config --global 'pull.rebase' true
 git config --global 'core.excludesFile' "$gitConfigDir"'/ignore'
 if check-dependencies --program --quiet='never' 'gpg'
 	git config --global 'gpg.program' (command --search gpg)
 end
-# Use SSH instead of HTTPS by default
-begin
-	#git config --global 'url.ssh://git@github.com/.pushInsteadOf' 'https://github.com/'
-	git config --global 'url.ssh://git@github.com/.insteadOf' 'https://github.com/'
-	#git config --global 'url.ssh://git@gitlab.com/.pushInsteadOf' 'https://gitlab.com/'
-	git config --global 'url.ssh://git@gitlab.com/.insteadOf' 'https://gitlab.com/'
-	#git config --global 'url.ssh://git@bitbucket.org/.pushInsteadOf' 'https://bitbucket.org/'
-	git config --global 'url.ssh://git@bitbucket.org/.insteadOf' 'https://bitbucket.org/'
-end
-###
 
 ### Platform dependent configurations
 # Use SSH instead of git credential helper
@@ -131,9 +119,4 @@ end
 #else
 #	echo-err --warning 'No git credential helper will be set'
 #end
-###
-
-### Aliases
-git config --global 'alias.exec' '!exec '
-git config --global 'alias.root' 'rev-parse --show-toplevel'
 ###
