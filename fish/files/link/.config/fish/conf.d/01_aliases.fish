@@ -101,6 +101,9 @@ end
 
 # Create and enter a temporary directory
 abbr --add cdtemp 'cd (mktemp -d) ; pwd'
+if is-platform --quiet 'linux'
+	abbr --add cdvartemp "cd (mktemp -d --tmpdir='/var/tmp/') ; pwd"
+end
 
 if check-dependencies --program --quiet 'systemctl'
 	abbr --add sc 'systemctl'
