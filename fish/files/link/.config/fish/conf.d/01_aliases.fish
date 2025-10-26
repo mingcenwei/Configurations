@@ -328,7 +328,7 @@ function __sayAnonymousNamespace_list-files_helper
 		return 1
 	end
 end
-abbr --add 'list-files' --position 'anywhere' --regex '(?:newest|oldest|first|last)\\-\\d+' --function '__sayAnonymousNamespace_list-files_helper'
+abbr --add 'list-files' --regex '(?:newest|oldest|first|last)\\-\\d+' --function '__sayAnonymousNamespace_list-files_helper'
 
 # Use pnpm instead of npm
 if check-dependencies --program 'npm'
