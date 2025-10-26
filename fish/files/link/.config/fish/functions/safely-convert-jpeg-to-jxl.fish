@@ -80,6 +80,7 @@ function safely-convert-jpeg-to-jxl --description 'Safely convert a JPEG image t
 		djxl --quiet -- "$dir_temp/output.jxl" "$dir_temp/original.jpg" || return 1
 		if diff --brief -- "$input" "$dir_temp/original.jpg" >'/dev/null'
 			mv $force -- "$dir_temp/output.jxl" "$output" || return 1
+			touch --reference "$input" -- "$output"
 		else
 			echo-err -- 'Cannot restore original JPEG image from generated JPEG XL image'
 			rm -r -- "$dir_temp"
@@ -92,6 +93,7 @@ function safely-convert-jpeg-to-jxl --description 'Safely convert a JPEG image t
 		end
 		djxl --quiet -- "$input" "$dir_temp/output.jpg" || return 1
 		mv $force -- "$dir_temp/output.jpg" "$output" || return 1
+		touch --reference "$input" -- "$output"
 	end
 	rm -r -- "$dir_temp" || return 1
 	if test -n "$removeSourceImage"
