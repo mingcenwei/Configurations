@@ -151,6 +151,6 @@ end
 if is-platform --quiet 'pacman'
 	if test -f '/opt/miniconda3/bin/conda'
 		set --export --global CONDA_AUTO_ACTIVATE_BASE 'false'
-		eval '/opt/miniconda3/bin/conda' 'shell.fish' 'hook' $argv | source
+		'/opt/miniconda3/bin/conda' 'shell.fish' 'hook' | source
 	end
 end
