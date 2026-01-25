@@ -150,6 +150,7 @@ end
 # For conda
 if is-platform --quiet 'pacman'
 	if test -f '/opt/miniconda3/bin/conda'
+		set --export --global CRYPTOGRAPHY_OPENSSL_NO_LEGACY '1'
 		set --export --global CONDA_AUTO_ACTIVATE_BASE 'false'
 		'/opt/miniconda3/bin/conda' 'shell.fish' 'hook' | source
 	end
